@@ -24,7 +24,7 @@ export default function Testimonials() {
   ];
 
   return (
-    <section id="testimonials" className="py-20 md:py-28 bg-white">
+    <section id="testimonials" className="py-20 md:py-28 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -39,7 +39,7 @@ export default function Testimonials() {
           {testimonials.map((testimonial, index) => (
             <div
               key={index}
-              className="bg-muted p-8 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col"
+              className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col"
             >
               {/* Quote */}
               <div className="flex-1 mb-6">

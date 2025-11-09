@@ -3,8 +3,6 @@ import Link from 'next/link';
 export default function Hero() {
   return (
     <section className="relative bg-gradient-to-br from-brand to-brand-dark text-white pt-32 pb-20 md:pt-40 md:pb-28">
-      {/* Background pattern/noise (optional) */}
-      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-5" aria-hidden="true" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-4xl mx-auto">

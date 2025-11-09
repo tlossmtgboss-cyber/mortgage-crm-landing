@@ -37,7 +37,7 @@ export default function FAQ() {
   };
 
   return (
-    <section id="faq" className="py-20 md:py-28 bg-white">
+    <section id="faq" className="py-20 md:py-28 bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -90,7 +90,7 @@ export default function FAQ() {
         </div>
 
         {/* Additional help */}
-        <div className="text-center mt-12 p-8 bg-muted rounded-2xl">
+        <div className="text-center mt-12 p-8 bg-white rounded-2xl shadow-sm">
           <h3 className="text-xl font-semibold text-foreground mb-2">
             Still have questions?
           </h3>

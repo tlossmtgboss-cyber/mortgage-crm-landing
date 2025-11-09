@@ -1,8 +1,6 @@
 export default function CTA() {
   return (
     <section className="py-20 md:py-28 bg-gradient-to-br from-brand to-brand-dark text-white relative overflow-hidden">
-      {/* Background pattern */}
-      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-5" aria-hidden="true" />
 
       <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
