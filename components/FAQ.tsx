@@ -24,7 +24,7 @@ export default function FAQ() {
     },
     {
       q: 'What happens if I need to upgrade or downgrade?',
-      a: 'You can change plans anytime from your account settings. Upgrades are immediate; downgrades take effect at the end of your current billing cycle. We'll prorate charges accordingly.'
+      a: "You can change plans anytime from your account settings. Upgrades are immediate; downgrades take effect at the end of your current billing cycle. We'll prorate charges accordingly."
     },
     {
       q: 'Do you offer training and onboarding?',

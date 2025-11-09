@@ -3,9 +3,22 @@ globalThis.__BUILD_MANIFEST = {
     "/_app": []
   },
   "devFiles": [],
-  "polyfillFiles": [],
+  "polyfillFiles": [
+    "static/chunks/ab872_next_dist_build_polyfills_polyfill-nomodule.js"
+  ],
   "lowPriorityFiles": [],
-  "rootMainFiles": []
+  "rootMainFiles": [
+    "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_058ded76._.js",
+    "static/chunks/ab872_next_dist_compiled_react-dom_820e79d7._.js",
+    "static/chunks/ab872_next_dist_compiled_react-server-dom-turbopack_57cf24e6._.js",
+    "static/chunks/ab872_next_dist_compiled_next-devtools_index_24a3c38d.js",
+    "static/chunks/ab872_next_dist_compiled_1d6bf087._.js",
+    "static/chunks/ab872_next_dist_client_e7f20a10._.js",
+    "static/chunks/ab872_next_dist_58c4e5e9._.js",
+    "static/chunks/ab872_@swc_helpers_cjs_ee3179e6._.js",
+    "static/chunks/my-project_mortgage-crm_landing-page_a0ff3932._.js",
+    "static/chunks/turbopack-my-project_mortgage-crm_landing-page_baf92239._.js"
+  ]
 };
 globalThis.__BUILD_MANIFEST.lowPriorityFiles = [
 "/static/" + process.env.__NEXT_BUILD_ID + "/_buildManifest.js",
