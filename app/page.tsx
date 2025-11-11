@@ -8,10 +8,12 @@ import PricingTeaser from "@/components/PricingTeaser";
 import FAQ from "@/components/FAQ";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
+import StructuredData from "@/components/StructuredData";
 
 export default function Home() {
   return (
     <>
+      <StructuredData />
       <Header />
       <main id="main-content">
         <Hero />

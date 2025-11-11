@@ -81,7 +81,13 @@ export default function FeatureGrid() {
   ];
 
   return (
-    <section id="features" className="relative py-24 md:py-32 bg-gradient-to-b from-white via-slate-50 to-blue-50 overflow-hidden">
+    <section
+      id="features"
+      className="relative py-24 md:py-32 bg-gradient-to-b from-white via-slate-50 to-blue-50 overflow-hidden"
+      aria-labelledby="features-heading"
+      itemScope
+      itemType="https://schema.org/ItemList"
+    >
       {/* Subtle background decoration */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
@@ -96,7 +102,11 @@ export default function FeatureGrid() {
             <span className="text-sm font-semibold text-blue-700">Powerful Features</span>
           </div>
 
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
+          <h2
+            id="features-heading"
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6"
+            itemProp="name"
+          >
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-slate-900 via-blue-800 to-indigo-900">
               Everything you need
             </span>
@@ -112,7 +122,7 @@ export default function FeatureGrid() {
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <div
+            <article
               key={index}
               className={`group relative bg-white/70 backdrop-blur-sm p-8 rounded-2xl border border-slate-200/50 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-500 hover:-translate-y-2 ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
@@ -120,6 +130,9 @@ export default function FeatureGrid() {
               style={{
                 transitionDelay: `${index * 100}ms`
               }}
+              itemProp="itemListElement"
+              itemScope
+              itemType="https://schema.org/ListItem"
             >
               {/* Gradient overlay on hover */}
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -131,19 +144,26 @@ export default function FeatureGrid() {
                 </div>
 
                 {/* Title */}
-                <h3 className="text-2xl font-bold text-slate-900 mb-4 group-hover:text-blue-700 transition-colors duration-300">
+                <h3
+                  className="text-2xl font-bold text-slate-900 mb-4 group-hover:text-blue-700 transition-colors duration-300"
+                  itemProp="name"
+                >
                   {feature.title}
                 </h3>
 
                 {/* Description */}
-                <p className="text-slate-600 leading-relaxed">
+                <p
+                  className="text-slate-600 leading-relaxed"
+                  itemProp="description"
+                >
                   {feature.description}
                 </p>
+                <meta itemProp="position" content={String(index + 1)} />
               </div>
 
               {/* Bottom accent line */}
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-b-2xl transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-            </div>
+            </article>
           ))}
         </div>
 
