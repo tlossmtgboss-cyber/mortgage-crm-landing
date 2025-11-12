@@ -8317,8 +8317,11 @@ async def connect_calendly(
     if not api_key:
         raise HTTPException(status_code=400, detail="api_key is required")
 
-    # Strip whitespace and newlines from API key
-    api_key = api_key.strip().replace('\n', '').replace('\r', '')
+    # Strip whitespace, newlines, and literal escape sequences from API key
+    api_key = api_key.strip()
+    api_key = api_key.replace('\n', '').replace('\r', '').replace('\t', '')
+    api_key = api_key.replace('\\n', '').replace('\\r', '').replace('\\t', '')
+    api_key = ' '.join(api_key.split())  # Remove all extra whitespace
 
     if not api_key:
         raise HTTPException(status_code=400, detail="api_key is required")
@@ -8361,8 +8364,11 @@ async def get_calendly_event_types(
     if not connection:
         raise HTTPException(status_code=404, detail="Calendly not connected. Please connect your Calendly account first.")
 
-    # Clean the API key (strip whitespace and newlines)
-    api_key = connection.api_key.strip().replace('\n', '').replace('\r', '')
+    # Clean the API key (strip whitespace, newlines, and literal escape sequences)
+    api_key = connection.api_key.strip()
+    api_key = api_key.replace('\n', '').replace('\r', '').replace('\t', '')
+    api_key = api_key.replace('\\n', '').replace('\\r', '').replace('\\t', '')
+    api_key = ' '.join(api_key.split())  # Remove all extra whitespace
 
     try:
         # Get user info from Calendly to get the user URI
