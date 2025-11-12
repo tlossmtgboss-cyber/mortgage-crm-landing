@@ -11,6 +11,8 @@ function TeamMemberProfile() {
   const [activeTab, setActiveTab] = useState('overview');
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({});
+  const [profileImage, setProfileImage] = useState(null);
+  const fileInputRef = React.useRef(null);
 
   useEffect(() => {
     loadMemberData();
@@ -47,6 +49,28 @@ function TeamMemberProfile() {
     setFormData({ ...formData, [field]: value });
   };
 
+  const handleImageClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleImageUpload = (event) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage(reader.result);
+        // TODO: Upload to server
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const getInitials = () => {
+    const first = member?.first_name?.[0]?.toUpperCase() || '';
+    const last = member?.last_name?.[0]?.toUpperCase() || '';
+    return `${first}${last}`;
+  };
+
   if (loading) {
     return (
       <div className="team-member-profile-page">
@@ -65,41 +89,52 @@ function TeamMemberProfile() {
 
   return (
     <div className="team-member-profile-page">
-      {/* Header */}
-      <div className="profile-header">
-        <button className="btn-back" onClick={() => navigate('/team-members')}>
-          ← Back to Team Members
-        </button>
-        <div className="header-actions">
-          {editing ? (
-            <>
-              <button className="btn-save" onClick={handleSave}>Save</button>
-              <button className="btn-cancel" onClick={() => { setEditing(false); setFormData(member); }}>Cancel</button>
-            </>
-          ) : (
-            <button className="btn-edit-header" onClick={() => setEditing(true)}>
-              ✏️ Edit
-            </button>
-          )}
+      {/* Header with Avatar and Name */}
+      <div className="profile-header-green">
+        <div className="profile-header-content">
+          <div className="profile-avatar-section">
+            <div
+              className="profile-avatar-circle"
+              onClick={handleImageClick}
+              style={{ cursor: 'pointer' }}
+            >
+              {profileImage ? (
+                <img src={profileImage} alt="Profile" className="profile-avatar-image" />
+              ) : (
+                <span className="profile-avatar-initials">{getInitials()}</span>
+              )}
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              style={{ display: 'none' }}
+            />
+            <div className="profile-name-section">
+              <h1 className="profile-name">{member.first_name} {member.last_name}</h1>
+              <p className="profile-role">{member.role}</p>
+            </div>
+          </div>
+          <div className="header-actions">
+            {editing ? (
+              <>
+                <button className="btn-save" onClick={handleSave}>Save</button>
+                <button className="btn-cancel" onClick={() => { setEditing(false); setFormData(member); }}>Cancel</button>
+              </>
+            ) : (
+              <button className="btn-edit-header" onClick={() => setEditing(true)}>
+                ✏️ Edit
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Member Info Card */}
-      <div className="member-info-card">
-        <div className="member-avatar">
-          <div className="avatar-circle">
-            {member.first_name?.[0]}{member.last_name?.[0]}
-          </div>
-        </div>
-        <div className="member-details">
-          <h1>{member.first_name} {member.last_name}</h1>
-          <p className="member-role">{member.role}</p>
-          {member.title && <p className="member-title">{member.title}</p>}
-          <div className="member-contact">
-            {member.email && <span>✉️ {member.email}</span>}
-            {member.phone && <span>📞 {member.phone}</span>}
-          </div>
-        </div>
+      <div style={{ padding: '0 32px' }}>
+        <button className="btn-back" onClick={() => navigate('/team-members')} style={{ marginTop: '16px', marginBottom: '16px' }}>
+          ← Back to Team Members
+        </button>
       </div>
 
       {/* Tab Navigation */}
