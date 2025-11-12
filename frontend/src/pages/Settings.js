@@ -66,6 +66,21 @@ function Settings() {
   useEffect(() => {
     console.log('Settings component mounted');
     console.log('showCalendlyModal initial state:', showCalendlyModal);
+
+    // Check for OAuth callback status
+    const urlParams = new URLSearchParams(window.location.search);
+    const emailStatus = urlParams.get('email');
+    if (emailStatus === 'connected') {
+      alert('Microsoft Outlook connected successfully!');
+      checkMicrosoftStatus();
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (emailStatus === 'error') {
+      const message = urlParams.get('message') || 'Unknown error';
+      alert(`Failed to connect Microsoft Outlook: ${message}`);
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
   }, []);
 
   const toggleSection = (section) => {
@@ -475,65 +490,36 @@ function Settings() {
     }
   };
 
-  const connectMicrosoft365 = () => {
-    // Check if Microsoft Client ID is configured
-    if (!MICROSOFT_CLIENT_ID || MICROSOFT_CLIENT_ID === 'YOUR_MICROSOFT_CLIENT_ID') {
-      alert('Microsoft 365 integration is not configured yet. Please set up your Azure App Registration and add the MICROSOFT_CLIENT_ID to your environment variables in Vercel.\n\nSee the console for setup instructions.');
-      console.log('%c🔧 Microsoft 365 Setup Required', 'color: #0078d4; font-size: 16px; font-weight: bold;');
-      console.log('1. Create an Azure App Registration at https://portal.azure.com');
-      console.log('2. Add REACT_APP_MICROSOFT_CLIENT_ID to Vercel environment variables');
-      console.log('3. Add MICROSOFT_CLIENT_ID and MICROSOFT_CLIENT_SECRET to Railway environment variables');
-      console.log('4. Redeploy both frontend and backend');
-      return;
-    }
-
-    // Microsoft OAuth URL
-    const scopes = 'https://graph.microsoft.com/Mail.Read offline_access';
-    const authUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${MICROSOFT_CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(MICROSOFT_REDIRECT_URI)}&response_mode=query&scope=${encodeURIComponent(scopes)}&state=12345`;
-
-    console.log('Opening Microsoft login popup...');
-    console.log('Redirect URI:', MICROSOFT_REDIRECT_URI);
-
-    // Open OAuth popup
-    const width = 600;
-    const height = 700;
-    const left = (window.screen.width / 2) - (width / 2);
-    const top = (window.screen.height / 2) - (height / 2);
-
-    const popup = window.open(
-      authUrl,
-      'Microsoft 365 Login',
-      `width=${width},height=${height},top=${top},left=${left}`
-    );
-
-    if (!popup) {
-      alert('Popup was blocked! Please allow popups for this site and try again.');
-      return;
-    }
-
-    // Listen for the callback
-    const checkPopup = setInterval(() => {
-      try {
-        if (popup.closed) {
-          clearInterval(checkPopup);
-          checkMicrosoftStatus(); // Refresh status after popup closes
+  const connectMicrosoft365 = async () => {
+    setLoadingMicrosoft(true);
+    try {
+      // Get OAuth URL from backend
+      const response = await fetch(`${API_BASE_URL}/api/v1/microsoft/oauth/start`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
+      });
 
-        // Check if popup redirected back with code
-        if (popup.location.href.includes(window.location.origin)) {
-          const urlParams = new URLSearchParams(popup.location.search);
-          const code = urlParams.get('code');
-
-          if (code) {
-            clearInterval(checkPopup);
-            popup.close();
-            handleMicrosoftCallback(code);
-          }
-        }
-      } catch (e) {
-        // Ignore cross-origin errors
+      if (!response.ok) {
+        const error = await response.json();
+        alert(`Failed to start Microsoft OAuth: ${error.detail}`);
+        setLoadingMicrosoft(false);
+        return;
       }
-    }, 500);
+
+      const data = await response.json();
+      const authUrl = data.auth_url;
+
+      console.log('Opening Microsoft login window...');
+
+      // Open OAuth in same window
+      window.location.href = authUrl;
+
+    } catch (error) {
+      console.error('Error starting Microsoft OAuth:', error);
+      alert('Error connecting to Microsoft 365');
+      setLoadingMicrosoft(false);
+    }
   };
 
   const handleMicrosoftCallback = async (authorizationCode) => {

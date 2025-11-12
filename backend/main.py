@@ -2969,19 +2969,24 @@ async def start_microsoft_oauth(current_user: User = Depends(get_current_user)):
     """
     client_id = os.getenv("MICROSOFT_CLIENT_ID")
     tenant_id = os.getenv("MICROSOFT_TENANT_ID", "common")
-    redirect_uri = os.getenv("MICROSOFT_REDIRECT_URI")
 
-    if not client_id or not redirect_uri:
+    # Use environment variable if set, otherwise construct from request
+    redirect_uri = os.getenv("MICROSOFT_REDIRECT_URI")
+    if not redirect_uri:
+        # Default to the email OAuth callback endpoint
+        redirect_uri = "https://mortgage-crm-production-7a9a.up.railway.app/api/v1/email/oauth/callback"
+
+    if not client_id:
         raise HTTPException(
             status_code=500,
-            detail="Microsoft 365 integration not configured. Please set MICROSOFT_CLIENT_ID and MICROSOFT_REDIRECT_URI in environment variables."
+            detail="Microsoft 365 integration not configured. Please set MICROSOFT_CLIENT_ID in environment variables."
         )
 
     # Create state parameter with user ID for security
     import secrets
     state = f"{current_user.id}_{secrets.token_urlsafe(16)}"
 
-    # Build Microsoft OAuth URL
+    # Build Microsoft OAuth URL with correct scopes
     auth_url = (
         f"https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/authorize?"
         f"client_id={client_id}&"
@@ -2991,6 +2996,8 @@ async def start_microsoft_oauth(current_user: User = Depends(get_current_user)):
         f"scope=offline_access%20Mail.Read%20Mail.ReadWrite%20Mail.Send%20User.Read%20Contacts.Read&"
         f"state={state}"
     )
+
+    logger.info(f"Starting Microsoft OAuth for user {current_user.id} with redirect_uri: {redirect_uri}")
 
     return {
         "auth_url": auth_url,
@@ -3034,23 +3041,44 @@ async def disconnect_microsoft365(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Disconnect Microsoft 365 account"""
+    """Disconnect Microsoft 365 account - clears all stored tokens and connections"""
     try:
+        # Delete from MicrosoftOAuthToken table (new OAuth flow)
         oauth_record = db.query(MicrosoftOAuthToken).filter(
             MicrosoftOAuthToken.user_id == current_user.id
         ).first()
 
-        if not oauth_record:
-            raise HTTPException(status_code=404, detail="No Microsoft 365 connection found")
+        # Delete from MicrosoftToken table (old OAuth flow)
+        microsoft_token = db.query(MicrosoftToken).filter(
+            MicrosoftToken.user_id == current_user.id
+        ).first()
 
-        db.delete(oauth_record)
+        deleted_any = False
+
+        if oauth_record:
+            db.delete(oauth_record)
+            deleted_any = True
+            logger.info(f"Deleted MicrosoftOAuthToken for user {current_user.id}")
+
+        if microsoft_token:
+            db.delete(microsoft_token)
+            deleted_any = True
+            logger.info(f"Deleted MicrosoftToken for user {current_user.id}")
+
+        if not deleted_any:
+            # Not an error - just means no connection was present
+            logger.info(f"No Microsoft connection found for user {current_user.id} (already disconnected)")
+            return {
+                "status": "success",
+                "message": "Microsoft 365 was already disconnected"
+            }
+
         db.commit()
-
-        logger.info(f"Disconnected Microsoft 365 for user {current_user.id}")
+        logger.info(f"Successfully disconnected Microsoft 365 for user {current_user.id}")
 
         return {
             "status": "success",
-            "message": "Microsoft 365 disconnected successfully"
+            "message": "Microsoft 365 disconnected successfully. You can now connect a different account."
         }
 
     except HTTPException:
@@ -7278,8 +7306,14 @@ async def email_oauth_callback(code: str, state: str, db: Session = Depends(get_
         # Get configuration
         client_id = os.getenv("MICROSOFT_CLIENT_ID")
         client_secret = os.getenv("MICROSOFT_CLIENT_SECRET")
-        tenant_id = os.getenv("MICROSOFT_TENANT_ID")
+        tenant_id = os.getenv("MICROSOFT_TENANT_ID", "common")
+
+        # Use environment variable if set, otherwise use the production callback URL
         redirect_uri = os.getenv("MICROSOFT_REDIRECT_URI")
+        if not redirect_uri:
+            redirect_uri = "https://mortgage-crm-production-7a9a.up.railway.app/api/v1/email/oauth/callback"
+
+        logger.info(f"Email OAuth callback for user {user_id}, exchanging code for token with redirect_uri: {redirect_uri}")
 
         # Exchange code for tokens
         token_url = f"https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token"
@@ -7289,12 +7323,19 @@ async def email_oauth_callback(code: str, state: str, db: Session = Depends(get_
             "code": code,
             "redirect_uri": redirect_uri,
             "grant_type": "authorization_code",
-            "scope": "offline_access Mail.Read Mail.ReadWrite User.Read"
+            "scope": "offline_access Mail.Read Mail.ReadWrite Mail.Send User.Read Contacts.Read"
         }
 
         import requests
         token_response = requests.post(token_url, data=token_data)
-        token_response.raise_for_status()
+
+        if token_response.status_code != 200:
+            logger.error(f"Token exchange failed: {token_response.text}")
+            return RedirectResponse(
+                url="https://mortgage-crm-nine.vercel.app/settings?email=error&message=token_exchange_failed",
+                status_code=302
+            )
+
         tokens = token_response.json()
 
         # Calculate token expiration
