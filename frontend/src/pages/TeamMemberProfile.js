@@ -8,7 +8,7 @@ function TeamMemberProfile() {
   const navigate = useNavigate();
   const [member, setMember] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('team');
+  const [activeTab, setActiveTab] = useState('overview');
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({});
   const [allTeamMembers, setAllTeamMembers] = useState([]);
