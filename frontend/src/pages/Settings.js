@@ -78,11 +78,13 @@ function Settings() {
   const loadTeamMembers = async () => {
     setLoadingTeam(true);
     try {
-      const data = await teamAPI.getWorkflowMembers();
-      setTeamMembers(data.team_members || []);
-      setAvailableRoles([]); // Workflow members don't use the role system
+      const data = await teamAPI.getMembers();
+      console.log('Settings page - Team members loaded:', data);
+      setTeamMembers(Array.isArray(data) ? data : []);
+      setAvailableRoles([]);
     } catch (error) {
       console.error('Error loading team members:', error);
+      setTeamMembers([]);
     } finally {
       setLoadingTeam(false);
     }

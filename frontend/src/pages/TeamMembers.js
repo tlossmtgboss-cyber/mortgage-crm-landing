@@ -66,10 +66,16 @@ function TeamMembers() {
     try {
       setLoading(true);
       const data = await teamAPI.getMembers();
+      console.log('Team members API response:', data);
+      console.log('Is array?', Array.isArray(data));
+      console.log('Data type:', typeof data);
+
       // API returns an array of team members directly
       setMembers(Array.isArray(data) ? data : []);
+      console.log('Members set to:', Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Failed to load team members:', error);
+      console.error('Error details:', error.response?.data || error.message);
       setMembers([]);
     } finally {
       setLoading(false);
@@ -379,6 +385,7 @@ function TeamMembers() {
                       <option value="Processing Assistant">Processing Assistant</option>
                       <option value="Jr. Processor">Jr. Processor</option>
                       <option value="Jr. Loan Officer">Jr. Loan Officer</option>
+                      <option value="Loan Officer">Loan Officer</option>
                       <option value="Loan Officer Assistant">Loan Officer Assistant</option>
                       <option value="Concierge">Concierge</option>
                     </select>
