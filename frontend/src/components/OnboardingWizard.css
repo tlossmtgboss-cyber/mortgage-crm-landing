@@ -366,10 +366,11 @@
   transition: all 0.2s ease;
 }
 
-.file-upload-label:hover {
+/* Removed hover effect */
+/*.file-upload-label:hover {
   border-color: #764ba2;
   background: #f5f3ff;
-}
+}*/
 
 .upload-icon {
   font-size: 32px;
@@ -430,11 +431,12 @@
   background: white;
 }
 
-.integration-card:hover {
+/* Removed hover effect */
+/*.integration-card:hover {
   border-color: #764ba2;
   box-shadow: 0 4px 12px rgba(118, 75, 162, 0.15);
   transform: translateY(-2px);
-}
+}*/
 
 .integration-card.optional {
   border-style: dashed;
@@ -746,9 +748,10 @@
   transition: all 0.2s ease;
 }
 
-.milestone-item:hover {
+/* Removed hover effect */
+/*.milestone-item:hover {
   background: #e9ecef;
-}
+}*/
 
 .milestone-item.active {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -837,11 +840,12 @@
   border: 1px solid transparent;
 }
 
-.task-item:hover {
+/* Removed hover effect */
+/*.task-item:hover {
   background: #e9ecef;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   border-color: #cbd5e1;
-}
+}*/
 
 .task-header {
   display: flex;
@@ -1432,10 +1436,11 @@
   transition: all 0.2s ease;
 }
 
-.file-item:hover {
+/* Removed hover effect */
+/*.file-item:hover {
   border-color: #764ba2;
   box-shadow: 0 2px 8px rgba(118, 75, 162, 0.1);
-}
+}*/
 
 .file-item:last-child {
   margin-bottom: 0;
@@ -1464,6 +1469,34 @@
 .file-size {
   font-size: 12px;
   color: #6b7280;
+}
+
+.file-role-select {
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  background: white;
+  border: 1.5px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+  min-width: 160px;
+  flex-shrink: 0;
+}
+
+.file-role-select:hover {
+  border-color: #764ba2;
+}
+
+.file-role-select:focus {
+  border-color: #764ba2;
+  box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.1);
+}
+
+.file-role-select option {
+  padding: 8px;
 }
 
 .btn-remove-file {
@@ -1977,10 +2010,11 @@
   transition: all 0.3s ease;
 }
 
-.role-card:hover {
+/* Removed hover effect */
+/*.role-card:hover {
   border-color: #2563eb;
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
-}
+}*/
 
 .role-header {
   display: flex;
@@ -2129,11 +2163,12 @@
   transition: all 0.2s ease;
 }
 
-.task-review-card:hover {
+/* Removed hover effect */
+/*.task-review-card:hover {
   border-color: #2563eb;
   box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
   transform: translateY(-2px);
-}
+}*/
 
 .task-review-header {
   display: flex;
@@ -2218,11 +2253,12 @@
   transition: all 0.2s ease;
 }
 
-.task-review-card.clickable:hover {
+/* Removed hover effect */
+/*.task-review-card.clickable:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
   border-color: #667eea;
-}
+}*/
 
 .task-review-card.clickable:active {
   transform: translateY(0);
