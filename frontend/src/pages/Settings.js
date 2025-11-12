@@ -1938,7 +1938,7 @@ function Settings() {
                               <td>
                                 <div className="member-info-cell">
                                   <div className="member-avatar-small">
-                                    {member.name.charAt(0).toUpperCase()}
+                                    {(member.name || 'U').charAt(0).toUpperCase()}
                                   </div>
                                   <div>
                                     <div className="member-name">{member.name}</div>
