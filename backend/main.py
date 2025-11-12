@@ -8931,6 +8931,37 @@ async def complete_onboarding(
         logger.error(f"Complete onboarding error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/api/v1/onboarding/reset")
+async def reset_onboarding(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Reset onboarding status for current user"""
+    try:
+        # Reset progress
+        progress = db.query(OnboardingProgress).filter(
+            OnboardingProgress.user_id == current_user.id
+        ).first()
+
+        if progress:
+            progress.is_complete = False
+            progress.completed_at = None
+
+        # Reset user onboarding flag
+        current_user.onboarding_completed = False
+
+        db.commit()
+
+        return {
+            "message": "Onboarding status reset. You will be prompted to complete onboarding on next page load.",
+            "onboarding_completed": False
+        }
+
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Reset onboarding error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 def parse_document_basic(document_content: str, document_name: str = None):
     """
     Basic text-based document parser (fallback when OpenAI is not available).
