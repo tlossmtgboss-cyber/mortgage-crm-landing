@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { onboardingAPI, teamAPI } from '../services/api';
+import { onboardingAPI, teamAPI, calendlyAPI } from '../services/api';
 import './OnboardingWizard.css';
 
 const OnboardingWizard = ({ onComplete, onSkip }) => {
@@ -8,6 +8,9 @@ const OnboardingWizard = ({ onComplete, onSkip }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [connectionModal, setConnectionModal] = useState(null);
   const [helpdeskModal, setHelpdeskModal] = useState(null);
+  const [connectionCredentials, setConnectionCredentials] = useState({ username: '', password: '', apiKey: '' });
+  const [connectionError, setConnectionError] = useState(null);
+  const [isConnecting, setIsConnecting] = useState(false);
   const [uploadedTestEmail, setUploadedTestEmail] = useState(null);
   const [draggedTask, setDraggedTask] = useState(null);
   const [taskEditModal, setTaskEditModal] = useState(null);
@@ -17,6 +20,7 @@ const OnboardingWizard = ({ onComplete, onSkip }) => {
   const [formData, setFormData] = useState({
     // Step 1: Upload Documents
     sopFiles: [],
+    fileRoles: [], // Track which role each file is assigned to
     processTree: null,
 
     // Step 2: Role Review (new)
@@ -62,6 +66,21 @@ const OnboardingWizard = ({ onComplete, onSkip }) => {
   });
 
   const totalSteps = 9;
+
+  // Default mortgage process roles
+  const defaultRoles = [
+    'Loan Officer',
+    'Loan Processor',
+    'Underwriter',
+    'Closer',
+    'Post-Closer',
+    'Sales Manager',
+    'Operations Manager',
+    'Loan Officer Assistant',
+    'Junior Processor',
+    'Senior Processor',
+    'Transaction Coordinator'
+  ];
 
   // Load existing onboarding data when component mounts
   useEffect(() => {
@@ -202,19 +221,40 @@ const OnboardingWizard = ({ onComplete, onSkip }) => {
     });
 
     const currentFiles = formData.sopFiles || [];
+    const currentRoles = formData.fileRoles || [];
     const combinedFiles = [...currentFiles, ...validFiles];
+    const newRoles = [...currentRoles, ...validFiles.map(() => '')]; // Initialize with empty role for each new file
 
     if (combinedFiles.length > MAX_FILES) {
       alert(`Maximum ${MAX_FILES} files allowed. Only adding first ${MAX_FILES - currentFiles.length} files.`);
-      updateField('sopFiles', combinedFiles.slice(0, MAX_FILES));
+      setFormData(prev => ({
+        ...prev,
+        sopFiles: combinedFiles.slice(0, MAX_FILES),
+        fileRoles: newRoles.slice(0, MAX_FILES)
+      }));
     } else {
-      updateField('sopFiles', combinedFiles);
+      setFormData(prev => ({
+        ...prev,
+        sopFiles: combinedFiles,
+        fileRoles: newRoles
+      }));
     }
   };
 
   const removeFile = (index) => {
     const newFiles = formData.sopFiles.filter((_, i) => i !== index);
-    updateField('sopFiles', newFiles);
+    const newRoles = formData.fileRoles.filter((_, i) => i !== index);
+    setFormData(prev => ({
+      ...prev,
+      sopFiles: newFiles,
+      fileRoles: newRoles
+    }));
+  };
+
+  const handleFileRoleChange = (index, role) => {
+    const newFileRoles = [...formData.fileRoles];
+    newFileRoles[index] = role;
+    updateField('fileRoles', newFileRoles);
   };
 
   const formatFileSize = (bytes) => {
@@ -1031,6 +1071,20 @@ const OnboardingWizard = ({ onComplete, onSkip }) => {
                     <div className="file-name">{file.name}</div>
                     <div className="file-size">{formatFileSize(file.size)}</div>
                   </div>
+                  <select
+                    className="file-role-select"
+                    value={formData.fileRoles[index] || ''}
+                    onChange={(e) => handleFileRoleChange(index, e.target.value)}
+                    title="Select role for this document"
+                  >
+                    <option value="">Select Role</option>
+                    {defaultRoles.map((role) => (
+                      <option key={role} value={role}>{role}</option>
+                    ))}
+                    {formData.extractedRoles.map((role) => (
+                      <option key={role.role_name} value={role.role_name}>{role.role_title || role.role_name}</option>
+                    ))}
+                  </select>
                   <button
                     className="btn-remove-file"
                     onClick={() => removeFile(index)}
@@ -1517,12 +1571,49 @@ const OnboardingWizard = ({ onComplete, onSkip }) => {
 
   const handleCloseModal = () => {
     setConnectionModal(null);
+    setConnectionCredentials({ username: '', password: '', apiKey: '' });
+    setConnectionError(null);
+    setIsConnecting(false);
   };
 
-  const handleAuthComplete = () => {
-    // Simulate successful connection for non-OAuth integrations
-    console.log(`Connected to ${connectionModal.name}`);
-    setConnectionModal(null);
+  const handleAuthComplete = async (e) => {
+    e.preventDefault();
+    setConnectionError(null);
+    setIsConnecting(true);
+
+    try {
+      if (connectionModal.id === 'calendly') {
+        // Calendly uses API key authentication
+        if (!connectionCredentials.apiKey) {
+          setConnectionError('API key is required');
+          setIsConnecting(false);
+          return;
+        }
+
+        const result = await calendlyAPI.connect(connectionCredentials.apiKey);
+        console.log('Calendly connected:', result);
+
+        // Update form data to reflect connection
+        setFormData(prevData => ({
+          ...prevData,
+          calendly: { ...prevData.calendly, connected: true }
+        }));
+
+        alert('Calendly connected successfully!');
+        setConnectionModal(null);
+        setConnectionCredentials({ username: '', password: '', apiKey: '' });
+      } else {
+        // For other integrations, just close modal for now
+        console.log(`Connected to ${connectionModal.name}`);
+        setConnectionModal(null);
+        setConnectionCredentials({ username: '', password: '', apiKey: '' });
+      }
+    } catch (error) {
+      console.error('Connection error:', error);
+      setConnectionError(error.response?.data?.detail || error.message || 'Failed to connect. Please check your credentials and try again.');
+    } finally {
+      setIsConnecting(false);
+    }
   };
 
   const renderIntegrations = () => {
@@ -2107,31 +2198,71 @@ const OnboardingWizard = ({ onComplete, onSkip }) => {
                 </div>
 
                 <p className="auth-instruction">
-                  Sign in to your {connectionModal.name} account to authorize access
+                  {connectionModal.id === 'calendly'
+                    ? 'Enter your Calendly API key to connect your account. You can find your API key in your Calendly settings under Integrations.'
+                    : `Sign in to your ${connectionModal.name} account to authorize access`}
                 </p>
 
-                <form className="oauth-form" onSubmit={(e) => { e.preventDefault(); handleAuthComplete(); }}>
-                  <div className="form-field">
-                    <label>Email or Username</label>
-                    <input
-                      type="text"
-                      className="input-field"
-                      placeholder={`Your ${connectionModal.name} email`}
-                      autoFocus
-                    />
+                {connectionError && (
+                  <div className="connection-error" style={{
+                    padding: '12px',
+                    background: '#fee',
+                    border: '1px solid #fcc',
+                    borderRadius: '8px',
+                    color: '#c33',
+                    marginBottom: '16px',
+                    fontSize: '14px'
+                  }}>
+                    ⚠️ {connectionError}
                   </div>
+                )}
 
-                  <div className="form-field">
-                    <label>Password</label>
-                    <input
-                      type="password"
-                      className="input-field"
-                      placeholder="Password"
-                    />
-                  </div>
+                <form className="oauth-form" onSubmit={handleAuthComplete}>
+                  {connectionModal.id === 'calendly' ? (
+                    <div className="form-field">
+                      <label>API Key *</label>
+                      <input
+                        type="text"
+                        className="input-field"
+                        placeholder="Your Calendly API key"
+                        value={connectionCredentials.apiKey}
+                        onChange={(e) => setConnectionCredentials({ ...connectionCredentials, apiKey: e.target.value })}
+                        autoFocus
+                        required
+                      />
+                      <p style={{ fontSize: '12px', color: '#666', marginTop: '6px' }}>
+                        Get your API key from Calendly → Settings → Integrations → API & Webhooks
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="form-field">
+                        <label>Email or Username</label>
+                        <input
+                          type="text"
+                          className="input-field"
+                          placeholder={`Your ${connectionModal.name} email`}
+                          value={connectionCredentials.username}
+                          onChange={(e) => setConnectionCredentials({ ...connectionCredentials, username: e.target.value })}
+                          autoFocus
+                        />
+                      </div>
 
-                  <button type="submit" className="btn-authorize">
-                    Authorize Connection
+                      <div className="form-field">
+                        <label>Password</label>
+                        <input
+                          type="password"
+                          className="input-field"
+                          placeholder="Password"
+                          value={connectionCredentials.password}
+                          onChange={(e) => setConnectionCredentials({ ...connectionCredentials, password: e.target.value })}
+                        />
+                      </div>
+                    </>
+                  )}
+
+                  <button type="submit" className="btn-authorize" disabled={isConnecting}>
+                    {isConnecting ? 'Connecting...' : 'Authorize Connection'}
                   </button>
                 </form>
 

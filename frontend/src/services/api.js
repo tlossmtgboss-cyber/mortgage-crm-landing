@@ -445,4 +445,15 @@ export const teamAPI = {
   },
 };
 
+export const calendlyAPI = {
+  connect: async (apiKey) => {
+    const response = await api.post('/api/v1/calendly/connect', { api_key: apiKey });
+    return response.data;
+  },
+  getEventTypes: async () => {
+    const response = await api.get('/api/v1/calendly/event-types');
+    return response.data;
+  },
+};
+
 export default api;
