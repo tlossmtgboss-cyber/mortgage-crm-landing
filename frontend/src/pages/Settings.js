@@ -1915,63 +1915,67 @@ function Settings() {
                       <table className="team-members-table">
                         <thead>
                           <tr>
-                            <th>Member</th>
-                            <th>Role</th>
-                            <th>Email</th>
-                            <th>Loans</th>
-                            <th>Actions</th>
+                            <th>MEMBER</th>
+                            <th>ROLE</th>
+                            <th>EMAIL</th>
+                            <th>LOANS</th>
+                            <th>ACTIONS</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {teamMembers.map((member, index) => (
-                            <tr
-                              key={`${member.name}-${member.role}-${index}`}
-                              className="team-member-row"
-                              onClick={() => {
-                                // Navigate to team member profile if they have a user_id
-                                if (member.user_id) {
-                                  navigate(`/team/${member.user_id}`);
-                                }
-                              }}
-                              style={{ cursor: member.user_id ? 'pointer' : 'default' }}
-                            >
-                              <td>
-                                <div className="member-info-cell">
-                                  <div className="member-avatar-small">
-                                    {(member.name || 'U').charAt(0).toUpperCase()}
+                          {teamMembers.map((member, index) => {
+                            const fullName = `${member.first_name || ''} ${member.last_name || ''}`.trim() || 'Unknown';
+                            const initials = member.first_name ? member.first_name.charAt(0).toUpperCase() : 'U';
+
+                            return (
+                              <tr
+                                key={member.id || `${member.first_name}-${member.role}-${index}`}
+                                className="team-member-row"
+                                onClick={() => {
+                                  if (member.id) {
+                                    navigate(`/team-members/${member.id}`);
+                                  }
+                                }}
+                                style={{ cursor: member.id ? 'pointer' : 'default' }}
+                              >
+                                <td>
+                                  <div className="member-info-cell">
+                                    <div className="member-avatar-small">
+                                      {initials}
+                                    </div>
+                                    <div>
+                                      <div className="member-name">{fullName}</div>
+                                    </div>
                                   </div>
-                                  <div>
-                                    <div className="member-name">{member.name}</div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td>
-                                <span className="role-badge-inline">{member.role}</span>
-                              </td>
-                              <td>
-                                <span className="member-email-text">{member.email || 'N/A'}</span>
-                              </td>
-                              <td>
-                                <span className="loan-count-badge">
-                                  📋 {member.loan_count} {member.loan_count === 1 ? 'loan' : 'loans'}
-                                </span>
-                              </td>
-                              <td>
-                                <button
-                                  className="btn-view-profile"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    if (member.user_id) {
-                                      navigate(`/team/${member.user_id}`);
-                                    }
-                                  }}
-                                  disabled={!member.user_id}
-                                >
-                                  View Profile
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
+                                </td>
+                                <td>
+                                  <span className="role-badge-inline">{member.role || 'N/A'}</span>
+                                </td>
+                                <td>
+                                  <span className="member-email-text">{member.email || 'N/A'}</span>
+                                </td>
+                                <td>
+                                  <span className="loan-count-badge">
+                                    📋 {member.loan_count || 0} {(member.loan_count || 0) === 1 ? 'loan' : 'loans'}
+                                  </span>
+                                </td>
+                                <td>
+                                  <button
+                                    className="btn-view-profile"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      if (member.id) {
+                                        navigate(`/team-members/${member.id}`);
+                                      }
+                                    }}
+                                    disabled={!member.id}
+                                  >
+                                    View Profile
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })}
                         </tbody>
                       </table>
                     </div>
