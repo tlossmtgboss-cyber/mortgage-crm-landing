@@ -150,33 +150,33 @@ export default function HeroNew() {
               <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-400"></span>
             </span>
             <span className="text-sm font-medium text-white/80 group-hover:text-white transition-colors">
-              AI-Powered Intelligence
+              Trusted by 500+ loan officers nationwide
             </span>
           </div>
 
           {/* Main Heading */}
           <h1
             ref={titleRef}
-            className="text-6xl sm:text-7xl lg:text-8xl font-bold leading-[1.1] mb-8"
+            className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.1] mb-8"
             style={{
               fontFamily: 'system-ui, -apple-system, sans-serif',
               letterSpacing: '-0.02em',
             }}
           >
-            <span className="block text-white">
-              Transform
+            <span className="block text-white mb-4">
+              Your Mortgage Operating System
             </span>
             <span className="block bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-blue-300 to-purple-400">
-              mortgage lending
+              Automate, Learn, and Grow
             </span>
           </h1>
 
           {/* Subheading */}
           <p
             ref={subtitleRef}
-            className="text-xl sm:text-2xl text-white/60 mb-16 max-w-2xl mx-auto leading-relaxed"
+            className="text-xl sm:text-2xl text-white/90 mb-16 max-w-3xl mx-auto leading-relaxed"
           >
-            The only CRM built for modern mortgage teams. Close loans faster with intelligent automation.
+            An intelligent, coachable AI assistant that reads your emails, updates your milestones, executes tasks, and learns from your feedback—while your team focuses on relationships and revenue.
           </p>
 
           {/* CTA Buttons */}
@@ -199,9 +199,9 @@ export default function HeroNew() {
           {/* Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-12 max-w-4xl mx-auto">
             {[
-              { value: '$2B+', label: 'Loans processed' },
-              { value: '500+', label: 'Loan officers' },
-              { value: '40%', label: 'Faster closings' },
+              { value: '$4.2B', label: 'CRM Market Size' },
+              { value: '300K+', label: 'U.S. Originators' },
+              { value: '70%', label: 'Report Tech Inefficiency' },
             ].map((stat, index) => (
               <div
                 key={index}
@@ -210,7 +210,7 @@ export default function HeroNew() {
                 <div className="text-5xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors duration-500">
                   {stat.value}
                 </div>
-                <div className="text-sm text-white/40 uppercase tracking-wider">{stat.label}</div>
+                <div className="text-sm text-white/70 uppercase tracking-wider">{stat.label}</div>
               </div>
             ))}
           </div>

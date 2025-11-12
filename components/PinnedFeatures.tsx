@@ -11,31 +11,35 @@ if (typeof window !== 'undefined') {
 const features = [
   {
     title: 'See',
-    subtitle: 'Your pipeline,',
-    highlight: 'crystal clear',
-    description: 'Real-time visibility into every deal. Track loans from application to closing with intelligent insights that keep you ahead.',
+    subtitle: 'Your entire pipeline,',
+    highlight: 'at a glance',
+    description: 'Never lose track of a deal again. Our intelligent dashboard gives you real-time visibility into every loan—from initial contact to funding. Color-coded stages, automated SLA tracking, and predictive close dates powered by AI. Know exactly which deals need attention and why.',
     icon: '👁️',
+    stats: ['Real-time updates', 'Smart prioritization', 'Predictive analytics'],
   },
   {
     title: 'Know',
-    subtitle: 'Every client,',
-    highlight: 'deeply',
-    description: 'AI-powered intelligence that learns from every interaction. Know exactly what each client needs, when they need it.',
+    subtitle: 'Your clients better than',
+    highlight: 'they know themselves',
+    description: 'Our AI analyzes every interaction, text message, and document to build complete borrower profiles. Get intelligent recommendations on the best loan products, optimal timing for rate locks, and personalized talking points before every call. Stop guessing—start knowing.',
     icon: '🧠',
+    stats: ['AI borrower insights', 'Smart recommendations', 'Conversation intelligence'],
   },
   {
     title: 'Close',
-    subtitle: 'More deals,',
-    highlight: 'faster',
-    description: 'Automate the routine, focus on relationships. Our AI handles follow-ups, document tracking, and deadline management.',
+    subtitle: 'More deals while',
+    highlight: 'working less',
+    description: 'Automated SMS follow-ups. Smart document tracking. Intelligent deadline reminders. Our AI handles the busywork while you focus on relationships. Set it once, let it run forever. Your pipeline moves forward even while you sleep.',
     icon: '⚡',
+    stats: ['Automated SMS', 'Document AI', 'Smart workflows'],
   },
   {
     title: 'Grow',
-    subtitle: 'Your business,',
-    highlight: 'exponentially',
-    description: 'Scale without adding overhead. Build a referral engine that compounds your success with every closed loan.',
+    subtitle: 'Your volume without',
+    highlight: 'adding overhead',
+    description: 'Built-in referral partner management tracks every realtor, builder, and CPA relationship. Automated reciprocity scoring shows who sends you deals. Integrated MUM dashboard turns every closed loan into your next refi. Scale from 5 to 50 loans/month without hiring more staff.',
     icon: '🚀',
+    stats: ['Partner tracking', 'MUM automation', 'Unlimited scale'],
   },
 ];
 
@@ -150,7 +154,7 @@ export default function PinnedFeatures() {
                   {feature.title}
                 </div>
                 <h2 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight">
-                  <span className="text-white/80">{feature.subtitle}</span>
+                  <span className="text-white/95">{feature.subtitle}</span>
                   <br />
                   <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
                     {feature.highlight}
@@ -159,9 +163,21 @@ export default function PinnedFeatures() {
               </div>
 
               {/* Description */}
-              <p className="section-content text-xl sm:text-2xl text-white/50 max-w-3xl mx-auto leading-relaxed">
+              <p className="section-content text-xl sm:text-2xl text-white/85 max-w-3xl mx-auto leading-relaxed mb-12">
                 {feature.description}
               </p>
+
+              {/* Feature stats */}
+              <div className="section-content flex flex-wrap items-center justify-center gap-6 max-w-2xl mx-auto">
+                {feature.stats.map((stat, i) => (
+                  <div
+                    key={i}
+                    className="px-6 py-3 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 text-sm text-white/70 hover:bg-white/10 hover:text-white transition-all duration-300"
+                  >
+                    {stat}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 

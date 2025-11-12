@@ -117,9 +117,9 @@ export default function FinalCTA() {
             </h2>
 
             {/* Description */}
-            <p className="text-xl text-white/60 mb-12 max-w-2xl mx-auto leading-relaxed">
-              Join hundreds of loan officers closing more deals with AI-powered automation.
-              Start your free 14-day trial—no credit card required.
+            <p className="text-xl text-white/90 mb-12 max-w-2xl mx-auto leading-relaxed">
+              Join 500+ loan officers who've already made the switch. The average user closes 40% more loans in their first 90 days.
+              <strong className="text-white"> No credit card. No risk. Just results.</strong>
             </p>
 
             {/* CTA Buttons */}

@@ -1,13 +1,11 @@
 export default function Integrations() {
   const integrations = [
-    { name: 'Microsoft Teams', depth: 'Native', logo: '💬' },
-    { name: 'Outlook', depth: 'Native', logo: '📧' },
-    { name: 'Google Calendar', depth: 'Native', logo: '📅' },
-    { name: 'Salesforce', depth: 'Native', logo: '☁️' },
-    { name: 'HubSpot', depth: 'API', logo: '🔶' },
-    { name: 'Zapier', depth: 'Zapier', logo: '⚡' },
-    { name: 'Calendly', depth: 'Native', logo: '🗓️' },
-    { name: 'Slack', depth: 'API', logo: '💼' },
+    { name: 'Microsoft Graph API', function: 'Email, calendar, and Teams sync', logo: '📧' },
+    { name: 'Twilio', function: 'SMS, voice calls, and AI outbound agent', logo: '📞' },
+    { name: 'Calendly AI', function: 'Appointment scheduling', logo: '🗓️' },
+    { name: 'Encompass / Blend', function: 'Loan origination sync', logo: '🏦' },
+    { name: 'Zapier & Make', function: 'Custom automations', logo: '⚡' },
+    { name: 'Pinecone + PostgreSQL', function: 'Vector & structured AI memory', logo: '🧠' },
   ];
 
   return (
@@ -23,25 +21,19 @@ export default function Integrations() {
         </div>
 
         {/* Integration grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {integrations.map((integration, index) => (
             <div
               key={index}
-              className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 text-center group"
+              className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 group border border-gray-100"
             >
               <div className="text-4xl mb-3" aria-hidden="true">{integration.logo}</div>
-              <h3 className="font-semibold text-foreground mb-2">
+              <h3 className="font-semibold text-foreground mb-2 text-lg">
                 {integration.name}
               </h3>
-              <span className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${
-                integration.depth === 'Native'
-                  ? 'bg-green-100 text-green-800'
-                  : integration.depth === 'API'
-                  ? 'bg-blue-100 text-blue-800'
-                  : 'bg-purple-100 text-purple-800'
-              }`}>
-                {integration.depth}
-              </span>
+              <p className="text-sm text-muted-foreground">
+                {integration.function}
+              </p>
             </div>
           ))}
         </div>
