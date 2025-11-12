@@ -11,11 +11,9 @@ function TeamMemberProfile() {
   const [activeTab, setActiveTab] = useState('overview');
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({});
-  const [allTeamMembers, setAllTeamMembers] = useState([]);
 
   useEffect(() => {
     loadMemberData();
-    loadAllTeamMembers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
@@ -30,16 +28,6 @@ function TeamMemberProfile() {
       alert('Failed to load team member details');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const loadAllTeamMembers = async () => {
-    try {
-      const members = await teamAPI.getMembers();
-      setAllTeamMembers(Array.isArray(members) ? members : []);
-    } catch (error) {
-      console.error('Failed to load team members:', error);
-      setAllTeamMembers([]);
     }
   };
 
@@ -79,7 +67,7 @@ function TeamMemberProfile() {
     <div className="team-member-profile-page">
       {/* Header */}
       <div className="profile-header">
-        <button className="btn-back" onClick={() => navigate('/settings/team-members')}>
+        <button className="btn-back" onClick={() => navigate('/team-members')}>
           ← Back to Team Members
         </button>
         <div className="header-actions">
@@ -116,12 +104,6 @@ function TeamMemberProfile() {
 
       {/* Tab Navigation */}
       <div className="profile-tabs">
-        <button
-          className={`tab-btn ${activeTab === 'team' ? 'active' : ''}`}
-          onClick={() => setActiveTab('team')}
-        >
-          Team Members
-        </button>
         <button
           className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
           onClick={() => setActiveTab('overview')}
@@ -162,45 +144,6 @@ function TeamMemberProfile() {
 
       {/* Tab Content */}
       <div className="tab-content">
-        {/* Team Members Tab */}
-        {activeTab === 'team' && (
-          <div className="tab-panel">
-            <h2>Team Members</h2>
-            <p className="tab-description">All team members in your organization</p>
-
-            {allTeamMembers.length === 0 ? (
-              <div className="empty-state">
-                <p>No team members found</p>
-              </div>
-            ) : (
-              <div className="team-members-grid">
-                {allTeamMembers.map((teamMember) => (
-                  <div
-                    key={teamMember.id}
-                    className={`team-member-card ${teamMember.id === parseInt(id) ? 'current-member' : ''}`}
-                    onClick={() => navigate(`/team-members/${teamMember.id}`)}
-                  >
-                    <div className="team-member-avatar">
-                      <div className="avatar-small">
-                        {teamMember.first_name?.[0]}{teamMember.last_name?.[0]}
-                      </div>
-                    </div>
-                    <div className="team-member-info">
-                      <h3>{teamMember.first_name} {teamMember.last_name}</h3>
-                      <p className="member-role-badge">{teamMember.role || 'Team Member'}</p>
-                      {teamMember.title && <p className="member-title-small">{teamMember.title}</p>}
-                      <div className="member-contact-small">
-                        {teamMember.email && <span>✉️ {teamMember.email}</span>}
-                        {teamMember.phone && <span>📞 {teamMember.phone}</span>}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
         {/* Overview Tab */}
         {activeTab === 'overview' && (
           <div className="tab-panel">
