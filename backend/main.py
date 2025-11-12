@@ -8319,9 +8319,10 @@ async def connect_calendly(
 
     # Strip whitespace, newlines, and literal escape sequences from API key
     api_key = api_key.strip()
-    api_key = api_key.replace('\n', '').replace('\r', '').replace('\t', '')
+    api_key = api_key.replace('\n', '').replace('\r', '').replace('\t', '').replace(' ', '')
     api_key = api_key.replace('\\n', '').replace('\\r', '').replace('\\t', '')
-    api_key = ' '.join(api_key.split())  # Remove all extra whitespace
+    # Remove ALL whitespace (JWT tokens should have no spaces)
+    api_key = ''.join(api_key.split())
 
     if not api_key:
         raise HTTPException(status_code=400, detail="api_key is required")
@@ -8366,9 +8367,10 @@ async def get_calendly_event_types(
 
     # Clean the API key (strip whitespace, newlines, and literal escape sequences)
     api_key = connection.api_key.strip()
-    api_key = api_key.replace('\n', '').replace('\r', '').replace('\t', '')
+    api_key = api_key.replace('\n', '').replace('\r', '').replace('\t', '').replace(' ', '')
     api_key = api_key.replace('\\n', '').replace('\\r', '').replace('\\t', '')
-    api_key = ' '.join(api_key.split())  # Remove all extra whitespace
+    # Remove ALL whitespace (JWT tokens should have no spaces)
+    api_key = ''.join(api_key.split())
 
     try:
         # Get user info from Calendly to get the user URI
