@@ -5301,7 +5301,7 @@ async def generate_ai_task_draft(
         raise HTTPException(status_code=500, detail=f"Failed to generate AI draft: {str(e)}")
 
 class ApprovalRequest(BaseModel):
-    approved: bool = True
+    approved: bool
     user_corrections: Optional[str] = None
 
 @app.post("/api/v1/tasks/{task_id}/approve-ai-action")
