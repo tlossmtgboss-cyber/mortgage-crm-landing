@@ -342,6 +342,13 @@ function Settings() {
       return;
     }
 
+    // Check if mapping already exists for this stage
+    const existingMapping = calendarMappings.find(m => m.stage === selectedStage);
+    if (existingMapping) {
+      alert(`A mapping already exists for ${leadStages.find(s => s.value === selectedStage)?.label}. Please delete the existing mapping first.`);
+      return;
+    }
+
     const eventType = calendlyEventTypes.find(et => et.uri.includes(selectedEventType));
     if (!eventType) {
       alert('Event type not found');
@@ -374,6 +381,21 @@ function Settings() {
     } catch (error) {
       console.error('Error creating calendar mapping:', error);
       alert('Error saving calendar mapping');
+    }
+  };
+
+  const handleDeleteMapping = async (mappingId) => {
+    if (!window.confirm('Are you sure you want to delete this calendar mapping?')) {
+      return;
+    }
+
+    try {
+      await calendlyAPI.deleteMapping(mappingId);
+      alert('Calendar mapping deleted successfully!');
+      fetchCalendarMappings();
+    } catch (error) {
+      console.error('Error deleting calendar mapping:', error);
+      alert('Failed to delete calendar mapping: ' + (error.response?.data?.detail || error.message));
     }
   };
 
@@ -2190,6 +2212,7 @@ function Settings() {
                           <th>Lead Stage</th>
                           <th>Calendar Type</th>
                           <th>Status</th>
+                          <th>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -2211,6 +2234,15 @@ function Settings() {
                               </td>
                               <td>
                                 <span className="status-badge active">✓ Active</span>
+                              </td>
+                              <td>
+                                <button
+                                  className="btn-delete-mapping"
+                                  onClick={() => handleDeleteMapping(mapping.id)}
+                                  title="Delete mapping"
+                                >
+                                  🗑️ Delete
+                                </button>
                               </td>
                             </tr>
                           );

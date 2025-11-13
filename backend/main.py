@@ -8490,6 +8490,27 @@ async def get_calendar_mappings(
     }
 
 
+@app.delete("/api/v1/calendly/calendar-mappings/{mapping_id}")
+async def delete_calendar_mapping(
+    mapping_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Delete a calendar mapping"""
+    mapping = db.query(CalendarMapping).filter(
+        CalendarMapping.id == mapping_id,
+        CalendarMapping.user_id == current_user.id
+    ).first()
+
+    if not mapping:
+        raise HTTPException(status_code=404, detail="Calendar mapping not found")
+
+    db.delete(mapping)
+    db.commit()
+
+    return {"message": "Calendar mapping deleted successfully"}
+
+
 @app.get("/api/v1/calendly/availability")
 async def get_availability(
     event_type_uuid: str,

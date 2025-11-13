@@ -454,6 +454,14 @@ export const calendlyAPI = {
     const response = await api.get('/api/v1/calendly/event-types');
     return response.data;
   },
+  getMappings: async () => {
+    const response = await api.get('/api/v1/calendly/calendar-mappings');
+    return response.data;
+  },
+  deleteMapping: async (mappingId) => {
+    const response = await api.delete(`/api/v1/calendly/calendar-mappings/${mappingId}`);
+    return response.data;
+  },
 };
 
 export default api;
