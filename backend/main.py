@@ -334,12 +334,49 @@ class Task(Base):
     loan_id = Column(Integer, ForeignKey("loans.id"), nullable=True)
     related_contact_name = Column(String)
     related_type = Column(String)
+    task_type = Column(String)  # Type of task for AI learning (e.g., "follow_up_pre_approval", "upload_documents")
+    ai_drafted_message = Column(Text)  # AI-generated message/action for this task
+    ai_completed = Column(Boolean, default=False)  # True if AI completed this task autonomously
+    ai_approved = Column(Boolean, default=False)  # True if user approved AI's work
+    ai_edited = Column(Boolean, default=False)  # True if user made corrections
     completed_at = Column(DateTime)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
     owner = relationship("User", backref="tasks")
     lead = relationship("Lead", backref="tasks")
     loan = relationship("Loan", backref="user_tasks")
+
+class AITaskLearning(Base):
+    """
+    Tracks AI learning state for each task type.
+    Each task type (e.g., 'follow_up_pre_approval', 'schedule_appraisal') has its own learning cycle.
+    """
+    __tablename__ = "ai_task_learning"
+    id = Column(Integer, primary_key=True, index=True)
+    task_type = Column(String, nullable=False, unique=True, index=True)  # Type of task
+    ai_status = Column(String, default="new")  # "new", "in_training", "approved"
+    consecutive_approvals = Column(Integer, default=0)  # Counter for consecutive approvals
+    total_approvals = Column(Integer, default=0)  # Total number of approvals
+    total_rejections = Column(Integer, default=0)  # Total number of rejections/edits
+    last_approval_at = Column(DateTime)  # When last approval happened
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+
+class TaskApproval(Base):
+    """
+    Tracks individual task approvals for AI learning history.
+    """
+    __tablename__ = "task_approvals"
+    id = Column(Integer, primary_key=True, index=True)
+    task_id = Column(Integer, ForeignKey("tasks.id"), nullable=False)
+    task_type = Column(String, nullable=False, index=True)  # Type of task
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    approved = Column(Boolean, default=False)  # True if approved, False if rejected/edited
+    ai_message = Column(Text)  # The AI-generated message that was reviewed
+    user_corrections = Column(Text)  # Any corrections made by the user
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    task = relationship("Task", backref="approvals")
+    user = relationship("User", backref="task_approvals")
 
 class ReferralPartner(Base):
     __tablename__ = "referral_partners"
@@ -5140,6 +5177,275 @@ async def delete_task(task_id: int, db: Session = Depends(get_db), current_user:
     db.commit()
     logger.info(f"Task deleted: {task.title}")
     return None
+
+# ============================================================================
+# AI TASK LEARNING & AUTOMATION
+# ============================================================================
+
+@app.post("/api/v1/tasks/{task_id}/generate-ai-draft")
+async def generate_ai_task_draft(
+    task_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Generate AI-drafted message/action for a task"""
+
+    if not openai_client:
+        raise HTTPException(status_code=503, detail="OpenAI API not configured")
+
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    try:
+        # Build context for AI
+        context = f"Task: {task.title}\nDescription: {task.description or 'N/A'}\nPriority: {task.priority}"
+
+        if task.lead_id:
+            lead = db.query(Lead).filter(Lead.id == task.lead_id).first()
+            if lead:
+                context += f"\nContact: {lead.first_name} {lead.last_name}\nEmail: {lead.email}\nPhone: {lead.phone}"
+
+        if task.loan_id:
+            loan = db.query(Loan).filter(Loan.id == task.loan_id).first()
+            if loan:
+                context += f"\nLoan: {loan.loan_amount}, Stage: {loan.stage}"
+
+        # Get previous successful completions for this task type
+        previous_approvals = []
+        if task.task_type:
+            previous_approvals = db.query(TaskApproval).filter(
+                TaskApproval.task_type == task.task_type,
+                TaskApproval.approved == True
+            ).order_by(TaskApproval.created_at.desc()).limit(3).all()
+
+        examples = "\n".join([f"Example: {approval.ai_message}" for approval in previous_approvals]) if previous_approvals else "No previous examples available."
+
+        # Generate AI draft
+        response = openai_client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {
+                    "role": "system",
+                    "content": """You are an expert mortgage loan officer assistant. Generate a professional, friendly message or action to complete the given task.
+                    The message should be:
+                    - Professional and warm
+                    - Specific to the task and contact
+                    - Action-oriented
+                    - Include next steps if applicable
+
+                    Format: Generate ONLY the message content, no explanations."""
+                },
+                {
+                    "role": "user",
+                    "content": f"Generate a message to complete this task:\n\n{context}\n\nPrevious successful examples:\n{examples}"
+                }
+            ],
+            temperature=0.7,
+            max_tokens=300
+        )
+
+        ai_message = response.choices[0].message.content.strip()
+
+        # Save AI draft to task
+        task.ai_drafted_message = ai_message
+        task.updated_at = datetime.now(timezone.utc)
+        db.commit()
+        db.refresh(task)
+
+        logger.info(f"AI draft generated for task {task_id}: {task.task_type}")
+
+        return {
+            "task_id": task_id,
+            "ai_drafted_message": ai_message,
+            "task_type": task.task_type
+        }
+
+    except Exception as e:
+        logger.error(f"Error generating AI draft: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to generate AI draft: {str(e)}")
+
+@app.post("/api/v1/tasks/{task_id}/approve-ai-action")
+async def approve_ai_action(
+    task_id: int,
+    approved: bool = True,
+    user_corrections: str = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Approve or reject AI-generated task action.
+    This is the core of the AI learning system.
+    """
+
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    if not task.task_type:
+        raise HTTPException(status_code=400, detail="Task must have a task_type for AI learning")
+
+    try:
+        # Get or create AI learning record for this task type
+        ai_learning = db.query(AITaskLearning).filter(
+            AITaskLearning.task_type == task.task_type
+        ).first()
+
+        if not ai_learning:
+            ai_learning = AITaskLearning(task_type=task.task_type)
+            db.add(ai_learning)
+            db.flush()
+
+        # Record the approval/rejection
+        task_approval = TaskApproval(
+            task_id=task_id,
+            task_type=task.task_type,
+            user_id=current_user.id,
+            approved=approved,
+            ai_message=task.ai_drafted_message,
+            user_corrections=user_corrections
+        )
+        db.add(task_approval)
+
+        # Update AI learning state
+        if approved:
+            # Increment consecutive approvals
+            ai_learning.consecutive_approvals += 1
+            ai_learning.total_approvals += 1
+            ai_learning.last_approval_at = datetime.now(timezone.utc)
+
+            # Update task
+            task.ai_approved = True
+            task.ai_edited = False
+
+            # Update AI status based on consecutive approvals
+            if ai_learning.consecutive_approvals >= 5:
+                ai_learning.ai_status = "approved"  # Fully autonomous
+            elif ai_learning.consecutive_approvals >= 1:
+                ai_learning.ai_status = "in_training"  # Auto-complete but require approval
+
+            logger.info(f"✅ AI action approved for task {task_id}, {ai_learning.consecutive_approvals}/5 consecutive approvals")
+        else:
+            # Reset consecutive approvals on rejection
+            ai_learning.consecutive_approvals = 0
+            ai_learning.total_rejections += 1
+            ai_learning.ai_status = "in_training" if ai_learning.total_approvals > 0 else "new"
+
+            # Update task
+            task.ai_approved = False
+            task.ai_edited = True
+
+            logger.info(f"❌ AI action rejected for task {task_id}, counter reset")
+
+        task.updated_at = datetime.now(timezone.utc)
+        ai_learning.updated_at = datetime.now(timezone.utc)
+
+        db.commit()
+        db.refresh(ai_learning)
+
+        return {
+            "task_id": task_id,
+            "task_type": task.task_type,
+            "approved": approved,
+            "ai_status": ai_learning.ai_status,
+            "consecutive_approvals": ai_learning.consecutive_approvals,
+            "total_approvals": ai_learning.total_approvals,
+            "total_rejections": ai_learning.total_rejections,
+            "message": f"AI is now '{ai_learning.ai_status}' with {ai_learning.consecutive_approvals}/5 consecutive approvals"
+        }
+
+    except Exception as e:
+        logger.error(f"Error approving AI action: {e}")
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to approve AI action: {str(e)}")
+
+@app.get("/api/v1/ai-learning/status")
+async def get_ai_learning_status(
+    task_type: str = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Get AI learning status for all task types or a specific task type"""
+
+    try:
+        if task_type:
+            ai_learning = db.query(AITaskLearning).filter(
+                AITaskLearning.task_type == task_type
+            ).first()
+
+            if not ai_learning:
+                return {
+                    "task_type": task_type,
+                    "ai_status": "new",
+                    "consecutive_approvals": 0,
+                    "total_approvals": 0,
+                    "total_rejections": 0
+                }
+
+            return {
+                "task_type": ai_learning.task_type,
+                "ai_status": ai_learning.ai_status,
+                "consecutive_approvals": ai_learning.consecutive_approvals,
+                "total_approvals": ai_learning.total_approvals,
+                "total_rejections": ai_learning.total_rejections,
+                "last_approval_at": ai_learning.last_approval_at
+            }
+        else:
+            # Get all task types
+            all_learning = db.query(AITaskLearning).all()
+            return [{
+                "task_type": learning.task_type,
+                "ai_status": learning.ai_status,
+                "consecutive_approvals": learning.consecutive_approvals,
+                "total_approvals": learning.total_approvals,
+                "total_rejections": learning.total_rejections,
+                "last_approval_at": learning.last_approval_at
+            } for learning in all_learning]
+
+    except Exception as e:
+        logger.error(f"Error getting AI learning status: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/v1/tasks/pending-approval")
+async def get_pending_approval_tasks(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Get tasks that were AI-completed and pending user approval"""
+
+    try:
+        # Get tasks that were completed by AI but not yet approved
+        tasks = db.query(Task).filter(
+            Task.owner_id == current_user.id,
+            Task.ai_completed == True,
+            Task.ai_approved == False,
+            Task.status == "completed"
+        ).order_by(Task.created_at.desc()).all()
+
+        result = []
+        for task in tasks:
+            # Get AI learning status for this task type
+            ai_learning = db.query(AITaskLearning).filter(
+                AITaskLearning.task_type == task.task_type
+            ).first()
+
+            result.append({
+                "id": task.id,
+                "title": task.title,
+                "description": task.description,
+                "task_type": task.task_type,
+                "ai_drafted_message": task.ai_drafted_message,
+                "ai_status": ai_learning.ai_status if ai_learning else "new",
+                "consecutive_approvals": ai_learning.consecutive_approvals if ai_learning else 0,
+                "created_at": task.created_at,
+                "completed_at": task.completed_at
+            })
+
+        return result
+
+    except Exception as e:
+        logger.error(f"Error getting pending approval tasks: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 # ============================================================================
 # REFERRAL PARTNERS CRUD
