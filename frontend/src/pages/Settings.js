@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { teamAPI, calendlyAPI } from '../services/api';
+import { teamAPI, calendlyAPI, recallaiAPI } from '../services/api';
 import './Settings.css';
 
 function Settings() {
@@ -42,6 +42,15 @@ function Settings() {
     last_sync_at: null
   });
   const [loadingMicrosoft, setLoadingMicrosoft] = useState(false);
+
+  // Recall.ai integration state
+  const [recallaiStatus, setRecallaiStatus] = useState({
+    connected: false,
+    has_api_key: false
+  });
+  const [loadingRecallai, setLoadingRecallai] = useState(false);
+  const [showRecallaiModal, setShowRecallaiModal] = useState(false);
+  const [recallaiApiKey, setRecallaiApiKey] = useState('');
 
   // Team members state
   const [teamMembers, setTeamMembers] = useState([]);
@@ -651,6 +660,50 @@ function Settings() {
     }
   };
 
+  // Recall.ai Integration Functions
+  const checkRecallaiStatus = async () => {
+    try {
+      const status = await recallaiAPI.getStatus();
+      setRecallaiStatus(status);
+
+      // Update connected integrations
+      const newConnected = new Set(connectedIntegrations);
+      if (status.connected) {
+        newConnected.add('recallai');
+      } else {
+        newConnected.delete('recallai');
+      }
+      setConnectedIntegrations(newConnected);
+    } catch (error) {
+      console.error('Error checking Recall.ai status:', error);
+    }
+  };
+
+  const connectRecallai = () => {
+    setShowRecallaiModal(true);
+  };
+
+  const handleRecallaiConnect = async () => {
+    if (!recallaiApiKey.trim()) {
+      alert('Please enter your Recall.ai API key');
+      return;
+    }
+
+    setLoadingRecallai(true);
+    try {
+      await recallaiAPI.connect(recallaiApiKey);
+      alert('Recall.ai connected successfully!');
+      setShowRecallaiModal(false);
+      setRecallaiApiKey('');
+      await checkRecallaiStatus();
+    } catch (error) {
+      console.error('Error connecting Recall.ai:', error);
+      alert('Failed to connect Recall.ai: ' + (error.response?.data?.detail || error.message));
+    } finally {
+      setLoadingRecallai(false);
+    }
+  };
+
   // User Management Functions
   const loadUsers = async () => {
     setLoadingUsers(true);
@@ -1045,6 +1098,7 @@ function Settings() {
   useEffect(() => {
     if (activeSection === 'integrations') {
       checkMicrosoftStatus();
+      checkRecallaiStatus();
       fetchCalendlyEventTypes(); // Also check Calendly connection status
     }
     if (activeSection === 'calendar-settings') {
@@ -1301,6 +1355,59 @@ function Settings() {
                       Last synced: {new Date(microsoftStatus.last_sync_at).toLocaleString()}
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* Recall.ai Status Panel */}
+              {recallaiStatus.connected && (
+                <div className="microsoft-status-panel">
+                  <div className="status-header">
+                    <div className="status-icon" style={{background: '#8b5cf6'}}>
+                      📹
+                    </div>
+                    <div className="status-info">
+                      <h3>Recall.ai Connected</h3>
+                      <p>Meeting recording bot active</p>
+                    </div>
+                    <div className="status-actions">
+                      <button
+                        className="btn-primary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          connectRecallai();
+                        }}
+                      >
+                        Update API Key
+                      </button>
+                    </div>
+                  </div>
+                  <div className="status-meta">
+                    Transcripts automatically saved to Conversation Log
+                  </div>
+                </div>
+              )}
+
+              {/* Recall.ai Not Connected Banner */}
+              {!recallaiStatus.connected && !searchTerm && (
+                <div className="integration-cta-banner" style={{background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)'}}>
+                  <div className="cta-content">
+                    <div className="cta-icon">📹</div>
+                    <div className="cta-text">
+                      <h3>Automatic Meeting Recording & Transcription</h3>
+                      <p>Connect Recall.ai to automatically record meetings and get AI-generated transcripts in your Conversation Log</p>
+                      <ul className="cta-features">
+                        <li>✓ Works with Zoom, Teams, Google Meet</li>
+                        <li>✓ AI transcription with speaker identification</li>
+                        <li>✓ Auto-saved to lead profiles</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <button
+                    className="btn-cta"
+                    onClick={connectRecallai}
+                  >
+                    Connect Recall.ai
+                  </button>
                 </div>
               )}
 
@@ -2472,6 +2579,60 @@ function Settings() {
                 disabled={!calendlyApiKey.trim()}
               >
                 Connect
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Recall.ai Connection Modal */}
+      {showRecallaiModal && (
+        <div className="connection-modal-overlay" onClick={() => setShowRecallaiModal(false)}>
+          <div className="connection-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="btn-close-modal" onClick={() => setShowRecallaiModal(false)}>×</button>
+            <div className="modal-header">
+              <span className="modal-icon">📹</span>
+              <h3>Connect Recall.ai</h3>
+              <p className="modal-description">Enter your Recall.ai API key to enable meeting recording</p>
+            </div>
+            <div className="modal-body">
+              <div className="form-group">
+                <label>Recall.ai API Key</label>
+                <input
+                  type="password"
+                  className="form-input"
+                  placeholder="Enter your Recall.ai API key"
+                  value={recallaiApiKey}
+                  onChange={(e) => setRecallaiApiKey(e.target.value)}
+                />
+              </div>
+              <div className="help-text">
+                <h4>How to get your API key:</h4>
+                <ol>
+                  <li>Go to <a href="https://www.recall.ai/" target="_blank" rel="noopener noreferrer">Recall.ai</a></li>
+                  <li>Sign up or log in to your account</li>
+                  <li>Navigate to API Settings</li>
+                  <li>Copy your API key and paste it above</li>
+                </ol>
+                <p><strong>Features:</strong></p>
+                <ul>
+                  <li>✓ Works with Zoom, Teams, Google Meet</li>
+                  <li>✓ Real-time AI transcription</li>
+                  <li>✓ Speaker identification</li>
+                  <li>✓ Auto-saves to Conversation Log</li>
+                </ul>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn-secondary" onClick={() => setShowRecallaiModal(false)}>
+                Cancel
+              </button>
+              <button
+                className="btn-primary"
+                onClick={handleRecallaiConnect}
+                disabled={!recallaiApiKey.trim() || loadingRecallai}
+              >
+                {loadingRecallai ? 'Connecting...' : 'Connect'}
               </button>
             </div>
           </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { leadsAPI, activitiesAPI, aiAPI, teamAPI, calendlyAPI } from '../services/api';
+import { leadsAPI, activitiesAPI, aiAPI, teamAPI, calendlyAPI, recallaiAPI } from '../services/api';
 import { ClickableEmail, ClickablePhone } from '../components/ClickableContact';
 import SMSModal from '../components/SMSModal';
 import TeamsModal from '../components/TeamsModal';
@@ -40,6 +40,11 @@ function LeadDetail() {
     eventTypeUri: '',
     stageName: ''
   });
+
+  // Recording modal states
+  const [showRecordingModal, setShowRecordingModal] = useState(false);
+  const [meetingUrl, setMeetingUrl] = useState('');
+  const [recordingLoading, setRecordingLoading] = useState(false);
 
   useEffect(() => {
     loadLeadData();
@@ -484,8 +489,44 @@ function LeadDetail() {
       case 'teams':
         setShowTeamsModal(true);
         break;
+      case 'recording':
+        setShowRecordingModal(true);
+        setMeetingUrl('');
+        break;
       default:
         break;
+    }
+  };
+
+  const handleStartRecording = async () => {
+    if (!meetingUrl.trim()) {
+      alert('Please enter a meeting URL');
+      return;
+    }
+
+    // Validate URL format
+    const urlPattern = /^https?:\/\/.+/i;
+    if (!urlPattern.test(meetingUrl)) {
+      alert('Please enter a valid meeting URL (must start with http:// or https://)');
+      return;
+    }
+
+    setRecordingLoading(true);
+    try {
+      const response = await recallaiAPI.startRecording(meetingUrl, lead.id);
+      alert(`Recording bot sent to meeting! Status: ${response.status}`);
+      setShowRecordingModal(false);
+      setMeetingUrl('');
+
+      // Reload activities to show any new activity
+      const activitiesData = await activitiesAPI.getAll({ lead_id: id });
+      setActivities(activitiesData || []);
+    } catch (error) {
+      console.error('Error starting recording:', error);
+      const errorMsg = error.response?.data?.detail || error.message || 'Failed to start recording';
+      alert(`Failed to start recording: ${errorMsg}`);
+    } finally {
+      setRecordingLoading(false);
     }
   };
 
@@ -1315,6 +1356,14 @@ function LeadDetail() {
                 <span className="icon">👥</span>
                 <span>Teams Meeting</span>
               </button>
+              <button
+                className="action-btn recording"
+                onClick={() => handleAction('recording')}
+                title="Start meeting recording with Recall.ai"
+              >
+                <span className="icon">📹</span>
+                <span>Start Recording</span>
+              </button>
             </div>
           </div>
 
@@ -1362,6 +1411,71 @@ function LeadDetail() {
           onClose={() => setShowTeamsModal(false)}
           lead={lead}
         />
+      )}
+
+      {/* Recording Modal */}
+      {showRecordingModal && (
+        <div className="modal-overlay" onClick={() => setShowRecordingModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px' }}>
+            <div className="modal-header">
+              <h2>Start Meeting Recording</h2>
+              <button className="modal-close" onClick={() => setShowRecordingModal(false)}>×</button>
+            </div>
+            <div className="modal-body">
+              <p style={{ marginBottom: '20px', color: '#64748b' }}>
+                Enter the meeting URL to send the Recall.ai bot. The bot will join the meeting, record it,
+                and automatically save the transcript to the Conversation Log.
+              </p>
+              <div className="form-group">
+                <label>Meeting URL</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="https://zoom.us/j/... or https://teams.microsoft.com/..."
+                  value={meetingUrl}
+                  onChange={(e) => setMeetingUrl(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter' && !recordingLoading) {
+                      handleStartRecording();
+                    }
+                  }}
+                />
+              </div>
+              <div style={{
+                background: '#f0fdfa',
+                border: '1px solid #99f6e4',
+                borderRadius: '8px',
+                padding: '16px',
+                marginTop: '16px'
+              }}>
+                <h4 style={{ margin: '0 0 12px 0', color: '#134e4a', fontSize: '14px', fontWeight: '600' }}>
+                  Supported Platforms:
+                </h4>
+                <ul style={{ margin: 0, paddingLeft: '20px', color: '#0f766e', fontSize: '13px' }}>
+                  <li>Zoom (zoom.us)</li>
+                  <li>Microsoft Teams (teams.microsoft.com)</li>
+                  <li>Google Meet (meet.google.com)</li>
+                </ul>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button
+                className="btn-secondary"
+                onClick={() => setShowRecordingModal(false)}
+                disabled={recordingLoading}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn-primary"
+                onClick={handleStartRecording}
+                disabled={!meetingUrl.trim() || recordingLoading}
+              >
+                {recordingLoading ? 'Sending Bot...' : '📹 Start Recording'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Appointment Modal */}
