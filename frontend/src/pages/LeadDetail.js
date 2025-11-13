@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { leadsAPI, activitiesAPI, aiAPI, teamAPI } from '../services/api';
+import { leadsAPI, activitiesAPI, aiAPI, teamAPI, calendlyAPI } from '../services/api';
 import { ClickableEmail, ClickablePhone } from '../components/ClickableContact';
 import SMSModal from '../components/SMSModal';
 import TeamsModal from '../components/TeamsModal';
@@ -28,10 +28,23 @@ function LeadDetail() {
   const [teamMembers, setTeamMembers] = useState([]);
   const [assignedTeamMembers, setAssignedTeamMembers] = useState({});
 
+  // Appointment modal states
+  const [showAppointmentModal, setShowAppointmentModal] = useState(false);
+  const [appointmentStep, setAppointmentStep] = useState(1);
+  const [calendarMappings, setCalendarMappings] = useState([]);
+  const [calendlyEventTypes, setCalendlyEventTypes] = useState([]);
+  const [appointmentData, setAppointmentData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    eventTypeUri: ''
+  });
+
   useEffect(() => {
     loadLeadData();
     loadEmails();
     loadTeamMembers();
+    loadCalendarData();
     markLeadAsViewed();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
@@ -123,6 +136,21 @@ function LeadDetail() {
     } catch (error) {
       console.error('Failed to load team members:', error);
       setTeamMembers([]);
+    }
+  };
+
+  const loadCalendarData = async () => {
+    try {
+      const [mappings, eventTypes] = await Promise.all([
+        calendlyAPI.getMappings(),
+        calendlyAPI.getEventTypes()
+      ]);
+      setCalendarMappings(Array.isArray(mappings) ? mappings : []);
+      setCalendlyEventTypes(Array.isArray(eventTypes) ? eventTypes : []);
+    } catch (error) {
+      console.error('Failed to load calendar data:', error);
+      setCalendarMappings([]);
+      setCalendlyEventTypes([]);
     }
   };
 
@@ -427,7 +455,24 @@ function LeadDetail() {
         navigate('/tasks');
         break;
       case 'calendar':
-        navigate('/calendar');
+        // Open appointment modal with pre-filled data
+        const leadName = lead.first_name && lead.last_name
+          ? `${lead.first_name} ${lead.last_name}`
+          : lead.name || '';
+
+        // Find matching calendar event type based on lead stage
+        const leadStage = lead.stage || 'new';
+        const mapping = calendarMappings.find(m => m.stage === leadStage);
+        const eventTypeUri = mapping?.event_type_uri || '';
+
+        setAppointmentData({
+          name: leadName,
+          email: lead.email || '',
+          phone: lead.phone || '',
+          eventTypeUri: eventTypeUri
+        });
+        setAppointmentStep(1);
+        setShowAppointmentModal(true);
         break;
       case 'teams':
         setShowTeamsModal(true);
@@ -1310,6 +1355,144 @@ function LeadDetail() {
           onClose={() => setShowTeamsModal(false)}
           lead={lead}
         />
+      )}
+
+      {/* Appointment Modal */}
+      {showAppointmentModal && (
+        <div className="modal-overlay" onClick={() => setShowAppointmentModal(false)}>
+          <div className="modal-content appointment-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Schedule Appointment</h2>
+              <button className="modal-close" onClick={() => setShowAppointmentModal(false)}>×</button>
+            </div>
+
+            {appointmentStep === 1 ? (
+              // Step 1: Verify Information
+              <div className="appointment-step">
+                <div className="step-indicator">
+                  <span className="step active">1</span>
+                  <span className="step-line"></span>
+                  <span className="step">2</span>
+                </div>
+                <h3>Verify Contact Information</h3>
+                <p className="step-description">Please verify the information below is correct before scheduling.</p>
+
+                <div className="form-group">
+                  <label>Full Name *</label>
+                  <input
+                    type="text"
+                    value={appointmentData.name}
+                    onChange={(e) => setAppointmentData({...appointmentData, name: e.target.value})}
+                    placeholder="Enter full name"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Email Address *</label>
+                  <input
+                    type="email"
+                    value={appointmentData.email}
+                    onChange={(e) => setAppointmentData({...appointmentData, email: e.target.value})}
+                    placeholder="Enter email address"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Phone Number</label>
+                  <input
+                    type="tel"
+                    value={appointmentData.phone}
+                    onChange={(e) => setAppointmentData({...appointmentData, phone: e.target.value})}
+                    placeholder="Enter phone number"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Calendar Type *</label>
+                  <select
+                    value={appointmentData.eventTypeUri}
+                    onChange={(e) => setAppointmentData({...appointmentData, eventTypeUri: e.target.value})}
+                    required
+                  >
+                    <option value="">Select calendar type...</option>
+                    {calendlyEventTypes.map(eventType => (
+                      <option key={eventType.uri} value={eventType.uri}>
+                        {eventType.name}
+                      </option>
+                    ))}
+                  </select>
+                  {appointmentData.eventTypeUri && (
+                    <small className="field-note">
+                      Auto-selected based on lead stage: {lead.stage}
+                    </small>
+                  )}
+                </div>
+
+                <div className="modal-actions">
+                  <button
+                    className="btn-secondary"
+                    onClick={() => setShowAppointmentModal(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="btn-primary"
+                    onClick={() => {
+                      if (!appointmentData.name || !appointmentData.email || !appointmentData.eventTypeUri) {
+                        alert('Please fill in all required fields (Name, Email, Calendar Type)');
+                        return;
+                      }
+                      setAppointmentStep(2);
+                    }}
+                  >
+                    Next: Select Date & Time →
+                  </button>
+                </div>
+              </div>
+            ) : (
+              // Step 2: Select Date & Time with Calendly Widget
+              <div className="appointment-step">
+                <div className="step-indicator">
+                  <span className="step completed">✓</span>
+                  <span className="step-line"></span>
+                  <span className="step active">2</span>
+                </div>
+                <h3>Select Date & Time</h3>
+                <p className="step-description">Choose an available time slot for your appointment.</p>
+
+                <div className="calendly-embed-container">
+                  <iframe
+                    src={`${appointmentData.eventTypeUri}?embed_domain=${window.location.hostname}&embed_type=Inline&name=${encodeURIComponent(appointmentData.name)}&email=${encodeURIComponent(appointmentData.email)}${appointmentData.phone ? `&a1=${encodeURIComponent(appointmentData.phone)}` : ''}`}
+                    width="100%"
+                    height="700"
+                    frameBorder="0"
+                    title="Calendly Scheduling"
+                  />
+                </div>
+
+                <div className="modal-actions">
+                  <button
+                    className="btn-secondary"
+                    onClick={() => setAppointmentStep(1)}
+                  >
+                    ← Back to Information
+                  </button>
+                  <button
+                    className="btn-primary"
+                    onClick={() => {
+                      alert('Appointment scheduled! The confirmation has been sent to ' + appointmentData.email);
+                      setShowAppointmentModal(false);
+                    }}
+                  >
+                    Done
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );
