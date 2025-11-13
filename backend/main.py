@@ -5453,6 +5453,39 @@ async def get_pending_approval_tasks(
         logger.error(f"Error getting pending approval tasks: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/api/v1/ai-learning/migrate")
+async def run_ai_learning_migration(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Run migration to add AI learning columns to ai_tasks table"""
+    try:
+        from sqlalchemy import text
+
+        columns_to_add = [
+            ("task_type", "VARCHAR"),
+            ("ai_drafted_message", "TEXT"),
+            ("ai_completed", "BOOLEAN DEFAULT FALSE"),
+            ("ai_approved", "BOOLEAN DEFAULT FALSE"),
+            ("ai_edited", "BOOLEAN DEFAULT FALSE")
+        ]
+
+        results = []
+        for col_name, col_type in columns_to_add:
+            try:
+                db.execute(text(f"ALTER TABLE ai_tasks ADD COLUMN IF NOT EXISTS {col_name} {col_type}"))
+                db.commit()
+                results.append(f"✅ Added column: {col_name}")
+            except Exception as e:
+                db.rollback()
+                results.append(f"⚠️  Column {col_name} might already exist: {str(e)}")
+
+        return {"status": "success", "results": results}
+
+    except Exception as e:
+        logger.error(f"Migration failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Migration failed: {str(e)}")
+
 # ============================================================================
 # REFERRAL PARTNERS CRUD
 # ============================================================================
