@@ -21,7 +21,7 @@ API_BASE_URL = "https://mortgage-crm-production-7a9a.up.railway.app"
 # API_BASE_URL = "http://localhost:8000"
 
 # Test user credentials - valid token
-TEST_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhaS10ZXN0LTIwMjUxMTEyMjEzMTI4QGV4YW1wbGUuY29tIiwiZXhwIjoxNzYzMDAyODg5fQ.ceKGCXyvKnY88Ci7K97UfJFabHh1coSY3sCy9UEApao"
+TEST_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhaS10ZXN0LTIwMjUxMTEyMjEzNzE4QGV4YW1wbGUuY29tIiwiZXhwIjoxNzYzMDAzMjM4fQ.CMkGGULL9OCxs8jXUF4hceWxAEQCrQVdBy0nQt7j8kA"
 
 class Colors:
     GREEN = '\033[92m'
@@ -87,11 +87,10 @@ def test_1_create_test_task():
         "description": "Contact Sarah Johnson about her pre-approval that expires Feb 8, 2025",
         "type": "Human Needed",
         "priority": "high",
-        "lead_id": None,
-        "loan_id": None
+        "task_type": "follow_up_pre_approval"
     }
 
-    response = make_request("POST", "/api/v1/tasks", task_data)
+    response = make_request("POST", "/api/v1/tasks/", task_data)
 
     if response and response.status_code in [200, 201]:
         task = response.json()
@@ -111,14 +110,7 @@ def test_2_generate_ai_draft(task_id):
         print_error("No task ID provided, skipping test")
         return None
 
-    # First, update task to have task_type
-    update_data = {"task_type": "follow_up_pre_approval"}
-    response = make_request("PUT", f"/api/v1/tasks/{task_id}", update_data)
-
-    if response and response.status_code == 200:
-        print_success("Task type set to 'follow_up_pre_approval'")
-
-    # Generate AI draft
+    # Generate AI draft (task_type should be set during creation)
     response = make_request("POST", f"/api/v1/tasks/{task_id}/generate-ai-draft")
 
     if response and response.status_code == 200:
@@ -207,20 +199,17 @@ def test_5_full_learning_cycle():
             "title": f"Schedule appraisal - Test {i}",
             "description": f"Schedule appraisal for property - iteration {i}",
             "type": "Human Needed",
-            "priority": "medium"
+            "priority": "medium",
+            "task_type": task_type
         }
 
-        response = make_request("POST", "/api/v1/tasks", task_data)
+        response = make_request("POST", "/api/v1/tasks/", task_data)
         if not response or response.status_code not in [200, 201]:
             print_error(f"Failed to create task {i}")
             continue
 
         task_id = response.json().get('id')
         print_success(f"Task {i} created (ID: {task_id})")
-
-        # Set task type
-        update_data = {"task_type": task_type}
-        make_request("PUT", f"/api/v1/tasks/{task_id}", update_data)
 
         # Generate AI draft
         draft_response = make_request("POST", f"/api/v1/tasks/{task_id}/generate-ai-draft")
@@ -269,16 +258,16 @@ def test_6_rejection_and_reset():
             "title": f"Upload missing documents - Test {i}",
             "description": "Upload required documents",
             "type": "Human Needed",
-            "priority": "high"
+            "priority": "high",
+            "task_type": task_type
         }
 
-        response = make_request("POST", "/api/v1/tasks", task_data)
+        response = make_request("POST", "/api/v1/tasks/", task_data)
         if response and response.status_code in [200, 201]:
             task_id = response.json().get('id')
             task_ids.append(task_id)
 
-            # Set task type and generate draft
-            make_request("PUT", f"/api/v1/tasks/{task_id}", {"task_type": task_type})
+            # Generate draft
             make_request("POST", f"/api/v1/tasks/{task_id}/generate-ai-draft")
 
             # Approve
@@ -297,14 +286,14 @@ def test_6_rejection_and_reset():
         "title": "Upload missing documents - Test 4 (will reject)",
         "description": "Upload required documents",
         "type": "Human Needed",
-        "priority": "high"
+        "priority": "high",
+        "task_type": task_type
     }
 
-    response = make_request("POST", "/api/v1/tasks", task_data)
+    response = make_request("POST", "/api/v1/tasks/", task_data)
     if response and response.status_code in [200, 201]:
         task_id = response.json().get('id')
 
-        make_request("PUT", f"/api/v1/tasks/{task_id}", {"task_type": task_type})
         make_request("POST", f"/api/v1/tasks/{task_id}/generate-ai-draft")
 
         # REJECT with corrections

@@ -1310,6 +1310,7 @@ class TaskCreate(BaseModel):
     loan_id: Optional[int] = None
     lead_id: Optional[int] = None
     due_date: Optional[datetime] = None
+    task_type: Optional[str] = None  # AI learning task type
 
 class TaskUpdate(BaseModel):
     title: Optional[str] = None
