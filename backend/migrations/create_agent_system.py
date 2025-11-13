@@ -13,6 +13,106 @@ import os
 import sys
 from sqlalchemy import create_engine, text
 
+
+def get_create_table_sql():
+    """
+    Get SQL statements to create agent tables (SQLite compatible).
+    Returns list of SQL statements.
+    """
+    return [
+        """
+        CREATE TABLE IF NOT EXISTS agent_workflows (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            workflow_type VARCHAR NOT NULL,
+            agent_type VARCHAR NOT NULL,
+            entity_type VARCHAR,
+            entity_id INTEGER,
+            status VARCHAR DEFAULT 'pending',
+            state TEXT,
+            goal TEXT,
+            trigger_event VARCHAR,
+            started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            completed_at TIMESTAMP,
+            error TEXT,
+            created_by INTEGER,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+        """,
+        """
+        CREATE TABLE IF NOT EXISTS agent_actions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            workflow_id INTEGER,
+            agent_type VARCHAR NOT NULL,
+            action_type VARCHAR NOT NULL,
+            tool_name VARCHAR,
+            input_data TEXT,
+            output_data TEXT,
+            status VARCHAR DEFAULT 'pending',
+            reasoning TEXT,
+            confidence_score REAL,
+            requires_approval BOOLEAN DEFAULT 0,
+            approved_by INTEGER,
+            approved_at TIMESTAMP,
+            error TEXT,
+            duration_ms INTEGER,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+        """,
+        """
+        CREATE TABLE IF NOT EXISTS agent_review_queue (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            workflow_id INTEGER,
+            action_id INTEGER,
+            agent_type VARCHAR NOT NULL,
+            item_type VARCHAR NOT NULL,
+            title VARCHAR NOT NULL,
+            description TEXT,
+            proposed_action TEXT NOT NULL,
+            context TEXT,
+            confidence_score REAL,
+            priority VARCHAR DEFAULT 'medium',
+            status VARCHAR DEFAULT 'pending',
+            assigned_to INTEGER,
+            reviewed_by INTEGER,
+            reviewed_at TIMESTAMP,
+            decision VARCHAR,
+            feedback TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+        """,
+        """
+        CREATE TABLE IF NOT EXISTS agent_memory (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            agent_type VARCHAR NOT NULL,
+            entity_type VARCHAR,
+            entity_id INTEGER,
+            memory_type VARCHAR NOT NULL,
+            content TEXT NOT NULL,
+            metadata TEXT,
+            embedding_vector TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+        """,
+        """
+        CREATE TABLE IF NOT EXISTS agent_config (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            agent_type VARCHAR NOT NULL UNIQUE,
+            model_name VARCHAR DEFAULT 'gpt-4o-mini',
+            temperature REAL DEFAULT 0.7,
+            max_tokens INTEGER DEFAULT 2000,
+            permissions TEXT NOT NULL,
+            system_prompt TEXT,
+            enabled BOOLEAN DEFAULT 1,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+        """
+    ]
+
+
 def run_migration():
     database_url = os.getenv("DATABASE_URL")
     if not database_url:

@@ -557,6 +557,100 @@ class SubscriptionPlan(Base):
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
+# ============================================================================
+# AGENT SYSTEM MODELS
+# ============================================================================
+
+class AgentWorkflow(Base):
+    """Agent workflow tracking"""
+    __tablename__ = "agent_workflows"
+    id = Column(Integer, primary_key=True, index=True)
+    workflow_type = Column(String, nullable=False)
+    agent_type = Column(String, nullable=False)
+    entity_type = Column(String)
+    entity_id = Column(Integer)
+    status = Column(String, default="pending")
+    state = Column(JSON)
+    goal = Column(Text)
+    trigger_event = Column(String)
+    started_at = Column(DateTime)
+    completed_at = Column(DateTime)
+    error = Column(Text)
+    created_by = Column(Integer, ForeignKey("users.id"))
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+
+class AgentAction(Base):
+    """Agent action audit log"""
+    __tablename__ = "agent_actions"
+    id = Column(Integer, primary_key=True, index=True)
+    workflow_id = Column(Integer, ForeignKey("agent_workflows.id"))
+    agent_type = Column(String, nullable=False)
+    action_type = Column(String, nullable=False)
+    tool_name = Column(String)
+    input_data = Column(JSON)
+    output_data = Column(JSON)
+    status = Column(String, default="pending")
+    reasoning = Column(Text)
+    confidence_score = Column(Float)
+    requires_approval = Column(Boolean, default=False)
+    approved_by = Column(Integer, ForeignKey("users.id"))
+    approved_at = Column(DateTime)
+    error = Column(Text)
+    duration_ms = Column(Integer)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+class AgentReviewQueue(Base):
+    """Human-in-the-loop review queue"""
+    __tablename__ = "agent_review_queue"
+    id = Column(Integer, primary_key=True, index=True)
+    workflow_id = Column(Integer, ForeignKey("agent_workflows.id"))
+    action_id = Column(Integer, ForeignKey("agent_actions.id"))
+    agent_type = Column(String, nullable=False)
+    item_type = Column(String, nullable=False)
+    title = Column(String, nullable=False)
+    description = Column(Text)
+    proposed_action = Column(JSON, nullable=False)
+    context = Column(JSON)
+    confidence_score = Column(Float)
+    priority = Column(String, default="medium")
+    status = Column(String, default="pending")
+    assigned_to = Column(Integer, ForeignKey("users.id"))
+    reviewed_by = Column(Integer, ForeignKey("users.id"))
+    reviewed_at = Column(DateTime)
+    decision = Column(String)
+    feedback = Column(Text)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+
+class AgentMemory(Base):
+    """Agent memory and context storage"""
+    __tablename__ = "agent_memory"
+    id = Column(Integer, primary_key=True, index=True)
+    agent_type = Column(String, nullable=False)
+    entity_type = Column(String)
+    entity_id = Column(Integer)
+    memory_type = Column(String, nullable=False)
+    content = Column(Text, nullable=False)
+    meta_data = Column(JSON)  # Renamed from metadata (reserved word)
+    embedding_vector = Column(Text)  # Will use pgvector later
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+
+class AgentConfig(Base):
+    """Agent configuration"""
+    __tablename__ = "agent_config"
+    id = Column(Integer, primary_key=True, index=True)
+    agent_type = Column(String, nullable=False, unique=True)
+    model_name = Column(String, default="gpt-4o-mini")
+    temperature = Column(Float, default=0.7)
+    max_tokens = Column(Integer, default=2000)
+    permissions = Column(JSON, nullable=False)
+    system_prompt = Column(Text)
+    enabled = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+
 class Subscription(Base):
     __tablename__ = "subscriptions"
     id = Column(Integer, primary_key=True, index=True)
