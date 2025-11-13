@@ -5384,7 +5384,7 @@ async def approve_ai_action(
         return {
             "task_id": task_id,
             "task_type": task.task_type,
-            "approved": approved,
+            "approved": request.approved,
             "ai_status": ai_learning.ai_status,
             "consecutive_approvals": ai_learning.consecutive_approvals,
             "total_approvals": ai_learning.total_approvals,
