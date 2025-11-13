@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { teamAPI } from '../services/api';
+import { teamAPI, calendlyAPI } from '../services/api';
 import './Settings.css';
 
 function Settings() {
