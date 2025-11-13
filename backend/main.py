@@ -318,6 +318,12 @@ class AITask(Base):
     estimated_time = Column(String)
     feedback = Column(Text)
     user_metadata = Column(JSON)
+    # AI Learning System columns
+    task_type = Column(String)  # Type of task for AI learning
+    ai_drafted_message = Column(Text)  # AI-generated message
+    ai_completed = Column(Boolean, default=False)  # AI completion flag
+    ai_approved = Column(Boolean, default=False)  # User approval flag
+    ai_edited = Column(Boolean, default=False)  # User edit flag
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
     loan = relationship("Loan", back_populates="tasks")
@@ -369,14 +375,14 @@ class TaskApproval(Base):
     """
     __tablename__ = "task_approvals"
     id = Column(Integer, primary_key=True, index=True)
-    task_id = Column(Integer, ForeignKey("tasks.id"), nullable=False)
+    task_id = Column(Integer, ForeignKey("ai_tasks.id"), nullable=False)
     task_type = Column(String, nullable=False, index=True)  # Type of task
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     approved = Column(Boolean, default=False)  # True if approved, False if rejected/edited
     ai_message = Column(Text)  # The AI-generated message that was reviewed
     user_corrections = Column(Text)  # Any corrections made by the user
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    task = relationship("Task", backref="approvals")
+    task = relationship("AITask", backref="approvals")
     user = relationship("User", backref="task_approvals")
 
 class ReferralPartner(Base):
@@ -5194,7 +5200,7 @@ async def generate_ai_task_draft(
     if not openai_client:
         raise HTTPException(status_code=503, detail="OpenAI API not configured")
 
-    task = db.query(Task).filter(Task.id == task_id).first()
+    task = db.query(AITask).filter(AITask.id == task_id).first()
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
 
@@ -5279,7 +5285,7 @@ async def approve_ai_action(
     This is the core of the AI learning system.
     """
 
-    task = db.query(Task).filter(Task.id == task_id).first()
+    task = db.query(AITask).filter(AITask.id == task_id).first()
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
 
@@ -5416,12 +5422,11 @@ async def get_pending_approval_tasks(
 
     try:
         # Get tasks that were completed by AI but not yet approved
-        tasks = db.query(Task).filter(
-            Task.owner_id == current_user.id,
-            Task.ai_completed == True,
-            Task.ai_approved == False,
-            Task.status == "completed"
-        ).order_by(Task.created_at.desc()).all()
+        tasks = db.query(AITask).filter(
+            AITask.assigned_to_id == current_user.id,
+            AITask.ai_completed == True,
+            AITask.ai_approved == False
+        ).order_by(AITask.created_at.desc()).all()
 
         result = []
         for task in tasks:
