@@ -4,6 +4,39 @@
   margin: 0 auto;
 }
 
+/* Main Tab Navigation */
+.main-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: var(--space-md);
+  border-bottom: 2px solid var(--color-border);
+}
+
+.main-tab {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--color-text-secondary);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  margin-bottom: -2px;
+}
+
+.main-tab:hover {
+  color: var(--color-primary);
+  background: var(--color-bg-secondary);
+}
+
+.main-tab.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+  background: var(--color-bg-tertiary);
+}
+
 .lead-name.clickable {
   color: #18a0a6;
   cursor: pointer;

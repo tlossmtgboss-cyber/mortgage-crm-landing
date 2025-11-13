@@ -262,6 +262,7 @@ function Leads() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingLead, setEditingLead] = useState(null);
+  const [activeTab, setActiveTab] = useState('leads'); // 'leads' or 'internet'
   const [activeFilter, setActiveFilter] = useState('All');
   const [activeBorrower, setActiveBorrower] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
@@ -341,10 +342,25 @@ function Leads() {
   // Ensure leads is always an array before filtering
   const safeLeads = Array.isArray(leads) ? leads : [];
 
+  // Internet lead sources
+  const internetSources = ['Website', 'Zillow', 'Facebook', 'Social Media', 'Google', 'Realtor.com', 'Trulia', 'Homes.com'];
+
+  // Filter by tab (Leads vs Internet Leads)
+  let tabFilteredLeads = safeLeads;
+  if (activeTab === 'internet') {
+    tabFilteredLeads = safeLeads.filter(lead =>
+      internetSources.some(source => lead.source?.includes(source))
+    );
+  } else if (activeTab === 'leads') {
+    tabFilteredLeads = safeLeads.filter(lead =>
+      !internetSources.some(source => lead.source?.includes(source))
+    );
+  }
+
   // Filter by stage
   let filteredLeads = activeFilter === 'All'
-    ? safeLeads
-    : safeLeads.filter(lead => lead.stage === activeFilter);
+    ? tabFilteredLeads
+    : tabFilteredLeads.filter(lead => lead.stage === activeFilter);
 
   // Filter by search query
   if (searchQuery.trim()) {
@@ -601,10 +617,32 @@ function Leads() {
 
   return (
     <div className="leads-page">
+      {/* Main Tab Navigation */}
+      <div className="main-tabs">
+        <button
+          className={`main-tab ${activeTab === 'leads' ? 'active' : ''}`}
+          onClick={() => {
+            setActiveTab('leads');
+            setActiveFilter('All');
+          }}
+        >
+          Leads
+        </button>
+        <button
+          className={`main-tab ${activeTab === 'internet' ? 'active' : ''}`}
+          onClick={() => {
+            setActiveTab('internet');
+            setActiveFilter('All');
+          }}
+        >
+          Internet Leads
+        </button>
+      </div>
+
       <div className="page-header">
         <div>
-          <h1>Leads</h1>
-          <p>{leads.length} total leads</p>
+          <h1>{activeTab === 'internet' ? 'Internet Leads' : 'Leads'}</h1>
+          <p>{filteredLeads.length} total {activeTab === 'internet' ? 'internet leads' : 'leads'}</p>
         </div>
         <button className="btn-primary" onClick={handleNewLead}>
           + Add Lead
