@@ -464,4 +464,29 @@ export const calendlyAPI = {
   },
 };
 
+// Recall.ai API
+export const recallaiAPI = {
+  connect: async (apiKey) => {
+    const response = await api.post('/api/v1/recallai/connect', { api_key: apiKey });
+    return response.data;
+  },
+  getStatus: async () => {
+    const response = await api.get('/api/v1/recallai/status');
+    return response.data;
+  },
+  startRecording: async (meetingUrl, leadId = null, loanId = null) => {
+    const response = await api.post('/api/v1/recallai/start-recording', {
+      meeting_url: meetingUrl,
+      lead_id: leadId,
+      loan_id: loanId
+    });
+    return response.data;
+  },
+  getRecordings: async (leadId = null) => {
+    const params = leadId ? { lead_id: leadId } : {};
+    const response = await api.get('/api/v1/recallai/recordings', { params });
+    return response.data;
+  },
+};
+
 export default api;

@@ -748,6 +748,33 @@ class CalendarMapping(Base):
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
+class RecallAIConnection(Base):
+    """Stores Recall.ai API key for meeting recording"""
+    __tablename__ = "recallai_connections"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), unique=True)
+    api_key = Column(Text)  # Encrypted API key
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+
+class RecallAIRecording(Base):
+    """Stores Recall.ai bot recordings and transcripts"""
+    __tablename__ = "recallai_recordings"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    lead_id = Column(Integer, ForeignKey("leads.id"), nullable=True)
+    loan_id = Column(Integer, ForeignKey("loans.id"), nullable=True)
+    bot_id = Column(String, unique=True, index=True)  # Recall.ai bot ID
+    meeting_url = Column(String)  # Original meeting URL
+    status = Column(String)  # ready, in_call_not_recording, in_call_recording, done, fatal
+    transcript = Column(Text)  # Full transcript
+    summary = Column(Text)  # AI summary
+    duration_seconds = Column(Integer)  # Meeting duration
+    participants = Column(JSON)  # List of participant names/emails
+    video_url = Column(String)  # URL to recording video
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+
 class OnboardingStep(Base):
     """Customizable onboarding step templates"""
     __tablename__ = "onboarding_steps"
@@ -9075,6 +9102,256 @@ Rules:
     except Exception as e:
         logger.error(f"AI scheduling error: {e}")
         raise HTTPException(status_code=500, detail=f"AI scheduling failed: {str(e)}")
+
+# ============================================================================
+# RECALL.AI MEETING RECORDING ENDPOINTS
+# ============================================================================
+
+@app.post("/api/v1/recallai/connect")
+async def connect_recallai(
+    request: dict,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Store Recall.ai API key for the current user"""
+    api_key = request.get("api_key")
+
+    if not api_key:
+        raise HTTPException(status_code=400, detail="api_key is required")
+
+    # Check if connection already exists
+    connection = db.query(RecallAIConnection).filter(
+        RecallAIConnection.user_id == current_user.id
+    ).first()
+
+    if connection:
+        # Update existing
+        connection.api_key = api_key
+        connection.updated_at = datetime.now(timezone.utc)
+    else:
+        # Create new
+        connection = RecallAIConnection(
+            user_id=current_user.id,
+            api_key=api_key
+        )
+        db.add(connection)
+
+    db.commit()
+
+    return {"message": "Recall.ai connected successfully"}
+
+
+@app.get("/api/v1/recallai/status")
+async def get_recallai_status(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Check if Recall.ai is connected"""
+    connection = db.query(RecallAIConnection).filter(
+        RecallAIConnection.user_id == current_user.id
+    ).first()
+
+    return {
+        "connected": connection is not None,
+        "has_api_key": bool(connection and connection.api_key)
+    }
+
+
+@app.post("/api/v1/recallai/start-recording")
+async def start_recallai_recording(
+    request: dict,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Send Recall.ai bot to join a meeting"""
+    meeting_url = request.get("meeting_url")
+    lead_id = request.get("lead_id")
+    loan_id = request.get("loan_id")
+
+    if not meeting_url:
+        raise HTTPException(status_code=400, detail="meeting_url is required")
+
+    # Get Recall.ai API key
+    connection = db.query(RecallAIConnection).filter(
+        RecallAIConnection.user_id == current_user.id
+    ).first()
+
+    if not connection or not connection.api_key:
+        raise HTTPException(status_code=400, detail="Recall.ai not connected. Please add your API key in Settings.")
+
+    try:
+        # Send bot to meeting
+        headers = {
+            "Authorization": f"Token {connection.api_key}",
+            "Content-Type": "application/json"
+        }
+
+        payload = {
+            "meeting_url": meeting_url,
+            "recording_config": {
+                "transcript": {
+                    "provider": {
+                        "recallai_streaming": {
+                            "mode": "prioritize_low_latency",
+                            "language_code": "en"
+                        }
+                    }
+                }
+            }
+        }
+
+        response = requests.post(
+            "https://us-west-2.recall.ai/api/v1/bot",
+            headers=headers,
+            json=payload
+        )
+
+        if response.status_code != 201:
+            logger.error(f"Recall.ai API error: {response.text}")
+            raise HTTPException(status_code=response.status_code, detail=f"Failed to start recording: {response.text}")
+
+        bot_data = response.json()
+        bot_id = bot_data.get("id")
+
+        # Store recording in database
+        recording = RecallAIRecording(
+            user_id=current_user.id,
+            lead_id=lead_id,
+            loan_id=loan_id,
+            bot_id=bot_id,
+            meeting_url=meeting_url,
+            status=bot_data.get("status_changes", {}).get("code", "ready")
+        )
+        db.add(recording)
+        db.commit()
+
+        return {
+            "message": "Recording bot sent to meeting",
+            "bot_id": bot_id,
+            "status": bot_data.get("status_changes", {}).get("code", "ready")
+        }
+
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Recall.ai API request failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to connect to Recall.ai: {str(e)}")
+
+
+@app.post("/api/v1/recallai/webhook")
+async def recallai_webhook(
+    request: dict,
+    db: Session = Depends(get_db)
+):
+    """Receive webhook from Recall.ai when meeting is done"""
+    try:
+        bot_id = request.get("data", {}).get("id")
+        event_type = request.get("event")
+
+        if not bot_id:
+            logger.warning("Webhook received without bot_id")
+            return {"status": "ignored"}
+
+        # Find the recording
+        recording = db.query(RecallAIRecording).filter(
+            RecallAIRecording.bot_id == bot_id
+        ).first()
+
+        if not recording:
+            logger.warning(f"Recording not found for bot_id: {bot_id}")
+            return {"status": "not_found"}
+
+        # Update recording with webhook data
+        data = request.get("data", {})
+        recording.status = data.get("status_changes", {}).get("code", recording.status)
+
+        # If recording is done, fetch transcript
+        if event_type == "bot.status_change" and recording.status == "done":
+            # Get transcript from Recall.ai
+            connection = db.query(RecallAIConnection).filter(
+                RecallAIConnection.user_id == recording.user_id
+            ).first()
+
+            if connection and connection.api_key:
+                try:
+                    headers = {"Authorization": f"Token {connection.api_key}"}
+
+                    # Fetch transcript
+                    transcript_response = requests.get(
+                        f"https://us-west-2.recall.ai/api/v1/bot/{bot_id}/transcript",
+                        headers=headers
+                    )
+
+                    if transcript_response.status_code == 200:
+                        transcript_data = transcript_response.json()
+
+                        # Format transcript
+                        full_transcript = ""
+                        participants = set()
+
+                        for item in transcript_data:
+                            speaker = item.get("speaker", "Unknown")
+                            words = item.get("words", "")
+                            participants.add(speaker)
+                            full_transcript += f"{speaker}: {words}\n\n"
+
+                        recording.transcript = full_transcript
+                        recording.participants = list(participants)
+                        recording.duration_seconds = data.get("duration_seconds")
+                        recording.video_url = data.get("video_url")
+
+                        # Create activity in conversation log
+                        if recording.lead_id:
+                            activity = Activity(
+                                user_id=recording.user_id,
+                                lead_id=recording.lead_id,
+                                type=ActivityType.NOTE,
+                                description="Meeting Recording",
+                                content=f"📹 Meeting Recording Transcript\n\n{full_transcript}\n\n---\nDuration: {recording.duration_seconds // 60} minutes\nParticipants: {', '.join(participants)}"
+                            )
+                            db.add(activity)
+
+                except Exception as e:
+                    logger.error(f"Failed to fetch transcript: {e}")
+
+        db.commit()
+
+        return {"status": "processed"}
+
+    except Exception as e:
+        logger.error(f"Webhook processing error: {e}")
+        return {"status": "error", "message": str(e)}
+
+
+@app.get("/api/v1/recallai/recordings")
+async def get_recallai_recordings(
+    lead_id: int = None,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Get all recordings for a lead"""
+    query = db.query(RecallAIRecording).filter(
+        RecallAIRecording.user_id == current_user.id
+    )
+
+    if lead_id:
+        query = query.filter(RecallAIRecording.lead_id == lead_id)
+
+    recordings = query.order_by(RecallAIRecording.created_at.desc()).all()
+
+    return [
+        {
+            "id": rec.id,
+            "bot_id": rec.bot_id,
+            "meeting_url": rec.meeting_url,
+            "status": rec.status,
+            "transcript": rec.transcript,
+            "summary": rec.summary,
+            "duration_seconds": rec.duration_seconds,
+            "participants": rec.participants,
+            "video_url": rec.video_url,
+            "created_at": rec.created_at.isoformat()
+        }
+        for rec in recordings
+    ]
 
 # ============================================================================
 # ONBOARDING ENDPOINTS
