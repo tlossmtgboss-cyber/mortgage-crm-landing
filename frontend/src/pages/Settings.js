@@ -493,16 +493,31 @@ function Settings() {
   const connectMicrosoft365 = async () => {
     setLoadingMicrosoft(true);
     try {
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        alert('Your session has expired. Please log out and log back in.');
+        setLoadingMicrosoft(false);
+        return;
+      }
+
       // Get OAuth URL from backend
       const response = await fetch(`${API_BASE_URL}/api/v1/microsoft/oauth/start`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`
         }
       });
 
       if (!response.ok) {
         const error = await response.json();
-        alert(`Failed to start Microsoft OAuth: ${error.detail}`);
+
+        // Handle specific error cases
+        if (response.status === 401 || error.detail?.includes('credentials')) {
+          alert('Your session has expired. Please refresh the page or log out and log back in.');
+        } else {
+          alert(`Failed to start Microsoft OAuth: ${error.detail}`);
+        }
+
         setLoadingMicrosoft(false);
         return;
       }
@@ -517,7 +532,7 @@ function Settings() {
 
     } catch (error) {
       console.error('Error starting Microsoft OAuth:', error);
-      alert('Error connecting to Microsoft 365');
+      alert('Error connecting to Microsoft 365. Please try refreshing the page.');
       setLoadingMicrosoft(false);
     }
   };
