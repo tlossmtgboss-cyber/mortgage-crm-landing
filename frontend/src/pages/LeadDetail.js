@@ -37,7 +37,8 @@ function LeadDetail() {
     name: '',
     email: '',
     phone: '',
-    eventTypeUri: ''
+    eventTypeUri: '',
+    stageName: ''
   });
 
   useEffect(() => {
@@ -461,15 +462,21 @@ function LeadDetail() {
           : lead.name || '';
 
         // Find matching calendar event type based on lead stage
-        const leadStage = lead.stage || 'new';
+        const leadStage = lead.stage || 'New';
+        console.log('Lead stage:', leadStage);
+        console.log('Available calendar mappings:', calendarMappings);
+
         const mapping = calendarMappings.find(m => m.stage === leadStage);
+        console.log('Found mapping:', mapping);
+
         const eventTypeUri = mapping?.event_type_uri || '';
 
         setAppointmentData({
           name: leadName,
           email: lead.email || '',
           phone: lead.phone || '',
-          eventTypeUri: eventTypeUri
+          eventTypeUri: eventTypeUri,
+          stageName: leadStage
         });
         setAppointmentStep(1);
         setShowAppointmentModal(true);
@@ -1425,7 +1432,12 @@ function LeadDetail() {
                   </select>
                   {appointmentData.eventTypeUri && (
                     <small className="field-note">
-                      Auto-selected based on lead stage: {lead.stage}
+                      ✓ Auto-selected based on lead stage: {appointmentData.stageName}
+                    </small>
+                  )}
+                  {!appointmentData.eventTypeUri && appointmentData.stageName && (
+                    <small className="field-note" style={{color: '#f59e0b'}}>
+                      ⚠ No calendar mapping found for stage "{appointmentData.stageName}". Please select a calendar type or create a mapping in Settings.
                     </small>
                   )}
                 </div>

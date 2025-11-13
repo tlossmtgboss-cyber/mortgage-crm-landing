@@ -112,25 +112,21 @@ function Settings() {
   }, [activeSection]);
 
   const leadStages = [
-    // Lead Stages
-    { value: 'new', label: 'New Lead' },
-    { value: 'contacted', label: 'Contacted' },
-    { value: 'qualified', label: 'Qualified' },
-    { value: 'meeting_scheduled', label: 'Meeting Scheduled' },
-    { value: 'application_started', label: 'Application Started' },
-    // Active Loan Stages
-    { value: 'preapproved', label: 'Pre-Approved' },
-    { value: 'processing', label: 'In Processing' },
-    { value: 'underwriting', label: 'In Underwriting' },
-    { value: 'approved', label: 'Approved' },
-    { value: 'ctc', label: 'Clear to Close' },
-    { value: 'funded_this_month', label: 'Funded This Month' },
-    { value: 'funded_prior_month', label: 'Funded Prior Month' },
-    // Post Closing
-    { value: 'post_closing', label: 'Post Closing' },
-    // Other
-    { value: 'suspended', label: 'Suspended' },
-    { value: 'lost', label: 'Lost' }
+    // Lead Stages (matching backend LeadStage enum)
+    { value: 'New', label: 'New Lead' },
+    { value: 'Attempted Contact', label: 'Attempted Contact' },
+    { value: 'Prospect', label: 'Prospect' },
+    { value: 'Application Started', label: 'Application Started' },
+    { value: 'Application Complete', label: 'Application Complete' },
+    { value: 'Pre-Approved', label: 'Pre-Approved' },
+    // Active Loan Stages (matching backend LoanStage enum)
+    { value: 'Disclosed', label: 'Disclosed' },
+    { value: 'Processing', label: 'Processing' },
+    { value: 'UW Received', label: 'UW Received' },
+    { value: 'Approved', label: 'Approved' },
+    { value: 'CTC', label: 'Clear to Close' },
+    { value: 'Funded', label: 'Funded' },
+    { value: 'Suspended', label: 'Suspended' }
   ];
 
   const connectCalendly = () => {
