@@ -443,6 +443,10 @@ export const teamAPI = {
   deleteMember: async (memberId) => {
     await api.delete(`/api/v1/team/members/${memberId}`);
   },
+  impersonateMember: async (memberId) => {
+    const response = await api.post(`/api/v1/team/members/${memberId}/impersonate`);
+    return response.data;
+  },
 };
 
 export const calendlyAPI = {

@@ -124,7 +124,8 @@
 
 .btn-edit-header,
 .btn-save,
-.btn-cancel {
+.btn-cancel,
+.btn-impersonate {
   padding: 8px 20px;
   border-radius: 6px;
   font-size: 14px;
@@ -141,6 +142,15 @@
 
 .btn-edit-header:hover {
   background: #1a7070;
+}
+
+.btn-impersonate {
+  background: #6366f1;
+  color: white;
+}
+
+.btn-impersonate:hover {
+  background: #4f46e5;
 }
 
 .btn-save {

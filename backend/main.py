@@ -183,6 +183,8 @@ class User(Base):
     role = Column(String, default="loan_officer")
     branch_id = Column(Integer, ForeignKey("branches.id"))
     is_active = Column(Boolean, default=True)
+    is_admin = Column(Boolean, default=True)  # True for master account owners, False for team members
+    parent_user_id = Column(Integer, ForeignKey("users.id"), nullable=True)  # Reference to master account for team members
     email_verified = Column(Boolean, default=False)
     onboarding_completed = Column(Boolean, default=False)
     user_metadata = Column(JSON)
@@ -573,7 +575,8 @@ class Subscription(Base):
 class TeamMember(Base):
     __tablename__ = "team_members"
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))  # Account owner
+    user_id = Column(Integer, ForeignKey("users.id"))  # Account owner (admin who created this team member)
+    team_member_user_id = Column(Integer, ForeignKey("users.id"), nullable=True)  # User account for this team member to login
     name = Column(String, nullable=False)
     email = Column(String, nullable=False)
     role = Column(String, nullable=False)  # loan_officer, processor, underwriter, etc
@@ -3343,6 +3346,61 @@ async def create_api_keys_table(db: Session = Depends(get_db)):
             content={"status": "error", "message": str(e)}
         )
 
+@app.post("/admin/add-impersonation-columns")
+async def add_impersonation_columns(db: Session = Depends(get_db)):
+    """Admin endpoint to add impersonation feature columns"""
+    try:
+        # Add is_admin column to users table
+        db.execute(text("""
+            DO $$
+            BEGIN
+                IF NOT EXISTS (
+                    SELECT 1 FROM information_schema.columns
+                    WHERE table_name='users' AND column_name='is_admin'
+                ) THEN
+                    ALTER TABLE users ADD COLUMN is_admin BOOLEAN DEFAULT TRUE;
+                END IF;
+            END $$;
+        """))
+
+        # Add parent_user_id column to users table
+        db.execute(text("""
+            DO $$
+            BEGIN
+                IF NOT EXISTS (
+                    SELECT 1 FROM information_schema.columns
+                    WHERE table_name='users' AND column_name='parent_user_id'
+                ) THEN
+                    ALTER TABLE users ADD COLUMN parent_user_id INTEGER REFERENCES users(id);
+                END IF;
+            END $$;
+        """))
+
+        # Add team_member_user_id column to team_members table
+        db.execute(text("""
+            DO $$
+            BEGIN
+                IF NOT EXISTS (
+                    SELECT 1 FROM information_schema.columns
+                    WHERE table_name='team_members' AND column_name='team_member_user_id'
+                ) THEN
+                    ALTER TABLE team_members ADD COLUMN team_member_user_id INTEGER REFERENCES users(id);
+                END IF;
+            END $$;
+        """))
+
+        db.commit()
+
+        logger.info("✅ Impersonation columns added successfully")
+        return {"status": "success", "message": "Impersonation feature columns added successfully"}
+    except Exception as e:
+        db.rollback()
+        logger.error(f"❌ Failed to add impersonation columns: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"status": "error", "message": str(e)}
+        )
+
 @app.post("/admin/add-coborrower-columns")
 async def add_coborrower_columns(db: Session = Depends(get_db)):
     """Admin endpoint to add co-borrower email and phone columns"""
@@ -5715,6 +5773,294 @@ async def create_agent_system_tables(
     except Exception as e:
         logger.error(f"Agent system migration failed: {e}")
         raise HTTPException(status_code=500, detail=f"Migration failed: {str(e)}")
+
+
+# ============================================================================
+# AGENT SYSTEM API
+# ============================================================================
+
+@app.post("/api/v1/agent/workflows")
+async def start_agent_workflow(
+    agent_type: str,
+    goal: str,
+    entity_type: Optional[str] = None,
+    entity_id: Optional[int] = None,
+    context: Optional[Dict[str, Any]] = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Start a new agent workflow.
+
+    Args:
+        agent_type: Type of agent (receptionist, pipeline_ops, etc.)
+        goal: The goal for the agent to achieve
+        entity_type: Optional entity type (lead, loan, etc.)
+        entity_id: Optional entity ID
+        context: Optional additional context
+    """
+    try:
+        from agents.manager import get_agent_manager
+        from agents.receptionist_agent import register_agents
+
+        # Get agent manager
+        agent_manager = get_agent_manager(db)
+
+        # Register agents if not already registered
+        register_agents(agent_manager)
+
+        # Start workflow
+        result = await agent_manager.start_workflow(
+            agent_type=agent_type,
+            goal=goal,
+            entity_type=entity_type,
+            entity_id=entity_id,
+            context=context or {},
+            created_by=current_user.id
+        )
+
+        return result
+
+    except Exception as e:
+        logger.error(f"Failed to start workflow: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/v1/agent/workflows")
+async def list_agent_workflows(
+    agent_type: Optional[str] = None,
+    status: Optional[str] = None,
+    entity_type: Optional[str] = None,
+    entity_id: Optional[int] = None,
+    limit: int = 50,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    List agent workflows with optional filters.
+
+    Args:
+        agent_type: Filter by agent type
+        status: Filter by status (pending, running, completed, failed)
+        entity_type: Filter by entity type
+        entity_id: Filter by entity ID
+        limit: Maximum results (default 50)
+    """
+    try:
+        from agents.manager import get_agent_manager
+
+        agent_manager = get_agent_manager(db)
+
+        workflows = await agent_manager.list_workflows(
+            agent_type=agent_type,
+            status=status,
+            entity_type=entity_type,
+            entity_id=entity_id,
+            limit=limit
+        )
+
+        return {"workflows": workflows}
+
+    except Exception as e:
+        logger.error(f"Failed to list workflows: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/v1/agent/workflows/{workflow_id}")
+async def get_agent_workflow(
+    workflow_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Get detailed status of a specific workflow"""
+    try:
+        from agents.manager import get_agent_manager
+
+        agent_manager = get_agent_manager(db)
+
+        workflow = await agent_manager.get_workflow_status(workflow_id)
+
+        if not workflow:
+            raise HTTPException(status_code=404, detail="Workflow not found")
+
+        return workflow
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to get workflow: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/v1/agent/review-queue")
+async def get_review_queue(
+    status: Optional[str] = "pending",
+    agent_type: Optional[str] = None,
+    assigned_to: Optional[int] = None,
+    limit: int = 50,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Get items from the agent review queue.
+
+    Args:
+        status: Filter by status (pending, approved, rejected)
+        agent_type: Filter by agent type
+        assigned_to: Filter by assigned user ID
+        limit: Maximum results (default 50)
+    """
+    try:
+        query = db.query(AgentReviewQueue)
+
+        if status:
+            query = query.filter(AgentReviewQueue.status == status)
+
+        if agent_type:
+            query = query.filter(AgentReviewQueue.agent_type == agent_type)
+
+        if assigned_to:
+            query = query.filter(AgentReviewQueue.assigned_to == assigned_to)
+
+        items = query.order_by(
+            AgentReviewQueue.priority.desc(),
+            AgentReviewQueue.created_at.asc()
+        ).limit(limit).all()
+
+        return {
+            "items": [
+                {
+                    "id": item.id,
+                    "workflow_id": item.workflow_id,
+                    "action_id": item.action_id,
+                    "agent_type": item.agent_type,
+                    "item_type": item.item_type,
+                    "title": item.title,
+                    "description": item.description,
+                    "proposed_action": item.proposed_action,
+                    "context": item.context,
+                    "confidence_score": item.confidence_score,
+                    "priority": item.priority,
+                    "status": item.status,
+                    "assigned_to": item.assigned_to,
+                    "created_at": item.created_at.isoformat() if item.created_at else None
+                }
+                for item in items
+            ]
+        }
+
+    except Exception as e:
+        logger.error(f"Failed to get review queue: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/v1/agent/review-queue/{item_id}/review")
+async def review_queue_item(
+    item_id: int,
+    decision: str,
+    feedback: Optional[str] = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Review an item in the agent review queue.
+
+    Args:
+        item_id: Review queue item ID
+        decision: Decision (approve, reject)
+        feedback: Optional feedback/notes
+    """
+    try:
+        if decision not in ["approve", "reject"]:
+            raise HTTPException(status_code=400, detail="Decision must be 'approve' or 'reject'")
+
+        item = db.query(AgentReviewQueue).filter(AgentReviewQueue.id == item_id).first()
+
+        if not item:
+            raise HTTPException(status_code=404, detail="Review item not found")
+
+        if item.status != "pending":
+            raise HTTPException(status_code=400, detail=f"Item already reviewed (status: {item.status})")
+
+        # Update review item
+        item.status = "approved" if decision == "approve" else "rejected"
+        item.decision = decision
+        item.feedback = feedback
+        item.reviewed_by = current_user.id
+        item.reviewed_at = datetime.now(timezone.utc)
+
+        db.commit()
+
+        logger.info(f"Review item {item_id} {decision}ed by user {current_user.id}")
+
+        return {
+            "success": True,
+            "item_id": item_id,
+            "decision": decision,
+            "message": f"Successfully {decision}ed the action"
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to review item: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/v1/agent/stats")
+async def get_agent_stats(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Get agent system statistics"""
+    try:
+        from agents.manager import get_agent_manager
+
+        agent_manager = get_agent_manager(db)
+
+        # Count workflows by status
+        total_workflows = db.query(AgentWorkflow).count()
+        active_workflows = db.query(AgentWorkflow).filter(
+            AgentWorkflow.status.in_(["pending", "running"])
+        ).count()
+        completed_workflows = db.query(AgentWorkflow).filter(
+            AgentWorkflow.status == "completed"
+        ).count()
+        failed_workflows = db.query(AgentWorkflow).filter(
+            AgentWorkflow.status == "failed"
+        ).count()
+
+        # Count review queue items
+        pending_reviews = db.query(AgentReviewQueue).filter(
+            AgentReviewQueue.status == "pending"
+        ).count()
+
+        # Count actions
+        total_actions = db.query(AgentAction).count()
+
+        # Get registered agent types
+        registered_agents = agent_manager.get_registered_agents()
+
+        return {
+            "workflows": {
+                "total": total_workflows,
+                "active": active_workflows,
+                "completed": completed_workflows,
+                "failed": failed_workflows
+            },
+            "reviews": {
+                "pending": pending_reviews
+            },
+            "actions": {
+                "total": total_actions
+            },
+            "registered_agents": registered_agents
+        }
+
+    except Exception as e:
+        logger.error(f"Failed to get agent stats: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 # ============================================================================
 # REFERRAL PARTNERS CRUD
@@ -9441,13 +9787,19 @@ async def start_recallai_recording(
 
 @app.post("/api/v1/recallai/webhook")
 async def recallai_webhook(
-    request: dict,
+    request: Request,
     db: Session = Depends(get_db)
 ):
     """Receive webhook from Recall.ai when meeting is done"""
     try:
-        bot_id = request.get("data", {}).get("id")
-        event_type = request.get("event")
+        # Get raw body for signature verification
+        body = await request.body()
+        payload = await request.json()
+
+        # Log webhook receipt
+        event_type = payload.get("event")
+        bot_id = payload.get("data", {}).get("id")
+        logger.info(f"Recall.ai webhook received: event={event_type}, bot_id={bot_id}")
 
         if not bot_id:
             logger.warning("Webhook received without bot_id")
@@ -9463,11 +9815,18 @@ async def recallai_webhook(
             return {"status": "not_found"}
 
         # Update recording with webhook data
-        data = request.get("data", {})
+        data = payload.get("data", {})
         recording.status = data.get("status_changes", {}).get("code", recording.status)
 
-        # If recording is done, fetch transcript
-        if event_type == "bot.status_change" and recording.status == "done":
+        logger.info(f"Recording {bot_id} status updated to: {recording.status}")
+
+        # If recording is done or transcript is ready, fetch transcript
+        should_fetch_transcript = (
+            (event_type == "bot.status_change" and recording.status == "done") or
+            (event_type == "transcript.done")
+        )
+
+        if should_fetch_transcript:
             # Get transcript from Recall.ai
             connection = db.query(RecallAIConnection).filter(
                 RecallAIConnection.user_id == recording.user_id
@@ -9501,16 +9860,30 @@ async def recallai_webhook(
                         recording.duration_seconds = data.get("duration_seconds")
                         recording.video_url = data.get("video_url")
 
-                        # Create activity in conversation log
-                        if recording.lead_id:
-                            activity = Activity(
-                                user_id=recording.user_id,
-                                lead_id=recording.lead_id,
-                                type=ActivityType.NOTE,
-                                description="Meeting Recording",
-                                content=f"📹 Meeting Recording Transcript\n\n{full_transcript}\n\n---\nDuration: {recording.duration_seconds // 60} minutes\nParticipants: {', '.join(participants)}"
-                            )
-                            db.add(activity)
+                        logger.info(f"Transcript saved for bot {bot_id}: {len(full_transcript)} chars, {len(participants)} participants")
+
+                        # Create activity in conversation log (only if not already created)
+                        if recording.lead_id and full_transcript:
+                            # Check if we've already created an activity for this recording
+                            existing_activity = db.query(Activity).filter(
+                                Activity.lead_id == recording.lead_id,
+                                Activity.description == "Meeting Recording",
+                                Activity.content.like(f"%{bot_id}%")
+                            ).first()
+
+                            if not existing_activity:
+                                duration_minutes = recording.duration_seconds // 60 if recording.duration_seconds else 0
+                                activity = Activity(
+                                    user_id=recording.user_id,
+                                    lead_id=recording.lead_id,
+                                    type=ActivityType.NOTE,
+                                    description="Meeting Recording",
+                                    content=f"📹 Meeting Recording Transcript\n\nBot ID: {bot_id}\n\n{full_transcript}\n\n---\nDuration: {duration_minutes} minutes\nParticipants: {', '.join(participants)}"
+                                )
+                                db.add(activity)
+                                logger.info(f"Activity created for lead {recording.lead_id} with recording {bot_id}")
+                            else:
+                                logger.info(f"Activity already exists for recording {bot_id}, skipping")
 
                 except Exception as e:
                     logger.error(f"Failed to fetch transcript: {e}")
@@ -11027,10 +11400,49 @@ async def create_team_member(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Create a new team member"""
+    """Create a new team member and associated user account"""
     try:
         # Create full name from first + last
         full_name = f"{member_data.first_name} {member_data.last_name}"
+
+        # Check if user with this email already exists
+        existing_user = db.query(User).filter(User.email == member_data.email).first()
+
+        team_member_user = None
+        if not existing_user and member_data.email:
+            # Create a User account for the team member
+            # Generate a temporary password
+            temp_password = secrets.token_urlsafe(16)
+            hashed_password = get_password_hash(temp_password)
+
+            team_member_user = User(
+                email=member_data.email,
+                hashed_password=hashed_password,
+                full_name=full_name,
+                role=member_data.role.lower().replace(" ", "_"),
+                is_active=True,
+                is_admin=False,  # Team members are not admins
+                parent_user_id=current_user.id,  # Link to the master account
+                email_verified=False,
+                onboarding_completed=False
+            )
+            db.add(team_member_user)
+            db.flush()  # Get the user ID before creating the team member
+
+            # Create a password setup token
+            setup_token = secrets.token_urlsafe(32)
+            verification_token = EmailVerificationToken(
+                user_id=team_member_user.id,
+                email=member_data.email,
+                token=setup_token,
+                expires_at=datetime.now(timezone.utc) + timedelta(days=7),
+                created_at=datetime.now(timezone.utc)
+            )
+            db.add(verification_token)
+
+            logger.info(f"Created user account for team member: {member_data.email}")
+            # TODO: Send email with setup link containing the token
+            # setup_url = f"https://your-app.com/setup-password?token={setup_token}"
 
         # Store additional fields in meta_data
         meta_data = {
@@ -11043,10 +11455,12 @@ async def create_team_member(
         # Create team member
         team_member = TeamMember(
             user_id=current_user.id,
+            team_member_user_id=team_member_user.id if team_member_user else None,
             name=full_name,
             email=member_data.email or "",
             role=member_data.role,
-            status="active",
+            status="invited" if team_member_user else "active",
+            invited_at=datetime.now(timezone.utc) if team_member_user else None,
             meta_data=meta_data
         )
 
@@ -11063,7 +11477,8 @@ async def create_team_member(
             "phone": meta_data.get("phone"),
             "role": team_member.role,
             "title": meta_data.get("title"),
-            "created_at": team_member.created_at
+            "created_at": team_member.created_at,
+            "has_user_account": team_member_user is not None
         }
 
         return response_data
@@ -11200,6 +11615,85 @@ async def get_all_team_members(
 
     except Exception as e:
         logger.error(f"Get team members error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/v1/team/members/{member_id}/impersonate")
+async def impersonate_team_member(
+    member_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Impersonate a team member - allows admin to log into their team member's CRM view.
+    Only works if the current user is the admin who created the team member.
+    """
+    try:
+        # Verify current user is an admin
+        if not current_user.is_admin:
+            raise HTTPException(
+                status_code=403,
+                detail="Only administrators can impersonate team members"
+            )
+
+        # Get the team member
+        team_member = db.query(TeamMember).filter(
+            TeamMember.id == member_id,
+            TeamMember.user_id == current_user.id  # Must be created by this admin
+        ).first()
+
+        if not team_member:
+            raise HTTPException(status_code=404, detail="Team member not found")
+
+        # Check if team member has a user account
+        if not team_member.team_member_user_id:
+            raise HTTPException(
+                status_code=400,
+                detail="This team member does not have a user account yet"
+            )
+
+        # Get the team member's user account
+        team_member_user = db.query(User).filter(
+            User.id == team_member.team_member_user_id
+        ).first()
+
+        if not team_member_user:
+            raise HTTPException(
+                status_code=404,
+                detail="Team member user account not found"
+            )
+
+        # Verify the team member user is linked to this admin
+        if team_member_user.parent_user_id != current_user.id:
+            raise HTTPException(
+                status_code=403,
+                detail="You can only impersonate team members in your organization"
+            )
+
+        # Generate a JWT token for the team member
+        access_token = create_access_token(data={"sub": team_member_user.email})
+
+        logger.info(
+            f"Admin {current_user.email} impersonating team member {team_member_user.email}"
+        )
+
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "user": {
+                "id": team_member_user.id,
+                "email": team_member_user.email,
+                "full_name": team_member_user.full_name,
+                "role": team_member_user.role,
+                "is_admin": team_member_user.is_admin,
+                "parent_user_id": team_member_user.parent_user_id
+            },
+            "message": f"Successfully impersonating {team_member_user.full_name}"
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Impersonation error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/v1/coach", response_model=CoachResponse)

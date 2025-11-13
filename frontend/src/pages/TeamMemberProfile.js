@@ -23,6 +23,10 @@ function TeamMemberProfile() {
     try {
       setLoading(true);
       const data = await teamAPI.getMemberDetail(id);
+      console.log('Team member data loaded:', data);
+      console.log('First name:', data.first_name);
+      console.log('Last name:', data.last_name);
+      console.log('Role:', data.role);
       setMember(data);
       setFormData(data);
     } catch (error) {
@@ -62,6 +66,28 @@ function TeamMemberProfile() {
         // TODO: Upload to server
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImpersonate = async () => {
+    if (!window.confirm(`Are you sure you want to log in as ${member.first_name} ${member.last_name}? You will be logged into their CRM view.`)) {
+      return;
+    }
+
+    try {
+      const response = await teamAPI.impersonateMember(id);
+
+      // Store the new token
+      localStorage.setItem('token', response.access_token);
+
+      // Show success message
+      alert(`Successfully logged in as ${response.user.full_name}. Redirecting to dashboard...`);
+
+      // Redirect to dashboard
+      window.location.href = '/dashboard';
+    } catch (error) {
+      console.error('Impersonation error:', error);
+      alert(error.response?.data?.detail || 'Failed to impersonate team member. They may not have a user account yet.');
     }
   };
 
@@ -112,9 +138,19 @@ function TeamMemberProfile() {
               style={{ display: 'none' }}
             />
             <div className="profile-name-divider"></div>
-            <div className="profile-name-section-below">
-              <h1 className="profile-name">{member.first_name} {member.last_name}</h1>
-              <p className="profile-role">{member.role}</p>
+            <div className="profile-name-section-below" style={{ border: '2px solid yellow', padding: '10px' }}>
+              <h1 className="profile-name" style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}>
+                {member.first_name && member.last_name
+                  ? `${member.first_name} ${member.last_name}`
+                  : 'Name not available'}
+              </h1>
+              <p className="profile-role" style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}>
+                {member.role || 'Role not specified'}
+              </p>
+              {/* Debug info */}
+              <div style={{ fontSize: '12px', color: 'yellow', marginTop: '8px' }}>
+                DEBUG: first_name={member.first_name || 'NULL'}, last_name={member.last_name || 'NULL'}, role={member.role || 'NULL'}
+              </div>
             </div>
           </div>
           <div className="header-actions-absolute">
@@ -124,9 +160,14 @@ function TeamMemberProfile() {
                 <button className="btn-cancel" onClick={() => { setEditing(false); setFormData(member); }}>Cancel</button>
               </>
             ) : (
-              <button className="btn-edit-header" onClick={() => setEditing(true)}>
-                ✏️ Edit
-              </button>
+              <>
+                <button className="btn-impersonate" onClick={handleImpersonate} style={{ marginRight: '8px' }}>
+                  🔐 Impersonate
+                </button>
+                <button className="btn-edit-header" onClick={() => setEditing(true)}>
+                  ✏️ Edit
+                </button>
+              </>
             )}
           </div>
         </div>
