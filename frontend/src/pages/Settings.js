@@ -1086,11 +1086,34 @@ function Settings() {
     setConnectedIntegrations(newConnected);
   };
 
-  const filteredIntegrations = availableIntegrations.filter(integration =>
-    integration.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    integration.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    integration.category.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Helper function to check if integration is already connected
+  const isIntegrationConnected = (integrationId) => {
+    switch(integrationId) {
+      case 'outlook':
+      case 'outlook-calendar':
+        return microsoftStatus.connected;
+      case 'calendly':
+        return calendlyEventTypes.length > 0;
+      case 'recallai':
+        return recallaiStatus.connected;
+      case 'twilio':
+        return twilioStatus.configured;
+      default:
+        return connectedIntegrations.has(integrationId);
+    }
+  };
+
+  const filteredIntegrations = availableIntegrations.filter(integration => {
+    // Filter by search term
+    const matchesSearch = integration.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      integration.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      integration.category.toLowerCase().includes(searchTerm.toLowerCase());
+
+    // Exclude already connected integrations from marketplace
+    const notConnected = !isIntegrationConnected(integration.id);
+
+    return matchesSearch && notConnected;
+  });
 
   const featuredIntegrations = filteredIntegrations.filter(i =>
     ['outlook', 'outlook-calendar', 'teams', 'zoom', 'docusign', 'calendly'].includes(i.id)
@@ -1360,7 +1383,13 @@ function Settings() {
                 <div className="header-text">
                   <h2>Integrations & Apps</h2>
                   <p className="section-description">
-                    Discover ({availableIntegrations.length}) | Manage ({connectedIntegrations.size})
+                    Available to Connect ({filteredIntegrations.length}) |
+                    Connected ({
+                      (microsoftStatus.connected ? 1 : 0) +
+                      (calendlyEventTypes.length > 0 ? 1 : 0) +
+                      (recallaiStatus.connected ? 1 : 0) +
+                      (twilioStatus.configured ? 1 : 0)
+                    })
                   </p>
                 </div>
                 <div className="search-box">
