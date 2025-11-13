@@ -5514,6 +5514,41 @@ async def run_ai_learning_migration(
         logger.error(f"Migration failed: {e}")
         raise HTTPException(status_code=500, detail=f"Migration failed: {str(e)}")
 
+@app.post("/api/v1/ai-learning/fix-fk")
+async def fix_task_approvals_fk(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Fix foreign key constraint on task_approvals to reference ai_tasks"""
+    try:
+        from sqlalchemy import text
+
+        results = []
+
+        # Drop old FK constraint
+        try:
+            db.execute(text("ALTER TABLE task_approvals DROP CONSTRAINT IF EXISTS task_approvals_task_id_fkey"))
+            db.commit()
+            results.append("✅ Dropped old FK constraint")
+        except Exception as e:
+            db.rollback()
+            results.append(f"⚠️  Error dropping FK: {str(e)}")
+
+        # Add new FK constraint
+        try:
+            db.execute(text("ALTER TABLE task_approvals ADD CONSTRAINT task_approvals_task_id_fkey FOREIGN KEY (task_id) REFERENCES ai_tasks(id)"))
+            db.commit()
+            results.append("✅ Added new FK constraint to ai_tasks")
+        except Exception as e:
+            db.rollback()
+            results.append(f"❌ Error adding FK: {str(e)}")
+
+        return {"status": "success", "results": results}
+
+    except Exception as e:
+        logger.error(f"FK fix failed: {e}")
+        raise HTTPException(status_code=500, detail=f"FK fix failed: {str(e)}")
+
 # ============================================================================
 # REFERRAL PARTNERS CRUD
 # ============================================================================
