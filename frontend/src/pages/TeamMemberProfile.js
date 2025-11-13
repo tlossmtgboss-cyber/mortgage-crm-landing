@@ -92,7 +92,7 @@ function TeamMemberProfile() {
       {/* Header with Avatar and Name */}
       <div className="profile-header-green">
         <div className="profile-header-content">
-          <div className="profile-avatar-section">
+          <div className="profile-avatar-section-centered">
             <div
               className="profile-avatar-circle"
               onClick={handleImageClick}
@@ -111,12 +111,13 @@ function TeamMemberProfile() {
               onChange={handleImageUpload}
               style={{ display: 'none' }}
             />
-            <div className="profile-name-section">
+            <div className="profile-name-divider"></div>
+            <div className="profile-name-section-below">
               <h1 className="profile-name">{member.first_name} {member.last_name}</h1>
               <p className="profile-role">{member.role}</p>
             </div>
           </div>
-          <div className="header-actions">
+          <div className="header-actions-absolute">
             {editing ? (
               <>
                 <button className="btn-save" onClick={handleSave}>Save</button>
