@@ -145,6 +145,7 @@ class LoanStage(str, enum.Enum):
     SUSPENDED = "Suspended"
     CTC = "CTC"
     FUNDED = "Funded"
+    POST_CLOSING = "Post Closing"
 
 class TaskType(str, enum.Enum):
     HUMAN_NEEDED = "Human Needed"

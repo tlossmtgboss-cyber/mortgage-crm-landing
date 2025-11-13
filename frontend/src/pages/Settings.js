@@ -126,6 +126,7 @@ function Settings() {
     { value: 'Approved', label: 'Approved' },
     { value: 'CTC', label: 'Clear to Close' },
     { value: 'Funded', label: 'Funded' },
+    { value: 'Post Closing', label: 'Post Closing' },
     { value: 'Suspended', label: 'Suspended' }
   ];
 
