@@ -5552,6 +5552,170 @@ async def fix_task_approvals_fk(
         logger.error(f"FK fix failed: {e}")
         raise HTTPException(status_code=500, detail=f"FK fix failed: {str(e)}")
 
+@app.post("/api/v1/agent-system/migrate")
+async def create_agent_system_tables(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Create agent system tables (workflows, actions, review queue, memory, config)"""
+    try:
+        from sqlalchemy import text
+
+        results = []
+
+        # 1. Agent Workflows Table
+        try:
+            db.execute(text("""
+                CREATE TABLE IF NOT EXISTS agent_workflows (
+                    id SERIAL PRIMARY KEY,
+                    workflow_type VARCHAR NOT NULL,
+                    agent_type VARCHAR NOT NULL,
+                    entity_type VARCHAR,
+                    entity_id INTEGER,
+                    status VARCHAR DEFAULT 'pending',
+                    state JSONB,
+                    goal TEXT,
+                    trigger_event VARCHAR,
+                    started_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                    completed_at TIMESTAMP WITH TIME ZONE,
+                    error TEXT,
+                    created_by INTEGER REFERENCES users(id),
+                    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+                )
+            """))
+            db.commit()
+            results.append("✅ Created agent_workflows table")
+        except Exception as e:
+            db.rollback()
+            results.append(f"⚠️  agent_workflows: {str(e)[:100]}")
+
+        # 2. Agent Actions Table
+        try:
+            db.execute(text("""
+                CREATE TABLE IF NOT EXISTS agent_actions (
+                    id SERIAL PRIMARY KEY,
+                    workflow_id INTEGER REFERENCES agent_workflows(id),
+                    agent_type VARCHAR NOT NULL,
+                    action_type VARCHAR NOT NULL,
+                    tool_name VARCHAR,
+                    input_data JSONB,
+                    output_data JSONB,
+                    status VARCHAR DEFAULT 'pending',
+                    reasoning TEXT,
+                    confidence_score FLOAT,
+                    requires_approval BOOLEAN DEFAULT FALSE,
+                    approved_by INTEGER REFERENCES users(id),
+                    approved_at TIMESTAMP WITH TIME ZONE,
+                    error TEXT,
+                    duration_ms INTEGER,
+                    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+                )
+            """))
+            db.commit()
+            results.append("✅ Created agent_actions table")
+        except Exception as e:
+            db.rollback()
+            results.append(f"⚠️  agent_actions: {str(e)[:100]}")
+
+        # 3. Agent Review Queue Table
+        try:
+            db.execute(text("""
+                CREATE TABLE IF NOT EXISTS agent_review_queue (
+                    id SERIAL PRIMARY KEY,
+                    workflow_id INTEGER REFERENCES agent_workflows(id),
+                    action_id INTEGER REFERENCES agent_actions(id),
+                    agent_type VARCHAR NOT NULL,
+                    item_type VARCHAR NOT NULL,
+                    title VARCHAR NOT NULL,
+                    description TEXT,
+                    proposed_action JSONB NOT NULL,
+                    context JSONB,
+                    confidence_score FLOAT,
+                    priority VARCHAR DEFAULT 'medium',
+                    status VARCHAR DEFAULT 'pending',
+                    assigned_to INTEGER REFERENCES users(id),
+                    reviewed_by INTEGER REFERENCES users(id),
+                    reviewed_at TIMESTAMP WITH TIME ZONE,
+                    decision VARCHAR,
+                    feedback TEXT,
+                    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                    expires_at TIMESTAMP WITH TIME ZONE
+                )
+            """))
+            db.commit()
+            results.append("✅ Created agent_review_queue table")
+        except Exception as e:
+            db.rollback()
+            results.append(f"⚠️  agent_review_queue: {str(e)[:100]}")
+
+        # 4. Agent Memory Table
+        try:
+            db.execute(text("""
+                CREATE TABLE IF NOT EXISTS agent_memory (
+                    id SERIAL PRIMARY KEY,
+                    agent_type VARCHAR NOT NULL,
+                    memory_type VARCHAR NOT NULL,
+                    entity_type VARCHAR,
+                    entity_id INTEGER,
+                    key VARCHAR NOT NULL,
+                    value JSONB,
+                    metadata JSONB,
+                    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                    expires_at TIMESTAMP WITH TIME ZONE
+                )
+            """))
+            db.commit()
+            results.append("✅ Created agent_memory table")
+        except Exception as e:
+            db.rollback()
+            results.append(f"⚠️  agent_memory: {str(e)[:100]}")
+
+        # 5. Agent Config Table
+        try:
+            db.execute(text("""
+                CREATE TABLE IF NOT EXISTS agent_config (
+                    id SERIAL PRIMARY KEY,
+                    agent_type VARCHAR NOT NULL UNIQUE,
+                    enabled BOOLEAN DEFAULT TRUE,
+                    config JSONB NOT NULL,
+                    permissions JSONB,
+                    model_name VARCHAR DEFAULT 'gpt-4o-mini',
+                    temperature FLOAT DEFAULT 0.7,
+                    max_tokens INTEGER DEFAULT 2000,
+                    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+                )
+            """))
+            db.commit()
+            results.append("✅ Created agent_config table")
+        except Exception as e:
+            db.rollback()
+            results.append(f"⚠️  agent_config: {str(e)[:100]}")
+
+        # Create indexes
+        try:
+            indexes = [
+                "CREATE INDEX IF NOT EXISTS idx_agent_workflows_status ON agent_workflows(status)",
+                "CREATE INDEX IF NOT EXISTS idx_agent_workflows_entity ON agent_workflows(entity_type, entity_id)",
+                "CREATE INDEX IF NOT EXISTS idx_agent_actions_workflow ON agent_actions(workflow_id)",
+                "CREATE INDEX IF NOT EXISTS idx_agent_review_queue_status ON agent_review_queue(status)"
+            ]
+            for idx_sql in indexes:
+                db.execute(text(idx_sql))
+            db.commit()
+            results.append("✅ Created indexes")
+        except Exception as e:
+            db.rollback()
+            results.append(f"⚠️  indexes: {str(e)[:100]}")
+
+        return {"status": "success", "results": results}
+
+    except Exception as e:
+        logger.error(f"Agent system migration failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Migration failed: {str(e)}")
+
 # ============================================================================
 # REFERRAL PARTNERS CRUD
 # ============================================================================
