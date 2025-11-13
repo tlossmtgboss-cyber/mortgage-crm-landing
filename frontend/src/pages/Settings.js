@@ -112,14 +112,24 @@ function Settings() {
   }, [activeSection]);
 
   const leadStages = [
+    // Lead Stages
     { value: 'new', label: 'New Lead' },
     { value: 'contacted', label: 'Contacted' },
     { value: 'qualified', label: 'Qualified' },
     { value: 'meeting_scheduled', label: 'Meeting Scheduled' },
     { value: 'application_started', label: 'Application Started' },
-    { value: 'processing', label: 'Processing' },
+    // Active Loan Stages
+    { value: 'preapproved', label: 'Pre-Approved' },
+    { value: 'processing', label: 'In Processing' },
+    { value: 'underwriting', label: 'In Underwriting' },
     { value: 'approved', label: 'Approved' },
-    { value: 'closed', label: 'Closed' },
+    { value: 'ctc', label: 'Clear to Close' },
+    { value: 'funded_this_month', label: 'Funded This Month' },
+    { value: 'funded_prior_month', label: 'Funded Prior Month' },
+    // Post Closing
+    { value: 'post_closing', label: 'Post Closing' },
+    // Other
+    { value: 'suspended', label: 'Suspended' },
     { value: 'lost', label: 'Lost' }
   ];
 
@@ -2093,11 +2103,14 @@ function Settings() {
                 <div className="info-icon">🤖</div>
                 <div className="info-content">
                   <h3>How AI Scheduling Works</h3>
-                  <p>When AI schedules appointments with leads, it automatically selects the right calendar based on the lead's current stage. For example:</p>
+                  <p>When AI schedules appointments with leads and loans, it automatically selects the right calendar based on the current stage. For example:</p>
                   <ul>
                     <li><strong>New Lead</strong> → Discovery Call (30 min)</li>
                     <li><strong>Qualified</strong> → Consultation (60 min)</li>
                     <li><strong>Application Started</strong> → Application Review (45 min)</li>
+                    <li><strong>In Processing</strong> → Status Update Call (30 min)</li>
+                    <li><strong>Clear to Close</strong> → Closing Prep Meeting (45 min)</li>
+                    <li><strong>Post Closing</strong> → Follow-up Call (15 min)</li>
                   </ul>
                   <p>Configure your mappings below to tell the AI which calendar to use for each stage.</p>
                 </div>
@@ -2109,7 +2122,7 @@ function Settings() {
                 <div className="mapping-form">
                   <div className="form-row">
                     <div className="form-group">
-                      <label>Lead Stage</label>
+                      <label>Stage</label>
                       <select
                         value={selectedStage}
                         onChange={(e) => setSelectedStage(e.target.value)}
