@@ -84,10 +84,11 @@ class EventBus:
     Routes events to appropriate agents based on registered handlers.
     """
 
-    def __init__(self):
+    def __init__(self, db_session=None):
         self._handlers: Dict[EventType, List[EventHandler]] = {}
         self._event_queue: asyncio.Queue = asyncio.Queue()
         self._processing: bool = False
+        self._db_session = db_session
         logger.info("EventBus initialized")
 
     def register_handler(
@@ -206,18 +207,34 @@ class EventBus:
 
                 logger.info(f"Triggering agent {handler.agent_type} with goal: {goal}")
 
-                # Note: Actual agent triggering will be done by AgentManager
-                # This is a placeholder for the integration point
-                # In practice, you'd call:
-                # await agent_manager.start_workflow(
-                #     agent_type=handler.agent_type,
-                #     goal=goal,
-                #     entity_type=event.entity_type,
-                #     entity_id=event.entity_id,
-                #     context=event.data,
-                #     trigger_event=event.event_type.value,
-                #     permissions=handler.permissions
-                # )
+                # Trigger agent workflow via AgentManager
+                try:
+                    from .manager import get_agent_manager
+                    from .receptionist_agent import register_agents
+
+                    # Get DB session (passed during event emission or use stored one)
+                    if self._db_session:
+                        agent_manager = get_agent_manager(self._db_session)
+                        register_agents(agent_manager)
+
+                        # Start workflow asynchronously
+                        asyncio.create_task(
+                            agent_manager.start_workflow(
+                                agent_type=handler.agent_type,
+                                goal=goal,
+                                entity_type=event.entity_type,
+                                entity_id=event.entity_id,
+                                context=event.data,
+                                trigger_event=event.event_type.value,
+                                permissions=handler.permissions
+                            )
+                        )
+                        logger.info(f"Started workflow for {handler.agent_type}")
+                    else:
+                        logger.warning(f"No DB session available to trigger {handler.agent_type}")
+
+                except Exception as trigger_error:
+                    logger.error(f"Failed to trigger agent workflow: {trigger_error}", exc_info=True)
 
         except Exception as e:
             logger.error(f"Failed to handle event {event.event_type.value}: {str(e)}", exc_info=True)
@@ -291,9 +308,14 @@ def get_event_bus() -> EventBus:
 
 # Helper functions for common event emissions
 
-async def emit_lead_created(lead_id: int, lead_data: Dict[str, Any]):
+async def emit_lead_created(lead_id: int, lead_data: Dict[str, Any], db_session=None):
     """Emit a lead created event"""
     event_bus = get_event_bus()
+
+    # Set DB session for agent triggering
+    if db_session:
+        event_bus._db_session = db_session
+
     await event_bus.emit(
         event_type=EventType.LEAD_CREATED,
         entity_type="lead",

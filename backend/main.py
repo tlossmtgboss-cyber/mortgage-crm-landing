@@ -4711,6 +4711,30 @@ async def create_lead(lead: LeadCreate, db: Session = Depends(get_db), current_u
     db.refresh(db_lead)
 
     logger.info(f"Lead created: {db_lead.name} (Score: {db_lead.ai_score})")
+
+    # Trigger AI Receptionist Agent
+    try:
+        from agents.events import emit_lead_created
+        await emit_lead_created(
+            lead_id=db_lead.id,
+            lead_data={
+                "lead_id": db_lead.id,
+                "name": db_lead.name,
+                "email": db_lead.email,
+                "phone": db_lead.phone,
+                "source": db_lead.source,
+                "loan_type": db_lead.loan_type,
+                "loan_amount": float(db_lead.loan_amount) if db_lead.loan_amount else None,
+                "property_value": float(db_lead.property_value) if db_lead.property_value else None,
+                "ai_score": db_lead.ai_score
+            },
+            db_session=db
+        )
+        logger.info(f"Triggered AI Receptionist for lead {db_lead.id}")
+    except Exception as e:
+        logger.error(f"Failed to trigger AI agent: {e}")
+        # Don't fail the lead creation if agent trigger fails
+
     return db_lead
 
 @app.get("/api/v1/leads/", response_model=List[LeadResponse])
@@ -12620,9 +12644,38 @@ async def startup_event():
         logger.warning(f"⚠️ Startup initialization skipped: {e}")
         logger.info("Application will still start, database will be initialized on first request")
 
+    # Initialize Agent System
+    try:
+        from agents.setup import initialize_agent_system
+        from agents.scheduler import start_scheduler
+
+        logger.info("🤖 Initializing Agent System...")
+        initialize_agent_system()
+
+        # Start scheduled tasks
+        start_scheduler()
+        logger.info("✅ Agent System initialized with scheduled tasks")
+    except Exception as e:
+        logger.warning(f"⚠️ Agent System initialization skipped: {e}")
+        logger.info("Agent system features will be available but not scheduled")
+
     logger.info("✅ CRM is ready!")
     logger.info("📚 API Documentation: http://localhost:8000/docs")
     logger.info("🔐 Demo Login: demo@example.com / demo123")
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Cleanup on shutdown"""
+    logger.info("🛑 Shutting down Agentic AI Mortgage CRM...")
+
+    try:
+        from agents.scheduler import stop_scheduler
+        stop_scheduler()
+        logger.info("✅ Agent scheduler stopped")
+    except Exception as e:
+        logger.warning(f"⚠️ Agent scheduler shutdown error: {e}")
+
+    logger.info("👋 CRM shutdown complete")
 
 # ============================================================================
 # MAIN

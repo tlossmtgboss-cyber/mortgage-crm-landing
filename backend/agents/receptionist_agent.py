@@ -279,6 +279,9 @@ def register_agents(agent_manager):
     Args:
         agent_manager: AgentManager instance
     """
+    from .data_reconciliation_agent import register_data_reconciliation_agent
+
     agent_manager.register_agent_type("receptionist", ReceptionistAgent)
     agent_manager.register_agent_type("pipeline_ops", PipelineOpsAgent)
-    logger.info("Registered agent types: receptionist, pipeline_ops")
+    register_data_reconciliation_agent(agent_manager)
+    logger.info("Registered agent types: receptionist, pipeline_ops, data_reconciliation")
