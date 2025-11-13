@@ -5300,11 +5300,14 @@ async def generate_ai_task_draft(
         logger.error(f"Error generating AI draft: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to generate AI draft: {str(e)}")
 
+class ApprovalRequest(BaseModel):
+    approved: bool = True
+    user_corrections: Optional[str] = None
+
 @app.post("/api/v1/tasks/{task_id}/approve-ai-action")
 async def approve_ai_action(
     task_id: int,
-    approved: bool = True,
-    user_corrections: str = None,
+    request: ApprovalRequest,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -5336,14 +5339,14 @@ async def approve_ai_action(
             task_id=task_id,
             task_type=task.task_type,
             user_id=current_user.id,
-            approved=approved,
+            approved=request.approved,
             ai_message=task.ai_drafted_message,
-            user_corrections=user_corrections
+            user_corrections=request.user_corrections
         )
         db.add(task_approval)
 
         # Update AI learning state
-        if approved:
+        if request.approved:
             # Increment consecutive approvals
             ai_learning.consecutive_approvals += 1
             ai_learning.total_approvals += 1

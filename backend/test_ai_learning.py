@@ -21,7 +21,7 @@ API_BASE_URL = "https://mortgage-crm-production-7a9a.up.railway.app"
 # API_BASE_URL = "http://localhost:8000"
 
 # Test user credentials - valid token
-TEST_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhaS10ZXN0LTIwMjUxMTEyMjEzNzE4QGV4YW1wbGUuY29tIiwiZXhwIjoxNzYzMDAzMjM4fQ.CMkGGULL9OCxs8jXUF4hceWxAEQCrQVdBy0nQt7j8kA"
+TEST_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhaS10ZXN0LTIwMjUxMTEzMDM0MTIwQGV4YW1wbGUuY29tIiwiZXhwIjoxNzYzMDI1MDgxfQ.9kdKYQR5Z94HiDx2CoVYSLyxJj6tbCH05h7JKJEPe4g"
 
 class Colors:
     GREEN = '\033[92m'
@@ -278,7 +278,10 @@ def test_6_rejection_and_reset():
 
     # Check status after 3 approvals
     status_before = test_3_get_ai_learning_status(task_type)
-    print_info(f"Status before rejection: {status_before.get('ai_status')} with {status_before.get('consecutive_approvals')} consecutive approvals")
+    if status_before:
+        print_info(f"Status before rejection: {status_before.get('ai_status')} with {status_before.get('consecutive_approvals')} consecutive approvals")
+    else:
+        print_error("Failed to get status before rejection")
 
     # Create 4th task and REJECT it
     print("\n❌ Creating 4th task and REJECTING it...")
