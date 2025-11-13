@@ -73,3 +73,8 @@ dist/
 # Docker volumes
 postgres_data/
 RAILWAY_CREDENTIALS_SETUP.md
+
+# Recall.ai test scripts with API keys
+test_recallai.py
+setup_recallai.py
+connect_recallai_api.py
