@@ -536,6 +536,10 @@ function Leads() {
   const handleNewLead = () => {
     setEditingLead(null);
     resetForm();
+    // If on Internet Leads tab, set default source to Website
+    if (activeTab === 'internet') {
+      setLoanData(prev => ({ ...prev, source: 'Website' }));
+    }
     setShowModal(true);
   };
 
@@ -617,7 +621,29 @@ function Leads() {
 
   return (
     <div className="leads-page">
-      {/* Main Tab Navigation */}
+      <div className="page-header">
+        <div>
+          <h1>Leads</h1>
+          <p>{filteredLeads.length} total {activeTab === 'internet' ? 'internet leads' : 'leads'}</p>
+        </div>
+        <button className="btn-primary" onClick={handleNewLead}>
+          + Add Lead
+        </button>
+      </div>
+
+      <div className="filter-tabs">
+        {filters.map((filter) => (
+          <button
+            key={filter}
+            className={`filter-tab ${activeFilter === filter ? 'active' : ''}`}
+            onClick={() => setActiveFilter(filter)}
+          >
+            {filter}
+          </button>
+        ))}
+      </div>
+
+      {/* Main Tab Navigation - Leads vs Internet Leads */}
       <div className="main-tabs">
         <button
           className={`main-tab ${activeTab === 'leads' ? 'active' : ''}`}
@@ -637,28 +663,6 @@ function Leads() {
         >
           Internet Leads
         </button>
-      </div>
-
-      <div className="page-header">
-        <div>
-          <h1>{activeTab === 'internet' ? 'Internet Leads' : 'Leads'}</h1>
-          <p>{filteredLeads.length} total {activeTab === 'internet' ? 'internet leads' : 'leads'}</p>
-        </div>
-        <button className="btn-primary" onClick={handleNewLead}>
-          + Add Lead
-        </button>
-      </div>
-
-      <div className="filter-tabs">
-        {filters.map((filter) => (
-          <button
-            key={filter}
-            className={`filter-tab ${activeFilter === filter ? 'active' : ''}`}
-            onClick={() => setActiveFilter(filter)}
-          >
-            {filter}
-          </button>
-        ))}
       </div>
 
       <div className="search-bar-container">
@@ -1026,13 +1030,36 @@ function Leads() {
               </div>
 
               <div className="form-group">
-                <label>Source</label>
-                <input
-                  type="text"
+                <label>Source *</label>
+                <select
                   value={loanData.source}
                   onChange={(e) => setLoanData({ ...loanData, source: e.target.value })}
-                  placeholder="Website, Referral, etc."
-                />
+                  required
+                >
+                  <option value="">Select source...</option>
+                  <optgroup label="Internet Sources">
+                    <option value="Website">Website</option>
+                    <option value="Zillow">Zillow</option>
+                    <option value="Realtor.com">Realtor.com</option>
+                    <option value="Trulia">Trulia</option>
+                    <option value="Homes.com">Homes.com</option>
+                    <option value="Facebook">Facebook</option>
+                    <option value="Social Media">Social Media</option>
+                    <option value="Google">Google</option>
+                  </optgroup>
+                  <optgroup label="Referral Sources">
+                    <option value="Referral Partner">Referral Partner</option>
+                    <option value="Real Estate Agent">Real Estate Agent</option>
+                    <option value="Past Client">Past Client</option>
+                    <option value="Friend/Family">Friend/Family</option>
+                  </optgroup>
+                  <optgroup label="Other">
+                    <option value="Walk-in">Walk-in</option>
+                    <option value="Phone Call">Phone Call</option>
+                    <option value="Event">Event</option>
+                    <option value="Other">Other</option>
+                  </optgroup>
+                </select>
               </div>
 
               <div className="form-group">
