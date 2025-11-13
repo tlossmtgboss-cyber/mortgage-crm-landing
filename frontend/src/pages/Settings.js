@@ -7,6 +7,7 @@ function Settings() {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('integrations');
   const [expandedSections, setExpandedSections] = useState({
+    integrations: false,
     organizational: false,
     scheduling: false,
     onboarding: false,
@@ -1126,13 +1127,70 @@ function Settings() {
       <div className="settings-content">
         {/* Sidebar */}
         <div className="settings-sidebar">
+          {/* Integrations - Expandable */}
           <button
-            className={`sidebar-btn ${activeSection === 'integrations' ? 'active' : ''}`}
-            onClick={() => setActiveSection('integrations')}
+            className={`sidebar-btn parent ${expandedSections.integrations ? 'expanded' : ''} ${activeSection === 'integrations' ? 'active' : ''}`}
+            onClick={() => {
+              toggleSection('integrations');
+              if (!expandedSections.integrations) {
+                setActiveSection('integrations');
+              }
+            }}
           >
             <span className="icon">🔌</span>
             <span>Integrations</span>
+            <span className="expand-icon">{expandedSections.integrations ? '▼' : '▶'}</span>
           </button>
+          {expandedSections.integrations && (
+            <div className="sidebar-children">
+              <button
+                className={`sidebar-btn child ${activeSection === 'integrations' ? 'active' : ''}`}
+                onClick={() => setActiveSection('integrations')}
+              >
+                <span>🏪 Marketplace</span>
+              </button>
+
+              {/* Microsoft Outlook */}
+              {microsoftStatus.connected && (
+                <button
+                  className={`sidebar-btn child ${activeSection === 'integration-outlook' ? 'active' : ''}`}
+                  onClick={() => setActiveSection('integration-outlook')}
+                >
+                  <span>📧 Microsoft Outlook</span>
+                </button>
+              )}
+
+              {/* Calendly */}
+              {calendlyEventTypes.length > 0 && (
+                <button
+                  className={`sidebar-btn child ${activeSection === 'integration-calendly' ? 'active' : ''}`}
+                  onClick={() => setActiveSection('integration-calendly')}
+                >
+                  <span>🗓️ Calendly</span>
+                </button>
+              )}
+
+              {/* Recall.ai */}
+              {recallaiStatus.connected && (
+                <button
+                  className={`sidebar-btn child ${activeSection === 'integration-recallai' ? 'active' : ''}`}
+                  onClick={() => setActiveSection('integration-recallai')}
+                >
+                  <span>📹 Recall.ai</span>
+                </button>
+              )}
+
+              {/* Twilio */}
+              {twilioStatus.configured && (
+                <button
+                  className={`sidebar-btn child ${activeSection === 'integration-twilio' ? 'active' : ''}`}
+                  onClick={() => setActiveSection('integration-twilio')}
+                >
+                  <span>📱 Twilio</span>
+                </button>
+              )}
+            </div>
+          )}
 
           <button
             className={`sidebar-btn ${activeSection === 'phone-integration' ? 'active' : ''}`}
@@ -1468,6 +1526,290 @@ function Settings() {
                     <p>No integrations found matching "{searchTerm}"</p>
                   </div>
                 )}
+              </div>
+            </div>
+          )}
+
+          {/* Integration Detail Pages */}
+
+          {/* Microsoft Outlook Detail */}
+          {activeSection === 'integration-outlook' && (
+            <div className="integration-detail-page">
+              <div className="detail-header">
+                <button className="btn-back" onClick={() => setActiveSection('integrations')}>
+                  ← Back to Integrations
+                </button>
+                <div className="header-title">
+                  <h2>📧 Microsoft Outlook Integration</h2>
+                  <span className="status-badge connected">Connected</span>
+                </div>
+              </div>
+
+              <div className="detail-content">
+                {microsoftStatus.connected && (
+                  <div className="microsoft-status-panel">
+                    <div className="status-header">
+                      <div className="status-icon">✅</div>
+                      <div className="status-info">
+                        <h3>Connected to Microsoft 365</h3>
+                        <p>{microsoftStatus.email_address}</p>
+                      </div>
+                      <div className="status-actions">
+                        <button
+                          className="btn-secondary"
+                          onClick={() => window.location.href = `${window.location.origin.includes('localhost') ? 'http://localhost:8000' : 'https://mortgage-crm-production-7a9a.up.railway.app'}/auth/microsoft/disconnect`}
+                        >
+                          Disconnect
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="status-details">
+                      <div className="detail-item">
+                        <span className="label">Email Sync:</span>
+                        <span className="value">{microsoftStatus.sync_enabled ? '✅ Enabled' : '⚠️ Disabled'}</span>
+                      </div>
+                      <div className="detail-item">
+                        <span className="label">Last Sync:</span>
+                        <span className="value">
+                          {microsoftStatus.last_sync_at
+                            ? new Date(microsoftStatus.last_sync_at).toLocaleString()
+                            : 'Never'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="features-list">
+                      <h4>Available Features:</h4>
+                      <ul>
+                        <li>✅ Send emails directly from lead profiles</li>
+                        <li>✅ Auto-sync email history to conversation log</li>
+                        <li>✅ Create calendar events</li>
+                        <li>✅ Teams meeting integration</li>
+                      </ul>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Calendly Detail */}
+          {activeSection === 'integration-calendly' && (
+            <div className="integration-detail-page">
+              <div className="detail-header">
+                <button className="btn-back" onClick={() => setActiveSection('integrations')}>
+                  ← Back to Integrations
+                </button>
+                <div className="header-title">
+                  <h2>🗓️ Calendly Integration</h2>
+                  <span className="status-badge connected">Connected</span>
+                </div>
+              </div>
+
+              <div className="detail-content">
+                <div className="calendly-status-panel">
+                  <div className="status-header">
+                    <div className="status-icon">✅</div>
+                    <div className="status-info">
+                      <h3>Calendly Connected</h3>
+                      <p>{calendlyEventTypes.length} event type{calendlyEventTypes.length !== 1 ? 's' : ''} available</p>
+                    </div>
+                    <div className="status-actions">
+                      <button
+                        className="btn-primary"
+                        onClick={() => setActiveSection('calendar-settings')}
+                      >
+                        Manage Mappings
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="event-types-list">
+                    <h4>Available Event Types:</h4>
+                    <div className="event-types-grid">
+                      {calendlyEventTypes.map((eventType, index) => (
+                        <div key={index} className="event-type-card">
+                          <h5>{eventType.name}</h5>
+                          <p>{eventType.duration} minutes</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="calendar-mappings-preview">
+                    <h4>Calendar Mappings:</h4>
+                    {calendarMappings.length > 0 ? (
+                      <div className="mappings-list">
+                        {calendarMappings.map((mapping, index) => (
+                          <div key={index} className="mapping-item">
+                            <span className="stage">{mapping.stage_name}</span>
+                            <span className="arrow">→</span>
+                            <span className="event-type">{mapping.event_type_name}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="no-mappings">No calendar mappings configured yet.</p>
+                    )}
+                  </div>
+
+                  <div className="features-list">
+                    <h4>Available Features:</h4>
+                    <ul>
+                      <li>✅ Auto-schedule appointments from lead profiles</li>
+                      <li>✅ Map lead stages to Calendly event types</li>
+                      <li>✅ Send calendar invites automatically</li>
+                      <li>✅ Sync appointments to CRM calendar</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Recall.ai Detail */}
+          {activeSection === 'integration-recallai' && (
+            <div className="integration-detail-page">
+              <div className="detail-header">
+                <button className="btn-back" onClick={() => setActiveSection('integrations')}>
+                  ← Back to Integrations
+                </button>
+                <div className="header-title">
+                  <h2>📹 Recall.ai Integration</h2>
+                  <span className="status-badge connected">Connected</span>
+                </div>
+              </div>
+
+              <div className="detail-content">
+                <div className="recallai-status-panel">
+                  <div className="status-header">
+                    <div className="status-icon" style={{background: '#8b5cf6'}}>✅</div>
+                    <div className="status-info">
+                      <h3>Recall.ai Connected</h3>
+                      <p>Meeting recording bot active</p>
+                    </div>
+                    <div className="status-actions">
+                      <button
+                        className="btn-primary"
+                        onClick={() => setShowRecallaiModal(true)}
+                      >
+                        Update API Key
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="status-meta">
+                    Transcripts automatically saved to Conversation Log
+                  </div>
+
+                  <div className="how-it-works">
+                    <h4>How It Works:</h4>
+                    <ol>
+                      <li>Open any lead profile</li>
+                      <li>Click the "Start Recording" button in Quick Actions</li>
+                      <li>Paste the meeting URL (Zoom, Teams, or Google Meet)</li>
+                      <li>The Recall.ai bot joins the meeting and records it</li>
+                      <li>After the meeting ends, the transcript is automatically saved to the lead's Conversation Log</li>
+                    </ol>
+                  </div>
+
+                  <div className="features-list">
+                    <h4>Available Features:</h4>
+                    <ul>
+                      <li>✅ Works with Zoom, Teams, and Google Meet</li>
+                      <li>✅ Real-time AI transcription</li>
+                      <li>✅ Speaker identification</li>
+                      <li>✅ Auto-saves to Conversation Log</li>
+                      <li>✅ Meeting duration tracking</li>
+                      <li>✅ Participant list</li>
+                    </ul>
+                  </div>
+
+                  <div className="supported-platforms">
+                    <h4>Supported Platforms:</h4>
+                    <div className="platforms-grid">
+                      <div className="platform-card">
+                        <span className="platform-icon">💼</span>
+                        <span className="platform-name">Zoom</span>
+                      </div>
+                      <div className="platform-card">
+                        <span className="platform-icon">👥</span>
+                        <span className="platform-name">Microsoft Teams</span>
+                      </div>
+                      <div className="platform-card">
+                        <span className="platform-icon">📹</span>
+                        <span className="platform-name">Google Meet</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Twilio Detail */}
+          {activeSection === 'integration-twilio' && (
+            <div className="integration-detail-page">
+              <div className="detail-header">
+                <button className="btn-back" onClick={() => setActiveSection('integrations')}>
+                  ← Back to Integrations
+                </button>
+                <div className="header-title">
+                  <h2>📱 Twilio Integration</h2>
+                  <span className="status-badge connected">Connected</span>
+                </div>
+              </div>
+
+              <div className="detail-content">
+                <div className="twilio-status-panel">
+                  <div className="status-header">
+                    <div className="status-icon">✅</div>
+                    <div className="status-info">
+                      <h3>Twilio Connected</h3>
+                      <p>{twilioStatus.phone_number || 'SMS & Calling enabled'}</p>
+                    </div>
+                    <div className="status-actions">
+                      <button
+                        className="btn-primary"
+                        onClick={() => setActiveSection('phone-integration')}
+                      >
+                        Manage Settings
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="features-list">
+                    <h4>Available Features:</h4>
+                    <ul>
+                      <li>✅ Send SMS directly from lead profiles</li>
+                      <li>✅ Click-to-call integration</li>
+                      <li>✅ SMS conversation history</li>
+                      <li>✅ Auto-log calls and texts</li>
+                      <li>✅ Bulk SMS campaigns</li>
+                    </ul>
+                  </div>
+
+                  <div className="quick-actions">
+                    <h4>Quick Actions:</h4>
+                    <div className="actions-grid">
+                      <button
+                        className="action-card"
+                        onClick={() => setActiveSection('phone-integration')}
+                      >
+                        <span className="action-icon">⚙️</span>
+                        <span className="action-label">Configure Phone Number</span>
+                      </button>
+                      <button
+                        className="action-card"
+                        onClick={() => setActiveSection('phone-integration')}
+                      >
+                        <span className="action-icon">🧪</span>
+                        <span className="action-label">Test Integration</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           )}
