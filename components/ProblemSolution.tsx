@@ -101,17 +101,17 @@ export default function ProblemSolution() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section header */}
         <div className="text-center mb-20">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 mb-6">
-            <span className="text-sm font-medium text-white/70">The Problem</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-500/10 backdrop-blur-xl rounded-full border border-red-500/20 mb-6">
+            <span className="text-sm font-medium text-red-300">The Problem</span>
           </div>
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
             The mortgage industry runs on
             <br />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-red-400 via-orange-400 to-yellow-400">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-red-400 via-orange-400 to-yellow-400 drop-shadow-2xl">
               outdated systems
             </span>
           </h2>
-          <p className="text-xl text-white/85 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
             Systems that depend on human follow-up and manual data entry. Loan officers waste 60–70% of their time on non-revenue tasks: chasing docs, updating milestones, sending reminders, and rekeying data between systems.
           </p>
         </div>
@@ -136,14 +136,14 @@ export default function ProblemSolution() {
               <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                 {/* Problem */}
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 text-4xl opacity-60">
+                  <div className="flex-shrink-0 text-4xl">
                     {item.icon}
                   </div>
                   <div>
-                    <div className="text-xs uppercase tracking-wider text-red-400 mb-2">
+                    <div className="text-xs uppercase tracking-wider text-red-400 font-bold mb-2">
                       The Problem
                     </div>
-                    <h3 className="text-xl font-semibold text-white/90 leading-relaxed">
+                    <h3 className="text-xl font-semibold text-gray-200 leading-relaxed">
                       {item.problem}
                     </h3>
                   </div>
@@ -151,8 +151,8 @@ export default function ProblemSolution() {
 
                 {/* Arrow */}
                 <div className="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-                  <div className="w-12 h-12 bg-gradient-to-r from-red-500/20 to-green-500/20 rounded-full flex items-center justify-center border border-white/10">
-                    <svg className="w-6 h-6 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-12 h-12 bg-gradient-to-r from-red-500/30 to-green-500/30 rounded-full flex items-center justify-center border border-white/20 shadow-xl">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
                   </div>
@@ -164,10 +164,10 @@ export default function ProblemSolution() {
                     {item.solutionIcon}
                   </div>
                   <div>
-                    <div className="text-xs uppercase tracking-wider text-green-400 mb-2">
+                    <div className="text-xs uppercase tracking-wider text-green-400 font-bold mb-2">
                       Our Solution
                     </div>
-                    <h3 className="text-xl font-semibold text-white leading-relaxed">
+                    <h3 className="text-xl font-semibold text-gray-100 leading-relaxed">
                       {item.solution}
                     </h3>
                   </div>
@@ -179,31 +179,31 @@ export default function ProblemSolution() {
 
         {/* Bottom stats */}
         <div className="mt-20 grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
-          <div className="p-8 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10">
-            <div className="text-5xl font-bold text-white mb-2">10+</div>
-            <div className="text-white/60 mb-4">hours saved per week</div>
-            <div className="text-white/40 text-sm">vs. traditional CRMs</div>
+          <div className="p-8 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 hover:bg-white/15 transition-all duration-300">
+            <div className="text-5xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-3">10+</div>
+            <div className="text-gray-200 mb-2 font-medium">hours saved per week</div>
+            <div className="text-gray-400 text-sm">vs. traditional CRMs</div>
           </div>
-          <div className="p-8 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10">
-            <div className="text-5xl font-bold text-white mb-2">40%</div>
-            <div className="text-white/60 mb-4">faster close times</div>
-            <div className="text-white/40 text-sm">with AI automation</div>
+          <div className="p-8 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 hover:bg-white/15 transition-all duration-300">
+            <div className="text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-3">40%</div>
+            <div className="text-gray-200 mb-2 font-medium">faster close times</div>
+            <div className="text-gray-400 text-sm">with AI automation</div>
           </div>
-          <div className="p-8 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10">
-            <div className="text-5xl font-bold text-white mb-2">3x</div>
-            <div className="text-white/60 mb-4">more volume capacity</div>
-            <div className="text-white/40 text-sm">without adding staff</div>
+          <div className="p-8 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 hover:bg-white/15 transition-all duration-300">
+            <div className="text-5xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent mb-3">3x</div>
+            <div className="text-gray-200 mb-2 font-medium">more volume capacity</div>
+            <div className="text-gray-400 text-sm">without adding staff</div>
           </div>
         </div>
 
         {/* CTA */}
         <div className="text-center mt-16">
-          <p className="text-white/40 text-lg mb-6">
+          <p className="text-gray-300 text-lg mb-6">
             See the difference yourself
           </p>
           <a
             href="https://mortgage-crm-production-7a9a.up.railway.app/register"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-white text-black font-bold rounded-xl hover:scale-105 transition-all duration-300 shadow-2xl shadow-blue-500/30"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 text-white font-bold rounded-xl hover:scale-105 transition-all duration-300 shadow-2xl shadow-blue-500/40"
           >
             <span>Start your free trial</span>
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

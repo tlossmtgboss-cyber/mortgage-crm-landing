@@ -67,7 +67,7 @@ export default function DashboardShowcase() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-400"></span>
             </span>
-            <span className="text-sm font-medium text-white/70">Live from the platform</span>
+            <span className="text-sm font-medium text-gray-200">Live from the platform</span>
           </div>
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
             See your business
@@ -76,7 +76,7 @@ export default function DashboardShowcase() {
               in crystal clarity
             </span>
           </h2>
-          <p className="text-xl text-white/90 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-100 max-w-3xl mx-auto">
             Real dashboards from loan officers managing $180M+ in their MUM portfolio.
             This could be your view tomorrow.
           </p>
@@ -122,15 +122,15 @@ export default function DashboardShowcase() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
             <div className="bg-white/5 backdrop-blur-xl rounded-xl p-6 border border-white/10 text-center hover:bg-white/10 transition-all duration-300">
               <div className="text-3xl font-bold text-white mb-2">487</div>
-              <div className="text-sm text-white/60">Active clients tracked</div>
+              <div className="text-sm text-gray-300">Active clients tracked</div>
             </div>
             <div className="bg-white/5 backdrop-blur-xl rounded-xl p-6 border border-white/10 text-center hover:bg-white/10 transition-all duration-300">
               <div className="text-3xl font-bold text-green-400 mb-2">+22</div>
-              <div className="text-sm text-white/60">New loans this month</div>
+              <div className="text-sm text-gray-300">New loans this month</div>
             </div>
             <div className="bg-white/5 backdrop-blur-xl rounded-xl p-6 border border-white/10 text-center hover:bg-white/10 transition-all duration-300">
               <div className="text-3xl font-bold text-blue-400 mb-2">74</div>
-              <div className="text-sm text-white/60">Hot opportunities</div>
+              <div className="text-sm text-gray-300">Hot opportunities</div>
             </div>
           </div>
         </div>
@@ -147,7 +147,7 @@ export default function DashboardShowcase() {
               <h3 className="text-lg font-semibold text-white mb-2">
                 Portfolio Intelligence
               </h3>
-              <p className="text-white/85 leading-relaxed">
+              <p className="text-gray-200 leading-relaxed">
                 Track every client's lifetime value, referral potential, and refinance opportunities.
                 Know exactly where your revenue is coming from.
               </p>
@@ -164,7 +164,7 @@ export default function DashboardShowcase() {
               <h3 className="text-lg font-semibold text-white mb-2">
                 Predictive Opportunities
               </h3>
-              <p className="text-white/85 leading-relaxed">
+              <p className="text-gray-200 leading-relaxed">
                 AI identifies clients ready for rate-and-term refis, HELOCs, and equity access.
                 Never miss a revenue opportunity again.
               </p>
@@ -181,7 +181,7 @@ export default function DashboardShowcase() {
               <h3 className="text-lg font-semibold text-white mb-2">
                 Revenue Analytics
               </h3>
-              <p className="text-white/85 leading-relaxed">
+              <p className="text-gray-200 leading-relaxed">
                 See exactly how much each client is worth over their lifetime.
                 Understand your referral rates and repeat purchase patterns.
               </p>
@@ -198,7 +198,7 @@ export default function DashboardShowcase() {
               <h3 className="text-lg font-semibold text-white mb-2">
                 Attrition Prevention
               </h3>
-              <p className="text-white/85 leading-relaxed">
+              <p className="text-gray-200 leading-relaxed">
                 Get early warnings when clients are at risk of refinancing elsewhere.
                 Proactive alerts help you retain more business.
               </p>
@@ -208,7 +208,7 @@ export default function DashboardShowcase() {
 
         {/* CTA */}
         <div className="mt-16 text-center">
-          <p className="text-white/40 text-lg mb-6">
+          <p className="text-gray-400 text-lg mb-6">
             This dashboard is already built and waiting for your data
           </p>
           <a

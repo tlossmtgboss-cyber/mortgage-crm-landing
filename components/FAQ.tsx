@@ -91,12 +91,12 @@ export default function FAQ() {
         {/* Section header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 mb-6">
-            <span className="text-sm font-medium text-white/70">Common questions</span>
+            <span className="text-sm font-medium text-gray-200">Common questions</span>
           </div>
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
             Everything you need to know
           </h2>
-          <p className="text-xl text-white/85 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-200 max-w-2xl mx-auto">
             Still have questions? Our support team is here to help.
           </p>
         </div>
@@ -121,7 +121,7 @@ export default function FAQ() {
                     openIndex === index ? 'rotate-180' : ''
                   }`}
                 >
-                  <svg className="w-5 h-5 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </div>
@@ -133,7 +133,7 @@ export default function FAQ() {
                   openIndex === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
                 }`}
               >
-                <div className="px-6 sm:px-8 pb-6 sm:pb-8 text-white/85 leading-relaxed">
+                <div className="px-6 sm:px-8 pb-6 sm:pb-8 text-gray-200 leading-relaxed">
                   {faq.answer}
                 </div>
               </div>
@@ -143,7 +143,7 @@ export default function FAQ() {
 
         {/* Bottom CTA */}
         <div className="mt-16 text-center p-8 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10">
-          <p className="text-white/60 mb-4">
+          <p className="text-gray-300 mb-4">
             Still have questions?
           </p>
           <a

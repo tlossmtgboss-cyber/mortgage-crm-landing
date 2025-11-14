@@ -163,7 +163,7 @@ export default function HeroNew() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-400"></span>
             </span>
-            <span className="text-sm font-medium text-white/80 group-hover:text-white transition-colors">
+            <span className="text-sm font-medium text-gray-100 group-hover:text-white transition-colors">
               Trusted by 500+ loan officers nationwide
             </span>
           </div>
@@ -234,7 +234,7 @@ export default function HeroNew() {
                 <div className={`text-6xl font-extrabold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent mb-3 group-hover:drop-shadow-2xl transition-all duration-500`}>
                   {stat.value}
                 </div>
-                <div className="text-base text-white/80 uppercase tracking-wider font-medium group-hover:text-white transition-colors">{stat.label}</div>
+                <div className="text-base text-gray-100 uppercase tracking-wider font-medium group-hover:text-white transition-colors">{stat.label}</div>
                 {/* Glow effect on hover */}
                 <div className={`absolute inset-0 bg-gradient-to-r ${stat.color} opacity-0 group-hover:opacity-20 blur-2xl transition-opacity duration-500 -z-10`}></div>
               </div>

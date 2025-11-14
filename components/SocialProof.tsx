@@ -122,7 +122,7 @@ export default function SocialProof() {
         {/* Section header */}
         <div className="text-center mb-20">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 mb-6">
-            <span className="text-sm font-medium text-white/70">Trusted by top producers</span>
+            <span className="text-sm font-medium text-gray-200">Trusted by top producers</span>
           </div>
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
             Join 500+ loan officers
@@ -131,7 +131,7 @@ export default function SocialProof() {
               closing more loans
             </span>
           </h2>
-          <p className="text-xl text-white/85 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-200 max-w-3xl mx-auto">
             From solo LOs to enterprise teams—mortgage professionals trust us to power their business.
           </p>
         </div>
@@ -146,7 +146,7 @@ export default function SocialProof() {
               <div className="text-4xl sm:text-5xl font-bold text-white mb-2">
                 {metric.value}
               </div>
-              <div className="text-sm text-white/40 uppercase tracking-wider">
+              <div className="text-sm text-gray-400 uppercase tracking-wider">
                 {metric.label}
               </div>
             </div>
@@ -168,7 +168,7 @@ export default function SocialProof() {
                 <svg className="w-10 h-10 text-blue-400/30 mb-4" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
                 </svg>
-                <p className="text-white/80 leading-relaxed">
+                <p className="text-gray-100 leading-relaxed">
                   "{testimonial.quote}"
                 </p>
               </div>
@@ -180,13 +180,13 @@ export default function SocialProof() {
                 </div>
                 <div>
                   <div className="text-white font-semibold">{testimonial.author}</div>
-                  <div className="text-white/40 text-sm">{testimonial.role}</div>
+                  <div className="text-gray-400 text-sm">{testimonial.role}</div>
                   <div className="text-white/30 text-xs">{testimonial.company}</div>
                 </div>
               </div>
 
               {/* Badge */}
-              <div className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 bg-white/5 rounded-full border border-white/10 text-xs text-white/60">
+              <div className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 bg-white/5 rounded-full border border-white/10 text-xs text-gray-300">
                 <svg className="w-3 h-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                 </svg>
@@ -205,7 +205,7 @@ export default function SocialProof() {
 
         {/* Bottom CTA */}
         <div className="text-center mt-16">
-          <p className="text-white/40 text-lg mb-2">
+          <p className="text-gray-400 text-lg mb-2">
             Ready to join them?
           </p>
           <a

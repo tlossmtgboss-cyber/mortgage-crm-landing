@@ -112,7 +112,7 @@ export default function HowItWorks() {
         {/* Section header */}
         <div className="text-center mb-24">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 mb-6">
-            <span className="text-sm font-medium text-white/70">Simple setup</span>
+            <span className="text-sm font-medium text-gray-200">Simple setup</span>
           </div>
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
             From signup to
@@ -121,7 +121,7 @@ export default function HowItWorks() {
               closing loans in 24 hours
             </span>
           </h2>
-          <p className="text-xl text-white/85 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-200 max-w-3xl mx-auto">
             Most teams are fully set up and processing loans within a day. No long onboarding, no expensive implementation—just results.
           </p>
         </div>
@@ -156,14 +156,14 @@ export default function HowItWorks() {
                     <h3 className="text-3xl font-bold text-white mb-4">
                       {step.title}
                     </h3>
-                    <p className="text-lg text-white/85 leading-relaxed mb-6">
+                    <p className="text-lg text-gray-200 leading-relaxed mb-6">
                       {step.description}
                     </p>
                     <div className={`flex flex-wrap gap-3 ${index % 2 === 0 ? 'justify-center lg:justify-end' : 'justify-center lg:justify-start'}`}>
                       {step.features.map((feature, i) => (
                         <div
                           key={i}
-                          className="px-4 py-2 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 text-sm text-white/70"
+                          className="px-4 py-2 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 text-sm text-gray-200"
                         >
                           {feature}
                         </div>
@@ -192,7 +192,7 @@ export default function HowItWorks() {
           <h3 className="text-2xl font-bold text-white mb-4">
             Ready to get started?
           </h3>
-          <p className="text-white/60 mb-8 max-w-2xl mx-auto">
+          <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
             No contracts, no setup fees, no credit card required. Start your free trial and see why 500+ loan officers switched to our CRM.
           </p>
           <a

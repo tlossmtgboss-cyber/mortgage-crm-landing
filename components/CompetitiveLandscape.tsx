@@ -82,7 +82,7 @@ export default function CompetitiveLandscape() {
         <span className="text-2xl text-red-400">❌</span>
       );
     }
-    return <span className={`font-semibold ${isUs ? 'text-green-400' : 'text-white/70'}`}>{value}</span>;
+    return <span className={`font-semibold ${isUs ? 'text-green-400' : 'text-gray-200'}`}>{value}</span>;
   };
 
   return (
@@ -102,7 +102,7 @@ export default function CompetitiveLandscape() {
         {/* Section header */}
         <div className="text-center mb-20">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 mb-6">
-            <span className="text-sm font-medium text-white/70">Competitive Advantage</span>
+            <span className="text-sm font-medium text-gray-200">Competitive Advantage</span>
           </div>
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
             Why we're
@@ -111,7 +111,7 @@ export default function CompetitiveLandscape() {
               different
             </span>
           </h2>
-          <p className="text-xl text-white/85 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-200 max-w-3xl mx-auto">
             Other mortgage CRMs offer basic organization. We offer true intelligence—AI that learns, adapts, and executes.
           </p>
         </div>
@@ -122,13 +122,13 @@ export default function CompetitiveLandscape() {
             {/* Header row */}
             <div className="grid grid-cols-6 gap-4 mb-4">
               <div className="col-span-1 p-4">
-                <div className="text-white/60 text-sm font-semibold uppercase tracking-wider">
+                <div className="text-gray-300 text-sm font-semibold uppercase tracking-wider">
                   Platform
                 </div>
               </div>
               {features.map((feature) => (
                 <div key={feature.key} className="p-4 text-center">
-                  <div className="text-white/60 text-sm font-semibold uppercase tracking-wider">
+                  <div className="text-gray-300 text-sm font-semibold uppercase tracking-wider">
                     {feature.label}
                   </div>
                 </div>
@@ -146,7 +146,7 @@ export default function CompetitiveLandscape() {
                 }`}
               >
                 <div className="flex items-center">
-                  <div className={`font-bold text-lg ${competitor.isUs ? 'text-white' : 'text-white/80'}`}>
+                  <div className={`font-bold text-lg ${competitor.isUs ? 'text-white' : 'text-gray-100'}`}>
                     {competitor.name}
                     {competitor.isUs && (
                       <span className="ml-2 text-xs px-2 py-1 bg-green-500/20 text-green-400 rounded-full">
@@ -177,7 +177,7 @@ export default function CompetitiveLandscape() {
 
         {/* Bottom CTA */}
         <div className="mt-16 text-center">
-          <p className="text-white/60 text-lg mb-6">
+          <p className="text-gray-300 text-lg mb-6">
             See the difference for yourself
           </p>
           <a

@@ -47,7 +47,7 @@ export default function Opportunity() {
         {/* Section header */}
         <div className="text-center mb-20">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 mb-6">
-            <span className="text-sm font-medium text-white/70">The Opportunity</span>
+            <span className="text-sm font-medium text-gray-200">The Opportunity</span>
           </div>
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
             AI has changed
@@ -56,7 +56,7 @@ export default function Opportunity() {
               everything
             </span>
           </h2>
-          <p className="text-xl text-white/85 max-w-3xl mx-auto mb-12">
+          <p className="text-xl text-gray-200 max-w-3xl mx-auto mb-12">
             Automation, natural language understanding, and adaptive learning can now manage the mortgage lifecycle end-to-end—from lead to lifetime relationship.
           </p>
         </div>
@@ -69,10 +69,10 @@ export default function Opportunity() {
               <div className="text-6xl font-bold text-white mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
                 $4.2B
               </div>
-              <div className="text-lg text-white/90 font-semibold mb-2">
+              <div className="text-lg text-gray-100 font-semibold mb-2">
                 CRM market for mortgage/real estate professionals
               </div>
-              <div className="text-sm text-white/60">
+              <div className="text-sm text-gray-300">
                 Growing 15% year-over-year
               </div>
             </div>
@@ -84,10 +84,10 @@ export default function Opportunity() {
               <div className="text-6xl font-bold text-white mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
                 300K+
               </div>
-              <div className="text-lg text-white/90 font-semibold mb-2">
+              <div className="text-lg text-gray-100 font-semibold mb-2">
                 Originators in the U.S.
               </div>
-              <div className="text-sm text-white/60">
+              <div className="text-sm text-gray-300">
                 All looking for better tools
               </div>
             </div>
@@ -99,10 +99,10 @@ export default function Opportunity() {
               <div className="text-6xl font-bold text-white mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-red-400">
                 70%
               </div>
-              <div className="text-lg text-white/90 font-semibold mb-2">
+              <div className="text-lg text-gray-100 font-semibold mb-2">
                 Of loan officers report tech inefficiency
               </div>
-              <div className="text-sm text-white/60">
+              <div className="text-sm text-gray-300">
                 As their #1 bottleneck
               </div>
             </div>
@@ -119,7 +119,7 @@ export default function Opportunity() {
             <h3 className="text-3xl font-bold text-white mb-4">
               The market is ready for true AI automation
             </h3>
-            <p className="text-xl text-white/80 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-100 max-w-3xl mx-auto">
               Loan officers don't need another basic CRM. They need an intelligent operating system that learns, adapts, and executes—freeing them to focus on what they do best: building relationships and closing deals.
             </p>
           </div>

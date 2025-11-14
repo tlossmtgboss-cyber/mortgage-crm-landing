@@ -150,7 +150,7 @@ export default function PinnedFeatures() {
 
               {/* Title */}
               <div className="section-title mb-12">
-                <div className="text-2xl text-white/40 uppercase tracking-widest mb-4">
+                <div className="text-2xl text-gray-400 uppercase tracking-widest mb-4">
                   {feature.title}
                 </div>
                 <h2 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight">
@@ -163,7 +163,7 @@ export default function PinnedFeatures() {
               </div>
 
               {/* Description */}
-              <p className="section-content text-xl sm:text-2xl text-white/85 max-w-3xl mx-auto leading-relaxed mb-12">
+              <p className="section-content text-xl sm:text-2xl text-gray-200 max-w-3xl mx-auto leading-relaxed mb-12">
                 {feature.description}
               </p>
 
@@ -172,7 +172,7 @@ export default function PinnedFeatures() {
                 {feature.stats.map((stat, i) => (
                   <div
                     key={i}
-                    className="px-6 py-3 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 text-sm text-white/70 hover:bg-white/10 hover:text-white transition-all duration-300"
+                    className="px-6 py-3 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 text-sm text-gray-200 hover:bg-white/10 hover:text-white transition-all duration-300"
                   >
                     {stat}
                   </div>

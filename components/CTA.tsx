@@ -25,7 +25,7 @@ export default function CTA() {
           </a>
         </div>
 
-        <p className="text-sm text-white/85">
+        <p className="text-sm text-gray-200">
           No credit card required • Setup in minutes • Cancel anytime
         </p>
       </div>

@@ -104,7 +104,7 @@ export default function FinalCTA() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-400"></span>
               </span>
-              <span className="text-sm font-medium text-white/80">Limited time offer</span>
+              <span className="text-sm font-medium text-gray-100">Limited time offer</span>
             </div>
 
             {/* Heading */}
@@ -117,7 +117,7 @@ export default function FinalCTA() {
             </h2>
 
             {/* Description */}
-            <p className="text-xl text-white/90 mb-12 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xl text-gray-100 mb-12 max-w-2xl mx-auto leading-relaxed">
               Join 500+ loan officers who've already made the switch. The average user closes 40% more loans in their first 90 days.
               <strong className="text-white"> No credit card. No risk. Just results.</strong>
             </p>
@@ -145,7 +145,7 @@ export default function FinalCTA() {
             </div>
 
             {/* Trust indicators */}
-            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-white/40">
+            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400">
               <div className="flex items-center gap-2">
                 <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -172,15 +172,15 @@ export default function FinalCTA() {
         <div className="mt-24 grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
           <div>
             <div className="text-4xl font-bold text-white mb-2">4.9/5</div>
-            <div className="text-sm text-white/40 uppercase tracking-wider">Average rating</div>
+            <div className="text-sm text-gray-400 uppercase tracking-wider">Average rating</div>
           </div>
           <div>
             <div className="text-4xl font-bold text-white mb-2">99.9%</div>
-            <div className="text-sm text-white/40 uppercase tracking-wider">Uptime</div>
+            <div className="text-sm text-gray-400 uppercase tracking-wider">Uptime</div>
           </div>
           <div>
             <div className="text-4xl font-bold text-white mb-2">24/7</div>
-            <div className="text-sm text-white/40 uppercase tracking-wider">Support</div>
+            <div className="text-sm text-gray-400 uppercase tracking-wider">Support</div>
           </div>
         </div>
       </div>

@@ -78,7 +78,7 @@ export default function AgenticAI() {
         {/* Section header */}
         <div className="text-center mb-20">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 mb-6">
-            <span className="text-sm font-medium text-white/70">How It Works</span>
+            <span className="text-sm font-medium text-gray-200">How It Works</span>
           </div>
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
             Agentic AI
@@ -87,7 +87,7 @@ export default function AgenticAI() {
               in action
             </span>
           </h2>
-          <p className="text-xl text-white/85 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-200 max-w-3xl mx-auto">
             Watch how our AI assistant handles real-world mortgage workflows—learning and improving with every interaction.
           </p>
         </div>
@@ -126,7 +126,7 @@ export default function AgenticAI() {
                         {item.subtasks.map((subtask, subIndex) => (
                           <div
                             key={subIndex}
-                            className="flex items-center gap-3 text-white/70 text-lg"
+                            className="flex items-center gap-3 text-gray-200 text-lg"
                           >
                             <div className="w-2 h-2 rounded-full bg-green-400"></div>
                             <span>{subtask}</span>
@@ -148,7 +148,7 @@ export default function AgenticAI() {
             <h3 className="text-2xl font-bold text-white mb-3">
               Every cycle makes the system smarter
             </h3>
-            <p className="text-white/70 text-lg">
+            <p className="text-gray-200 text-lg">
               The AI learns from your feedback and corrections, continuously improving its accuracy and decision-making.
             </p>
           </div>
@@ -158,7 +158,7 @@ export default function AgenticAI() {
             <h3 className="text-2xl font-bold text-white mb-3">
               Human intervention becomes the exception
             </h3>
-            <p className="text-white/70 text-lg">
+            <p className="text-gray-200 text-lg">
               Over time, routine tasks are fully automated, freeing your team to focus on complex decisions and client relationships.
             </p>
           </div>

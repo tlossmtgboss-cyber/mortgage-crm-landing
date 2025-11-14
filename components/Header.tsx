@@ -53,7 +53,7 @@ export default function Header() {
               <a
                 key={item.href}
                 href={item.href}
-                className="text-white/80 hover:text-white transition-all duration-300 font-medium relative group py-2"
+                className="text-gray-100 hover:text-white transition-all duration-300 font-medium relative group py-2"
               >
                 {item.label}
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 group-hover:w-full transition-all duration-300"></span>
@@ -65,7 +65,7 @@ export default function Header() {
           <div className="hidden lg:flex items-center gap-3">
             <Link
               href="https://mortgage-crm-production-7a9a.up.railway.app/"
-              className="px-5 py-2.5 text-white/90 hover:text-white font-semibold transition-all duration-300 hover:scale-105"
+              className="px-5 py-2.5 text-gray-100 hover:text-white font-semibold transition-all duration-300 hover:scale-105"
             >
               Log In
             </Link>
@@ -114,7 +114,7 @@ export default function Header() {
                 <a
                   key={item.href}
                   href={item.href}
-                  className="text-white/80 hover:text-white transition-all duration-300 font-medium py-2 hover:pl-2"
+                  className="text-gray-100 hover:text-white transition-all duration-300 font-medium py-2 hover:pl-2"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.label}
@@ -123,7 +123,7 @@ export default function Header() {
               <div className="flex flex-col gap-3 mt-4 pt-4 border-t border-white/10">
                 <Link
                   href="https://mortgage-crm-production-7a9a.up.railway.app/"
-                  className="text-center px-4 py-2 text-white/90 hover:text-white font-semibold transition-all duration-300"
+                  className="text-center px-4 py-2 text-gray-100 hover:text-white font-semibold transition-all duration-300"
                 >
                   Log In
                 </Link>

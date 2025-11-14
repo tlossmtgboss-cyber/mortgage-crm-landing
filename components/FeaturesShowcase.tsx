@@ -150,7 +150,7 @@ export default function FeaturesShowcase() {
         {/* Section header */}
         <div className="text-center mb-20">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 mb-6">
-            <span className="text-sm font-medium text-white/70">Everything you need</span>
+            <span className="text-sm font-medium text-gray-200">Everything you need</span>
           </div>
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
             Built for the way
@@ -159,7 +159,7 @@ export default function FeaturesShowcase() {
               loan officers actually work
             </span>
           </h2>
-          <p className="text-xl text-white/85 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-200 max-w-3xl mx-auto">
             Every feature designed to save you time, close more deals, and grow your business.
             No bloat, no complexity—just what works.
           </p>
@@ -168,7 +168,7 @@ export default function FeaturesShowcase() {
         {/* Features grid by category */}
         {categories.map((category, catIndex) => (
           <div key={catIndex} className="mb-20">
-            <h3 className="text-2xl font-bold text-white/80 mb-8 uppercase tracking-wider">
+            <h3 className="text-2xl font-bold text-gray-100 mb-8 uppercase tracking-wider">
               {category}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -189,7 +189,7 @@ export default function FeaturesShowcase() {
                   <h4 className="text-xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors">
                     {feature.title}
                   </h4>
-                  <p className="text-white/80 leading-relaxed">
+                  <p className="text-gray-100 leading-relaxed">
                     {feature.description}
                   </p>
 
@@ -207,7 +207,7 @@ export default function FeaturesShowcase() {
 
         {/* Bottom CTA */}
         <div className="text-center mt-20">
-          <p className="text-white/40 mb-6 text-lg">
+          <p className="text-gray-400 mb-6 text-lg">
             And 50+ more features built for mortgage teams
           </p>
           <a

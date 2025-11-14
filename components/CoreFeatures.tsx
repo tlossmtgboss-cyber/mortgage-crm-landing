@@ -106,7 +106,7 @@ export default function CoreFeatures() {
         {/* Section header */}
         <div className="text-center mb-20">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 mb-6">
-            <span className="text-sm font-medium text-white/70">Core Features</span>
+            <span className="text-sm font-medium text-gray-200">Core Features</span>
           </div>
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
             Eight powerful modules.
@@ -115,7 +115,7 @@ export default function CoreFeatures() {
               One intelligent system.
             </span>
           </h2>
-          <p className="text-xl text-white/85 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-200 max-w-3xl mx-auto">
             Every feature is designed to learn from you and automate what can be automated—so you can focus on what only humans can do.
           </p>
         </div>
@@ -149,7 +149,7 @@ export default function CoreFeatures() {
                 </h3>
 
                 {/* Description */}
-                <p className="text-white/70 leading-relaxed text-lg">
+                <p className="text-gray-200 leading-relaxed text-lg">
                   {feature.description}
                 </p>
               </div>
@@ -166,11 +166,11 @@ export default function CoreFeatures() {
                 Automate what can be automated.
               </span>
               {" "}
-              <span className="text-white/80">
+              <span className="text-gray-100">
                 Learn what can be learned.
               </span>
               {" "}
-              <span className="text-white/80">
+              <span className="text-gray-100">
                 Empower humans to do what only humans can.
               </span>
             </p>
