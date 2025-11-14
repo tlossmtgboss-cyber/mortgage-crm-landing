@@ -108,43 +108,29 @@ export default function HeroNew() {
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black"
       aria-label="Hero section"
     >
-      {/* Enhanced animated gradient background */}
+      {/* Subtle animated gradient background */}
       <div
         ref={bgRef}
-        className="absolute inset-0 opacity-80"
+        className="absolute inset-0 opacity-40"
         style={{
-          background: 'radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.25), rgba(147, 51, 234, 0.15), transparent 80%)',
+          background: 'radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.15), rgba(147, 51, 234, 0.1), transparent 70%)',
         }}
       />
 
-      {/* More vibrant floating gradient orbs */}
-      <div ref={orb1Ref} className="absolute top-1/4 right-1/4 w-[500px] h-[500px] rounded-full opacity-30 blur-3xl"
+      {/* Subtle floating gradient orbs */}
+      <div ref={orb1Ref} className="absolute top-1/4 right-1/4 w-96 h-96 rounded-full opacity-15 blur-3xl"
         style={{
-          background: 'radial-gradient(circle, rgba(59, 130, 246, 0.6), rgba(99, 102, 241, 0.4), transparent 70%)',
+          background: 'radial-gradient(circle, rgba(59, 130, 246, 0.3), rgba(99, 102, 241, 0.2), transparent 70%)',
         }}
       />
-      <div ref={orb2Ref} className="absolute bottom-1/3 left-1/4 w-[450px] h-[450px] rounded-full opacity-25 blur-3xl"
+      <div ref={orb2Ref} className="absolute bottom-1/3 left-1/4 w-80 h-80 rounded-full opacity-12 blur-3xl"
         style={{
-          background: 'radial-gradient(circle, rgba(147, 51, 234, 0.5), rgba(168, 85, 247, 0.3), transparent 70%)',
+          background: 'radial-gradient(circle, rgba(147, 51, 234, 0.25), rgba(168, 85, 247, 0.15), transparent 70%)',
         }}
       />
-      <div ref={orb3Ref} className="absolute top-1/2 left-1/2 w-96 h-96 rounded-full opacity-20 blur-3xl"
+      <div ref={orb3Ref} className="absolute top-1/2 left-1/2 w-64 h-64 rounded-full opacity-10 blur-3xl"
         style={{
-          background: 'radial-gradient(circle, rgba(99, 102, 241, 0.5), rgba(59, 130, 246, 0.4), transparent 70%)',
-        }}
-      />
-
-      {/* Additional accent orbs for more depth */}
-      <div className="absolute top-10 left-10 w-64 h-64 rounded-full opacity-10 blur-2xl animate-pulse"
-        style={{
-          background: 'radial-gradient(circle, rgba(34, 211, 238, 0.4), transparent 70%)',
-          animationDuration: '4s',
-        }}
-      />
-      <div className="absolute bottom-10 right-10 w-72 h-72 rounded-full opacity-10 blur-2xl animate-pulse"
-        style={{
-          background: 'radial-gradient(circle, rgba(192, 132, 252, 0.4), transparent 70%)',
-          animationDuration: '5s',
+          background: 'radial-gradient(circle, rgba(99, 102, 241, 0.25), rgba(59, 130, 246, 0.2), transparent 70%)',
         }}
       />
 
