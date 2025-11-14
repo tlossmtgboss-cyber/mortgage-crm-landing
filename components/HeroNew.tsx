@@ -108,29 +108,43 @@ export default function HeroNew() {
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black"
       aria-label="Hero section"
     >
-      {/* Animated radial gradient background */}
+      {/* Enhanced animated gradient background */}
       <div
         ref={bgRef}
-        className="absolute inset-0 opacity-60"
+        className="absolute inset-0 opacity-80"
         style={{
-          background: 'radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.15), transparent 70%)',
+          background: 'radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.25), rgba(147, 51, 234, 0.15), transparent 80%)',
         }}
       />
 
-      {/* Floating gradient orbs */}
-      <div ref={orb1Ref} className="absolute top-1/4 right-1/4 w-96 h-96 rounded-full opacity-20 blur-3xl"
+      {/* More vibrant floating gradient orbs */}
+      <div ref={orb1Ref} className="absolute top-1/4 right-1/4 w-[500px] h-[500px] rounded-full opacity-30 blur-3xl"
         style={{
-          background: 'radial-gradient(circle, rgba(99, 102, 241, 0.4), transparent 70%)',
+          background: 'radial-gradient(circle, rgba(59, 130, 246, 0.6), rgba(99, 102, 241, 0.4), transparent 70%)',
         }}
       />
-      <div ref={orb2Ref} className="absolute bottom-1/3 left-1/4 w-80 h-80 rounded-full opacity-15 blur-3xl"
+      <div ref={orb2Ref} className="absolute bottom-1/3 left-1/4 w-[450px] h-[450px] rounded-full opacity-25 blur-3xl"
         style={{
-          background: 'radial-gradient(circle, rgba(147, 51, 234, 0.3), transparent 70%)',
+          background: 'radial-gradient(circle, rgba(147, 51, 234, 0.5), rgba(168, 85, 247, 0.3), transparent 70%)',
         }}
       />
-      <div ref={orb3Ref} className="absolute top-1/2 left-1/2 w-64 h-64 rounded-full opacity-10 blur-3xl"
+      <div ref={orb3Ref} className="absolute top-1/2 left-1/2 w-96 h-96 rounded-full opacity-20 blur-3xl"
         style={{
-          background: 'radial-gradient(circle, rgba(59, 130, 246, 0.3), transparent 70%)',
+          background: 'radial-gradient(circle, rgba(99, 102, 241, 0.5), rgba(59, 130, 246, 0.4), transparent 70%)',
+        }}
+      />
+
+      {/* Additional accent orbs for more depth */}
+      <div className="absolute top-10 left-10 w-64 h-64 rounded-full opacity-10 blur-2xl animate-pulse"
+        style={{
+          background: 'radial-gradient(circle, rgba(34, 211, 238, 0.4), transparent 70%)',
+          animationDuration: '4s',
+        }}
+      />
+      <div className="absolute bottom-10 right-10 w-72 h-72 rounded-full opacity-10 blur-2xl animate-pulse"
+        style={{
+          background: 'radial-gradient(circle, rgba(192, 132, 252, 0.4), transparent 70%)',
+          animationDuration: '5s',
         }}
       />
 
@@ -157,16 +171,16 @@ export default function HeroNew() {
           {/* Main Heading */}
           <h1
             ref={titleRef}
-            className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.1] mb-8"
+            className="text-5xl sm:text-6xl lg:text-8xl font-extrabold leading-[1.05] mb-10"
             style={{
               fontFamily: 'system-ui, -apple-system, sans-serif',
-              letterSpacing: '-0.02em',
+              letterSpacing: '-0.03em',
             }}
           >
-            <span className="block text-white mb-4">
+            <span className="block text-white mb-5 drop-shadow-2xl">
               Your Mortgage Operating System
             </span>
-            <span className="block bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-blue-300 to-purple-400">
+            <span className="block bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-500 drop-shadow-2xl">
               Automate, Learn, and Grow
             </span>
           </h1>
@@ -174,43 +188,55 @@ export default function HeroNew() {
           {/* Subheading */}
           <p
             ref={subtitleRef}
-            className="text-xl sm:text-2xl text-white/90 mb-16 max-w-3xl mx-auto leading-relaxed"
+            className="text-xl sm:text-2xl text-white/95 mb-16 max-w-4xl mx-auto leading-relaxed font-light"
           >
-            An intelligent, coachable AI assistant that reads your emails, updates your milestones, executes tasks, and learns from your feedback—while your team focuses on relationships and revenue.
+            An intelligent, coachable AI assistant that <span className="text-blue-300 font-medium">reads your emails</span>, <span className="text-purple-300 font-medium">updates your milestones</span>, <span className="text-indigo-300 font-medium">executes tasks</span>, and learns from your feedback—while your team focuses on relationships and revenue.
           </p>
 
           {/* CTA Buttons */}
-          <div ref={ctaRef} className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-24">
+          <div ref={ctaRef} className="flex flex-col sm:flex-row gap-5 justify-center items-center mb-28">
             <Link
               href="https://mortgage-crm-production-7a9a.up.railway.app/register"
-              className="group relative w-full sm:w-auto px-10 py-5 bg-white text-black font-semibold text-lg rounded-xl hover:scale-105 transition-all duration-500 shadow-2xl shadow-blue-500/20 overflow-hidden"
+              className="group relative w-full sm:w-auto px-12 py-6 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 text-white font-bold text-lg rounded-2xl hover:scale-110 transition-all duration-500 shadow-2xl shadow-blue-500/40 hover:shadow-blue-500/60 overflow-hidden"
             >
-              <span className="relative z-10">Start free trial</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <span className="relative z-10 flex items-center gap-2">
+                Start Free Trial
+                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             </Link>
             <Link
               href="https://mortgage-crm-production-7a9a.up.railway.app/"
-              className="group w-full sm:w-auto px-10 py-5 bg-white/5 backdrop-blur-xl text-white font-semibold text-lg rounded-xl hover:bg-white/10 transition-all duration-500 border border-white/10"
+              className="group w-full sm:w-auto px-12 py-6 bg-white/10 backdrop-blur-xl text-white font-bold text-lg rounded-2xl hover:bg-white/20 hover:scale-105 transition-all duration-500 border-2 border-white/20 hover:border-white/40 shadow-xl"
             >
-              <span className="group-hover:text-white/90 transition-colors">Watch demo</span>
+              <span className="flex items-center gap-2 group-hover:text-white transition-colors">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
+                </svg>
+                Watch Demo
+              </span>
             </Link>
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-12 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-16 max-w-5xl mx-auto">
             {[
-              { value: '$4.2B', label: 'CRM Market Size' },
-              { value: '300K+', label: 'U.S. Originators' },
-              { value: '70%', label: 'Report Tech Inefficiency' },
+              { value: '$4.2B', label: 'CRM Market Size', color: 'from-blue-400 to-cyan-400' },
+              { value: '300K+', label: 'U.S. Originators', color: 'from-indigo-400 to-blue-400' },
+              { value: '70%', label: 'Report Tech Inefficiency', color: 'from-purple-400 to-indigo-400' },
             ].map((stat, index) => (
               <div
                 key={index}
-                className="group hover:scale-105 transition-transform duration-500"
+                className="group hover:scale-110 transition-all duration-500 relative"
               >
-                <div className="text-5xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors duration-500">
+                <div className={`text-6xl font-extrabold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent mb-3 group-hover:drop-shadow-2xl transition-all duration-500`}>
                   {stat.value}
                 </div>
-                <div className="text-sm text-white/70 uppercase tracking-wider">{stat.label}</div>
+                <div className="text-base text-white/80 uppercase tracking-wider font-medium group-hover:text-white transition-colors">{stat.label}</div>
+                {/* Glow effect on hover */}
+                <div className={`absolute inset-0 bg-gradient-to-r ${stat.color} opacity-0 group-hover:opacity-20 blur-2xl transition-opacity duration-500 -z-10`}></div>
               </div>
             ))}
           </div>

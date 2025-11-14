@@ -20,16 +20,15 @@ export default function Header() {
     { label: 'Features', href: '#features' },
     { label: 'How it works', href: '#how-it-works' },
     { label: 'Integrations', href: '#integrations' },
-    { label: 'Pricing', href: '#pricing' },
-    { label: 'Resources', href: '#resources' },
+    { label: 'FAQ', href: '#faq' },
   ];
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled
-          ? 'bg-white shadow-md py-3'
-          : 'bg-white/95 backdrop-blur-sm py-4'
+          ? 'bg-black/90 backdrop-blur-xl shadow-xl shadow-blue-500/10 py-3 border-b border-white/10'
+          : 'bg-transparent py-5'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -37,10 +36,15 @@ export default function Header() {
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2 font-bold text-xl md:text-2xl transition-colors hover:text-brand"
+            className="flex items-center gap-3 font-bold text-xl md:text-2xl transition-all duration-300 hover:scale-105 group"
           >
-            <span className="text-2xl md:text-3xl" aria-hidden="true">🏠</span>
-            <span className="text-foreground">Mortgage CRM</span>
+            <div className="relative">
+              <span className="text-3xl md:text-4xl group-hover:rotate-12 transition-transform duration-300" aria-hidden="true">🏠</span>
+              <div className="absolute -inset-2 bg-blue-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity rounded-full"></div>
+            </div>
+            <span className="bg-gradient-to-r from-blue-400 via-blue-300 to-purple-400 bg-clip-text text-transparent">
+              Mortgage CRM
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -49,9 +53,10 @@ export default function Header() {
               <a
                 key={item.href}
                 href={item.href}
-                className="text-muted-foreground hover:text-brand transition-colors font-medium"
+                className="text-white/80 hover:text-white transition-all duration-300 font-medium relative group py-2"
               >
                 {item.label}
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 group-hover:w-full transition-all duration-300"></span>
               </a>
             ))}
           </div>
@@ -59,14 +64,14 @@ export default function Header() {
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-3">
             <Link
-              href="/login"
-              className="px-4 py-2 text-brand hover:text-brand-dark font-semibold transition-colors"
+              href="https://mortgage-crm-production-7a9a.up.railway.app/"
+              className="px-5 py-2.5 text-white/90 hover:text-white font-semibold transition-all duration-300 hover:scale-105"
             >
               Log In
             </Link>
             <Link
-              href="/register"
-              className="px-6 py-2 bg-brand text-brand-foreground rounded-lg hover:bg-brand-dark transition-all hover:shadow-md font-semibold"
+              href="https://mortgage-crm-production-7a9a.up.railway.app/register"
+              className="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-300 hover:scale-105 font-semibold"
             >
               Start Free Trial
             </Link>
@@ -75,13 +80,13 @@ export default function Header() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden p-2 rounded-md hover:bg-muted transition-colors"
+            className="lg:hidden p-2 rounded-md hover:bg-white/10 transition-all duration-300 text-white"
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobile-menu"
             aria-label="Toggle navigation menu"
           >
             <svg
-              className="w-6 h-6"
+              className="w-7 h-7"
               fill="none"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -102,29 +107,29 @@ export default function Header() {
         {isMobileMenuOpen && (
           <div
             id="mobile-menu"
-            className="lg:hidden mt-4 pb-4 border-t border-gray-200 pt-4"
+            className="lg:hidden mt-4 pb-4 border-t border-white/10 pt-4 bg-black/50 backdrop-blur-xl rounded-xl px-4"
           >
             <div className="flex flex-col gap-4">
               {navItems.map((item) => (
                 <a
                   key={item.href}
                   href={item.href}
-                  className="text-muted-foreground hover:text-brand transition-colors font-medium py-2"
+                  className="text-white/80 hover:text-white transition-all duration-300 font-medium py-2 hover:pl-2"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.label}
                 </a>
               ))}
-              <div className="flex flex-col gap-3 mt-4 pt-4 border-t border-gray-200">
+              <div className="flex flex-col gap-3 mt-4 pt-4 border-t border-white/10">
                 <Link
-                  href="/login"
-                  className="text-center px-4 py-2 text-brand hover:text-brand-dark font-semibold transition-colors"
+                  href="https://mortgage-crm-production-7a9a.up.railway.app/"
+                  className="text-center px-4 py-2 text-white/90 hover:text-white font-semibold transition-all duration-300"
                 >
                   Log In
                 </Link>
                 <Link
-                  href="/register"
-                  className="text-center px-6 py-3 bg-brand text-brand-foreground rounded-lg hover:bg-brand-dark transition-all hover:shadow-md font-semibold"
+                  href="https://mortgage-crm-production-7a9a.up.railway.app/register"
+                  className="text-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-300 font-semibold"
                 >
                   Start Free Trial
                 </Link>

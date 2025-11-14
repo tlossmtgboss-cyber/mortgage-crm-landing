@@ -1,3 +1,5 @@
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import HeroNew from "@/components/HeroNew";
 import ProblemSolution from "@/components/ProblemSolution";
 import Opportunity from "@/components/Opportunity";
@@ -16,6 +18,7 @@ export default function Home() {
   return (
     <>
       <StructuredData />
+      <Header />
       <main id="main-content" className="bg-black">
         <HeroNew />
         <ProblemSolution />
@@ -30,6 +33,7 @@ export default function Home() {
         <FAQ />
         <FinalCTA />
       </main>
+      <Footer />
     </>
   );
 }
