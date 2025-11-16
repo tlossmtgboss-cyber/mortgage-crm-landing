@@ -20,22 +20,13 @@ export default function FinalCTA() {
           {/* CTA buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             <a
-              href="https://mortgage-crm-production-7a9a.up.railway.app/register"
-              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 text-lg"
-            >
-              Start Free 14-Day Trial
-            </a>
-            <a
               href="#demo"
-              className="px-8 py-4 bg-white text-gray-900 font-semibold rounded-lg shadow-md hover:shadow-lg border-2 border-gray-200 hover:border-gray-300 transition-all duration-200 text-lg"
+              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 text-lg"
             >
               Schedule Demo
             </a>
           </div>
 
-          <p className="text-sm text-gray-500">
-            No credit card required • Setup in 5 minutes • Cancel anytime
-          </p>
 
           {/* Trust badges */}
           <div className="mt-12 pt-8 border-t border-gray-200">

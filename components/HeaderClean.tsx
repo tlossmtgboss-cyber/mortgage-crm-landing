@@ -61,12 +61,6 @@ export default function HeaderClean() {
             >
               Log In
             </Link>
-            <Link
-              href="https://mortgage-crm-production-7a9a.up.railway.app/register"
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold shadow-sm"
-            >
-              Start Free Trial
-            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -113,12 +107,6 @@ export default function HeaderClean() {
                   className="text-center px-4 py-2 text-gray-700 hover:text-blue-600 font-semibold transition-colors"
                 >
                   Log In
-                </Link>
-                <Link
-                  href="https://mortgage-crm-production-7a9a.up.railway.app/register"
-                  className="text-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
-                >
-                  Start Free Trial
                 </Link>
               </div>
             </div>

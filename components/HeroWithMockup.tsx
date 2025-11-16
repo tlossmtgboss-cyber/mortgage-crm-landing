@@ -36,14 +36,8 @@ export default function HeroWithMockup() {
           {/* CTA buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
             <a
-              href="#signup"
-              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
-            >
-              Start Free Trial
-            </a>
-            <a
               href="#demo"
-              className="px-8 py-4 bg-white text-gray-900 font-semibold rounded-lg shadow-md hover:shadow-lg border-2 border-gray-200 hover:border-gray-300 transition-all duration-200"
+              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
             >
               Watch Demo
             </a>
