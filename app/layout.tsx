@@ -1,79 +1,63 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
-import SmoothScrollProvider from "@/components/SmoothScrollProvider";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-  weight: ["400", "600", "700"],
-});
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://www.perenniaai.com'),
   title: {
-    default: "AI-Powered Mortgage CRM | Close More Loans 40% Faster",
-    template: "%s | Mortgage CRM"
+    default: "Perennia AI — The Mortgage Operating System",
+    template: "%s | Perennia AI"
   },
-  description: "The only CRM built for modern mortgage teams. AI underwriting, smart lead routing, automated SMS follow-ups, and real-time analytics. Trusted by 500+ loan officers processing $2B+ in loans. Start your 14-day free trial - no credit card required.",
+  description: "Everything connected. Everything visible. Everything moving forward. Perennia AI is the mortgage operating system with 20+ specialized AI agents that run your pipeline, track every file, and surface risk before it costs you.",
   keywords: [
-    // Primary Keywords
-    "mortgage CRM software",
+    "mortgage operating system",
     "AI mortgage CRM",
     "loan officer CRM",
-    "mortgage automation software",
-
-    // Feature-based Keywords
-    "AI underwriting software",
-    "mortgage lead management",
-    "loan pipeline management",
-    "mortgage SMS automation",
-    "loan officer productivity tools",
-
-    // Long-tail Keywords
+    "mortgage pipeline management",
+    "AI underwriting intelligence",
+    "mortgage document automation",
+    "call intelligence mortgage",
+    "loan pipeline analytics",
+    "mortgage workflow engine",
+    "AI-powered mortgage platform",
+    "mortgage team software",
+    "loan officer productivity",
+    "mortgage compliance automation",
+    "intelligent loan processing",
+    "borrower portal mortgage",
+    "mortgage SLA tracking",
     "best CRM for loan officers",
     "mortgage broker CRM software",
-    "automated mortgage workflow",
-    "mortgage team collaboration software",
-    "real estate loan management system",
-
-    // AI Search Keywords
-    "AI-powered mortgage platform",
-    "intelligent loan processing",
-    "automated borrower communication",
-    "mortgage analytics dashboard"
   ],
-  authors: [{ name: "Mortgage CRM Team" }],
-  creator: "Mortgage CRM",
-  publisher: "Mortgage CRM",
-  applicationName: "Mortgage CRM",
+  authors: [{ name: "Perennia AI" }],
+  creator: "Perennia AI",
+  publisher: "Perennia AI",
+  applicationName: "Perennia AI",
   category: "Business Software",
-  classification: "CRM Software for Mortgage Industry",
+  classification: "Mortgage Operating System",
 
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "/",
-    title: "AI-Powered Mortgage CRM | Close More Loans 40% Faster",
-    description: "The only CRM built for modern mortgage teams. AI underwriting, smart lead routing, and automated follow-ups. Trusted by 500+ loan officers. Start free trial today.",
-    siteName: "Mortgage CRM",
+    title: "Perennia AI — The Mortgage Operating System",
+    description: "20+ specialized AI agents run your pipeline, track every file, and surface risk before it costs you. The operating system for mortgage teams.",
+    siteName: "Perennia AI",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Mortgage CRM - AI-Powered Platform for Loan Officers",
+        alt: "Perennia AI — The Mortgage Operating System",
       },
     ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "AI-Powered Mortgage CRM | Close More Loans 40% Faster",
-    description: "AI underwriting, smart lead routing, automated SMS. Trusted by 500+ loan officers processing $2B+ in loans. 14-day free trial.",
+    title: "Perennia AI — The Mortgage Operating System",
+    description: "20+ AI agents. One pipeline. Zero blind spots. The operating system for mortgage teams.",
     images: ["/og-image.png"],
-    creator: "@MortgageCRM",
+    creator: "@PerenniaAI",
   },
 
   robots: {
@@ -94,7 +78,6 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
 
-  // Additional metadata for AI search engines
   alternates: {
     canonical: "/",
   },
@@ -102,9 +85,6 @@ export const metadata: Metadata = {
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION,
     yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
-    other: {
-      me: ["info@mortgagecrm.com"],
-    },
   },
 };
 
@@ -115,13 +95,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} antialiased`}>
-        <a href="#main-content" className="skip-link">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500&family=DM+Sans:wght@200;300;400;500&family=DM+Mono:wght@300;400&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body>
+        <a href="#hero" className="skip-link">
           Skip to content
         </a>
-        <SmoothScrollProvider>
-          {children}
-        </SmoothScrollProvider>
+        {children}
       </body>
     </html>
   );
