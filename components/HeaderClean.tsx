@@ -56,7 +56,7 @@ export default function HeaderClean() {
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-3">
             <Link
-              href="https://mortgage-crm-production-7a9a.up.railway.app/"
+              href="https://app.perenniaai.com/login"
               className="px-5 py-2 text-gray-700 hover:text-blue-600 font-semibold transition-colors"
             >
               Log In
@@ -103,7 +103,7 @@ export default function HeaderClean() {
               ))}
               <div className="flex flex-col gap-3 mt-4 pt-4 border-t border-gray-200">
                 <Link
-                  href="https://mortgage-crm-production-7a9a.up.railway.app/"
+                  href="https://app.perenniaai.com/login"
                   className="text-center px-4 py-2 text-gray-700 hover:text-blue-600 font-semibold transition-colors"
                 >
                   Log In

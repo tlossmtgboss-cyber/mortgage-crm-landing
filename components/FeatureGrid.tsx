@@ -173,7 +173,7 @@ export default function FeatureGrid() {
             Want to see these features in action?
           </p>
           <a
-            href="https://mortgage-crm-production-7a9a.up.railway.app/"
+            href="https://app.perenniaai.com/login"
             className="inline-flex items-center gap-2 px-6 py-3 bg-white/80 backdrop-blur-sm text-slate-700 font-semibold rounded-xl hover:bg-white shadow-md hover:shadow-lg transition-all duration-300 border border-slate-200 hover:-translate-y-1"
           >
             <span>Watch Demo</span>

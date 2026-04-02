@@ -181,7 +181,7 @@ export default function CompetitiveLandscape() {
             See the difference for yourself
           </p>
           <a
-            href="https://mortgage-crm-production-7a9a.up.railway.app/register"
+            href="https://app.perenniaai.com/register"
             className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-xl hover:scale-105 transition-all duration-300 shadow-2xl shadow-blue-500/30"
           >
             <span>Start your free trial</span>

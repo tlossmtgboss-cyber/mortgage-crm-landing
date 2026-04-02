@@ -64,13 +64,13 @@ export default function Header() {
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-3">
             <Link
-              href="https://mortgage-crm-production-7a9a.up.railway.app/"
+              href="https://app.perenniaai.com/login"
               className="px-5 py-2.5 text-gray-100 hover:text-white font-semibold transition-all duration-300 hover:scale-105"
             >
               Log In
             </Link>
             <Link
-              href="https://mortgage-crm-production-7a9a.up.railway.app/register"
+              href="https://app.perenniaai.com/register"
               className="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-300 hover:scale-105 font-semibold"
             >
               Start Free Trial
@@ -122,13 +122,13 @@ export default function Header() {
               ))}
               <div className="flex flex-col gap-3 mt-4 pt-4 border-t border-white/10">
                 <Link
-                  href="https://mortgage-crm-production-7a9a.up.railway.app/"
+                  href="https://app.perenniaai.com/login"
                   className="text-center px-4 py-2 text-gray-100 hover:text-white font-semibold transition-all duration-300"
                 >
                   Log In
                 </Link>
                 <Link
-                  href="https://mortgage-crm-production-7a9a.up.railway.app/register"
+                  href="https://app.perenniaai.com/register"
                   className="text-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-300 font-semibold"
                 >
                   Start Free Trial

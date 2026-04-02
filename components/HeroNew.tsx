@@ -182,7 +182,7 @@ export default function HeroNew() {
           {/* CTA Buttons */}
           <div ref={ctaRef} className="flex flex-col sm:flex-row gap-5 justify-center items-center mb-28">
             <Link
-              href="https://mortgage-crm-production-7a9a.up.railway.app/register"
+              href="https://app.perenniaai.com/register"
               className="group relative w-full sm:w-auto px-12 py-6 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 text-white font-bold text-lg rounded-2xl hover:scale-110 transition-all duration-500 shadow-2xl shadow-blue-500/40 hover:shadow-blue-500/60 overflow-hidden"
             >
               <span className="relative z-10 flex items-center gap-2">
@@ -194,7 +194,7 @@ export default function HeroNew() {
               <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             </Link>
             <Link
-              href="https://mortgage-crm-production-7a9a.up.railway.app/"
+              href="https://app.perenniaai.com/login"
               className="group w-full sm:w-auto px-12 py-6 bg-white/10 backdrop-blur-xl text-white font-bold text-lg rounded-2xl hover:bg-white/20 hover:scale-105 transition-all duration-500 border-2 border-white/20 hover:border-white/40 shadow-xl"
             >
               <span className="flex items-center gap-2 group-hover:text-white transition-colors">

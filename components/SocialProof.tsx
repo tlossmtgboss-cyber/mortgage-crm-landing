@@ -209,7 +209,7 @@ export default function SocialProof() {
             Ready to join them?
           </p>
           <a
-            href="https://mortgage-crm-production-7a9a.up.railway.app/register"
+            href="https://app.perenniaai.com/register"
             className="text-blue-400 hover:text-blue-300 font-semibold transition-colors"
           >
             Start your free 14-day trial →

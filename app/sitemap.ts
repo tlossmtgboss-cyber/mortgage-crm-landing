@@ -5,7 +5,7 @@ import { MetadataRoute } from 'next';
  * This helps search engines discover and index all pages
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://mortgage-crm-production-7a9a.up.railway.app';
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.perenniaai.com';
 
   return [
     {

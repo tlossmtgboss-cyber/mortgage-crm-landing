@@ -42,13 +42,13 @@ export default function HeroClean() {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
             <Link
-              href="https://mortgage-crm-production-7a9a.up.railway.app/register"
+              href="https://app.perenniaai.com/register"
               className="w-full sm:w-auto px-8 py-4 bg-blue-600 text-white text-lg font-bold rounded-lg hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
             >
               Start Free Trial →
             </Link>
             <Link
-              href="https://mortgage-crm-production-7a9a.up.railway.app/"
+              href="https://app.perenniaai.com/login"
               className="w-full sm:w-auto px-8 py-4 bg-white text-blue-600 text-lg font-bold rounded-lg border-2 border-blue-600 hover:bg-blue-50 transform hover:scale-105 transition-all duration-200"
             >
               Watch Demo

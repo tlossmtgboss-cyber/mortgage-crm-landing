@@ -49,7 +49,7 @@ export default function BenefitsClean() {
 
         <div className="text-center mt-12">
           <a
-            href="https://mortgage-crm-production-7a9a.up.railway.app/register"
+            href="https://app.perenniaai.com/register"
             className="inline-block px-8 py-4 bg-white text-blue-600 text-lg font-bold rounded-lg hover:bg-blue-50 transform hover:scale-105 transition-all duration-200 shadow-xl"
           >
             Start Your Free Trial →

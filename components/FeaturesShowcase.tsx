@@ -211,7 +211,7 @@ export default function FeaturesShowcase() {
             And 50+ more features built for mortgage teams
           </p>
           <a
-            href="https://mortgage-crm-production-7a9a.up.railway.app/register"
+            href="https://app.perenniaai.com/register"
             className="inline-flex items-center gap-2 px-8 py-4 bg-white/5 backdrop-blur-xl rounded-xl border border-white/10 text-white hover:bg-white/10 transition-all duration-300"
           >
             <span>See all features</span>

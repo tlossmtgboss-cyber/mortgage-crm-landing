@@ -58,7 +58,7 @@ export default function Hero() {
           {/* CTA Buttons - Clear calls-to-action for conversions */}
           <div className={`flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
             <Link
-              href="https://mortgage-crm-production-7a9a.up.railway.app/register"
+              href="https://app.perenniaai.com/register"
               className="group relative w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-lg rounded-xl hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
               aria-label="Start 14-day free trial - no credit card required"
               itemProp="potentialAction"
@@ -69,7 +69,7 @@ export default function Hero() {
               <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-400 to-indigo-400 opacity-0 group-hover:opacity-100 blur transition-opacity duration-300"></div>
             </Link>
             <Link
-              href="https://mortgage-crm-production-7a9a.up.railway.app/"
+              href="https://app.perenniaai.com/login"
               className="w-full sm:w-auto px-8 py-4 bg-white/80 backdrop-blur-sm text-slate-700 font-semibold text-lg rounded-xl hover:bg-white shadow-md hover:shadow-lg transition-all duration-300 border border-slate-200 hover:-translate-y-1"
               aria-label="Watch product demo video"
             >

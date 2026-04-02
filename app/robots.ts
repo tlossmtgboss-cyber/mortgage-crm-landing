@@ -6,7 +6,7 @@ import { MetadataRoute } from 'next';
  * and AI search engines (Perplexity, ChatGPT Search, etc.)
  */
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://mortgage-crm-production-7a9a.up.railway.app';
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.perenniaai.com';
 
   return {
     rules: [

@@ -277,7 +277,7 @@ export default function MetricsDashboard() {
             See exactly where your business stands, identify opportunities, and track growth—all in real-time.
           </p>
           <a
-            href="https://mortgage-crm-production-7a9a.up.railway.app/register"
+            href="https://app.perenniaai.com/register"
             className="inline-flex items-center gap-2 px-10 py-5 bg-white text-black font-bold text-lg rounded-xl hover:scale-105 transition-all duration-300 shadow-2xl shadow-blue-500/30"
           >
             <span>Start tracking your success</span>

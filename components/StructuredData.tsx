@@ -11,8 +11,8 @@ export default function StructuredData() {
     "@type": "Organization",
     "name": "Mortgage CRM",
     "description": "AI-Powered CRM platform built specifically for mortgage professionals, loan officers, and mortgage teams",
-    "url": "https://mortgage-crm-production-7a9a.up.railway.app",
-    "logo": "https://mortgage-crm-production-7a9a.up.railway.app/logo.png",
+    "url": "https://www.perenniaai.com",
+    "logo": "https://www.perenniaai.com/logo.png",
     "foundingDate": "2024",
     "contactPoint": {
       "@type": "ContactPoint",
@@ -61,7 +61,7 @@ export default function StructuredData() {
       "Customizable workflow automation",
       "Mobile-responsive dashboard"
     ],
-    "screenshot": "https://mortgage-crm-production-7a9a.up.railway.app/screenshot.png",
+    "screenshot": "https://www.perenniaai.com/screenshot.png",
     "softwareVersion": "2.0",
     "datePublished": "2024-01-15",
     "author": {
@@ -75,12 +75,12 @@ export default function StructuredData() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "Mortgage CRM",
-    "url": "https://mortgage-crm-production-7a9a.up.railway.app",
+    "url": "https://www.perenniaai.com",
     "potentialAction": {
       "@type": "SearchAction",
       "target": {
         "@type": "EntryPoint",
-        "urlTemplate": "https://mortgage-crm-production-7a9a.up.railway.app/search?q={search_term_string}"
+        "urlTemplate": "https://www.perenniaai.com/search?q={search_term_string}"
       },
       "query-input": "required name=search_term_string"
     }
@@ -99,7 +99,7 @@ export default function StructuredData() {
     "category": "CRM Software for Mortgage Industry",
     "offers": {
       "@type": "Offer",
-      "url": "https://mortgage-crm-production-7a9a.up.railway.app/register",
+      "url": "https://app.perenniaai.com/register",
       "priceCurrency": "USD",
       "price": "0",
       "priceValidUntil": "2025-12-31",
