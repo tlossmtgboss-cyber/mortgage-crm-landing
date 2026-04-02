@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   --bg-0: #040508;
   --bg-1: #070a10;
@@ -25,11 +27,15 @@
 html { scroll-behavior: auto; }
 
 body {
-  background: var(--bg-0);
-  color: var(--text-primary);
   font-family: var(--font-body);
   font-weight: 300;
   overflow-x: hidden;
+}
+
+/* Dark cinematic styles only for the landing page */
+body:has(.cinematic-landing) {
+  background: var(--bg-0);
+  color: var(--text-primary);
   cursor: none;
 }
 

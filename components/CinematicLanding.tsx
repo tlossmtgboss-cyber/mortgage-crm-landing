@@ -26,7 +26,7 @@ export default function CinematicLanding() {
     };
   }, []);
 
-  return <div dangerouslySetInnerHTML={{ __html: BODY_HTML }} />;
+  return <div className="cinematic-landing" dangerouslySetInnerHTML={{ __html: BODY_HTML }} />;
 }
 
 /* =========================================================================
