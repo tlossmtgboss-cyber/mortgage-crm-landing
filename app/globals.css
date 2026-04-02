@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+@layer base {
 :root {
   --bg-0: #040508;
   --bg-1: #070a10;
@@ -976,3 +977,4 @@ section {
 .skip-link:focus {
   top: 0;
 }
+} /* end @layer base */
