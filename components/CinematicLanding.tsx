@@ -389,7 +389,7 @@ const BODY_HTML = `
     <a href="#workflow">Workflow</a>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
-    <a href="https://app.perenniaai.com" class="nav-login">Log In</a>
+    <a href="https://app.perenniaai.com/login" class="nav-login">Log In</a>
     <a href="https://app.perenniaai.com/register" class="nav-cta">Book a Demo</a>
   </div>
 </nav>
