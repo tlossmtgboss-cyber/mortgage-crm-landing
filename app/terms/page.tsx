@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-gray-50" style={{ cursor: "auto" }}>
       {/* Header */}
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-3">
@@ -30,20 +30,20 @@ export default function TermsPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Terms of Service
           </h1>
-          <p className="text-sm text-gray-500 mb-8">
+          <p className="text-sm text-gray-500 mb-10">
             Last Updated: April 3, 2026
           </p>
 
-          <div className="prose prose-gray max-w-none space-y-8 text-gray-700 leading-relaxed text-[15px]">
+          <div className="text-gray-700 leading-relaxed text-[15px]">
             {/* 1 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 1. Acceptance of Terms
               </h2>
               <p>
-                By accessing or using the Perennia AI platform ("Service"),
-                operated by Perennia AI ("Company," "we," "us," or "our"), you
-                agree to be bound by these Terms of Service ("Terms"). If you do
+                By accessing or using the Perennia AI platform (&ldquo;Service&rdquo;),
+                operated by Perennia AI (&ldquo;Company,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;), you
+                agree to be bound by these Terms of Service (&ldquo;Terms&rdquo;). If you do
                 not agree to these Terms, you may not access or use the Service.
               </p>
               <p className="mt-3">
@@ -51,10 +51,10 @@ export default function TermsPage() {
                 officers, mortgage brokers, team administrators, and any other
                 individuals or entities who access or use the platform.
               </p>
-            </section>
+            </div>
 
             {/* 2 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 2. Description of Service
               </h2>
@@ -71,10 +71,10 @@ export default function TermsPage() {
                 automated workflows. These are provided as decision-support tools
                 and do not constitute financial, legal, or lending advice.
               </p>
-            </section>
+            </div>
 
             {/* 3 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 3. Account Registration
               </h2>
@@ -90,10 +90,10 @@ export default function TermsPage() {
                 organization you represent. You agree to notify us immediately of
                 any unauthorized use of your account.
               </p>
-            </section>
+            </div>
 
             {/* 4 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 4. Subscription and Billing
               </h2>
@@ -116,15 +116,15 @@ export default function TermsPage() {
                 advance notice. Price changes will take effect at the start of
                 your next billing cycle following the notice.
               </p>
-            </section>
+            </div>
 
             {/* 5 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 5. Acceptable Use
               </h2>
               <p>You agree not to:</p>
-              <ul className="list-disc pl-6 mt-2 space-y-2">
+              <ul className="list-disc pl-6 mt-3 space-y-2">
                 <li>
                   Use the Service for any unlawful purpose or in violation of
                   any applicable federal, state, or local law or regulation,
@@ -158,16 +158,16 @@ export default function TermsPage() {
                   without our prior written consent.
                 </li>
               </ul>
-            </section>
+            </div>
 
             {/* 6 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 6. Data Ownership and Privacy
               </h2>
               <p>
                 You retain all rights to the data you upload, input, or generate
-                through the Service ("Your Data"). By using the Service, you
+                through the Service (&ldquo;Your Data&rdquo;). By using the Service, you
                 grant us a limited license to process, store, and transmit Your
                 Data solely for the purpose of providing and improving the
                 Service.
@@ -188,10 +188,10 @@ export default function TermsPage() {
                 period, we may delete Your Data in accordance with our data
                 retention policies.
               </p>
-            </section>
+            </div>
 
             {/* 7 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 7. AI Features and Limitations
               </h2>
@@ -202,7 +202,7 @@ export default function TermsPage() {
                 strive to provide accurate and useful AI outputs, you
                 acknowledge and agree that:
               </p>
-              <ul className="list-disc pl-6 mt-2 space-y-2">
+              <ul className="list-disc pl-6 mt-3 space-y-2">
                 <li>
                   AI-generated outputs may contain errors, inaccuracies, or
                   omissions and should not be relied upon as the sole basis for
@@ -222,10 +222,10 @@ export default function TermsPage() {
                   without prior notice.
                 </li>
               </ul>
-            </section>
+            </div>
 
             {/* 8 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 8. Communication Services (SMS, Email, Voice)
               </h2>
@@ -234,7 +234,7 @@ export default function TermsPage() {
                 messaging, email, and voice calling capabilities. By using these
                 features, you agree to:
               </p>
-              <ul className="list-disc pl-6 mt-2 space-y-2">
+              <ul className="list-disc pl-6 mt-3 space-y-2">
                 <li>
                   Obtain all required consents from recipients before sending
                   any communications, in compliance with the Telephone Consumer
@@ -266,10 +266,10 @@ export default function TermsPage() {
                 </a>{" "}
                 for additional details.
               </p>
-            </section>
+            </div>
 
             {/* 9 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 9. Intellectual Property
               </h2>
@@ -283,15 +283,15 @@ export default function TermsPage() {
               </p>
               <p className="mt-3">
                 You may provide feedback, suggestions, or ideas about the
-                Service ("Feedback"). By submitting Feedback, you grant us a
+                Service (&ldquo;Feedback&rdquo;). By submitting Feedback, you grant us a
                 perpetual, irrevocable, royalty-free license to use, modify, and
                 incorporate such Feedback into the Service without any
                 obligation to you.
               </p>
-            </section>
+            </div>
 
             {/* 10 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 10. Third-Party Integrations
               </h2>
@@ -303,10 +303,10 @@ export default function TermsPage() {
                 privacy policies. We are not responsible for the availability,
                 accuracy, or security of any third-party service.
               </p>
-            </section>
+            </div>
 
             {/* 11 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 11. Service Availability and Modifications
               </h2>
@@ -323,10 +323,10 @@ export default function TermsPage() {
                 resulting from service interruptions, whether planned or
                 unplanned.
               </p>
-            </section>
+            </div>
 
             {/* 12 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 12. Limitation of Liability
               </h2>
@@ -345,15 +345,15 @@ export default function TermsPage() {
                 AMOUNT YOU PAID TO US IN THE TWELVE (12) MONTHS PRECEDING THE
                 CLAIM.
               </p>
-            </section>
+            </div>
 
             {/* 13 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 13. Disclaimer of Warranties
               </h2>
               <p>
-                THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT
+                THE SERVICE IS PROVIDED &ldquo;AS IS&rdquo; AND &ldquo;AS AVAILABLE&rdquo; WITHOUT
                 WARRANTIES OF ANY KIND, WHETHER EXPRESS, IMPLIED, OR STATUTORY,
                 INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF
                 MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND
@@ -361,10 +361,10 @@ export default function TermsPage() {
                 YOUR REQUIREMENTS, OPERATE WITHOUT INTERRUPTION, OR BE
                 ERROR-FREE.
               </p>
-            </section>
+            </div>
 
             {/* 14 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 14. Indemnification
               </h2>
@@ -377,10 +377,10 @@ export default function TermsPage() {
                 (c) your violation of any applicable law or regulation; or (d)
                 your infringement of any third-party rights.
               </p>
-            </section>
+            </div>
 
             {/* 15 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 15. Termination
               </h2>
@@ -406,10 +406,10 @@ export default function TermsPage() {
                 provisions regarding intellectual property, limitation of
                 liability, indemnification, and dispute resolution.
               </p>
-            </section>
+            </div>
 
             {/* 16 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 16. Governing Law and Dispute Resolution
               </h2>
@@ -427,24 +427,24 @@ export default function TermsPage() {
                 in a class action lawsuit or class-wide arbitration related to
                 these Terms or the Service.
               </p>
-            </section>
+            </div>
 
             {/* 17 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 17. Changes to Terms
               </h2>
               <p>
                 We reserve the right to update or modify these Terms at any
                 time. We will notify you of material changes by posting the
-                updated Terms on our website and updating the "Last Updated"
+                updated Terms on our website and updating the &ldquo;Last Updated&rdquo;
                 date. Your continued use of the Service after such changes
                 constitutes your acceptance of the revised Terms.
               </p>
-            </section>
+            </div>
 
             {/* 18 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 18. Miscellaneous
               </h2>
@@ -478,17 +478,17 @@ export default function TermsPage() {
                   government, internet outages, or third-party service failures.
                 </li>
               </ul>
-            </section>
+            </div>
 
             {/* 19 */}
-            <section>
+            <div>
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 19. Contact Us
               </h2>
               <p>
                 If you have questions about these Terms, please contact us:
               </p>
-              <div className="mt-3 bg-gray-50 rounded-lg p-4 text-sm">
+              <div className="mt-3 bg-gray-50 rounded-lg p-4 text-sm space-y-1">
                 <p className="font-semibold text-gray-900">Perennia AI</p>
                 <p>
                   Email:{" "}
@@ -518,7 +518,7 @@ export default function TermsPage() {
                   </a>
                 </p>
               </div>
-            </section>
+            </div>
           </div>
         </div>
       </div>

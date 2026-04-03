@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-gray-50" style={{ cursor: "auto" }}>
       {/* Header */}
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-3">
@@ -30,25 +30,25 @@ export default function PrivacyPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Privacy Policy
           </h1>
-          <p className="text-sm text-gray-500 mb-8">
+          <p className="text-sm text-gray-500 mb-10">
             Last Updated: April 3, 2026
           </p>
 
-          <div className="prose prose-gray max-w-none space-y-8 text-gray-700 leading-relaxed text-[15px]">
+          <div className="text-gray-700 leading-relaxed text-[15px]">
             {/* Intro */}
-            <section>
+            <div className="mb-10">
               <p>
-                Perennia AI ("Company," "we," "us," or "our") respects your
+                Perennia AI (&ldquo;Company,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) respects your
                 privacy and is committed to protecting the personal information
                 you share with us. This Privacy Policy explains how we collect,
                 use, disclose, and safeguard your information when you use the
-                Perennia AI platform ("Service"), visit our website at
+                Perennia AI platform (&ldquo;Service&rdquo;), visit our website at
                 www.perenniaai.com, or interact with us in any other way.
               </p>
-            </section>
+            </div>
 
             {/* 1 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 1. Information We Collect
               </h2>
@@ -79,7 +79,7 @@ export default function PrivacyPage() {
                 </li>
               </ul>
 
-              <h3 className="text-base font-semibold text-gray-800 mt-4 mb-2">
+              <h3 className="text-base font-semibold text-gray-800 mt-6 mb-2">
                 b. Information Collected Automatically
               </h3>
               <ul className="list-disc pl-6 space-y-2">
@@ -97,15 +97,15 @@ export default function PrivacyPage() {
                   preferences, and analyze usage patterns.
                 </li>
               </ul>
-            </section>
+            </div>
 
             {/* 2 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 2. How We Use Your Information
               </h2>
               <p>We use your information to:</p>
-              <ul className="list-disc pl-6 mt-2 space-y-2">
+              <ul className="list-disc pl-6 mt-3 space-y-2">
                 <li>
                   Provide, operate, and maintain the Service.
                 </li>
@@ -133,10 +133,10 @@ export default function PrivacyPage() {
                   technical problems.
                 </li>
               </ul>
-            </section>
+            </div>
 
             {/* 3 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 3. How We Share Your Information
               </h2>
@@ -144,7 +144,7 @@ export default function PrivacyPage() {
                 We do not sell your personal information. We may share your
                 information in the following circumstances:
               </p>
-              <ul className="list-disc pl-6 mt-2 space-y-2">
+              <ul className="list-disc pl-6 mt-3 space-y-2">
                 <li>
                   <strong>Service Providers:</strong> With third-party vendors
                   who help us operate the Service (e.g., cloud hosting, email
@@ -170,10 +170,10 @@ export default function PrivacyPage() {
                   authorize the sharing of your information.
                 </li>
               </ul>
-            </section>
+            </div>
 
             {/* 4 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 4. Data Security
               </h2>
@@ -181,7 +181,7 @@ export default function PrivacyPage() {
                 We implement industry-standard security measures to protect your
                 information, including:
               </p>
-              <ul className="list-disc pl-6 mt-2 space-y-2">
+              <ul className="list-disc pl-6 mt-3 space-y-2">
                 <li>
                   Encryption of data in transit (TLS/SSL) and at rest.
                 </li>
@@ -200,10 +200,10 @@ export default function PrivacyPage() {
                 storage or transmission is 100% secure. We cannot guarantee
                 absolute security of your data.
               </p>
-            </section>
+            </div>
 
             {/* 5 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 5. Data Retention
               </h2>
@@ -215,15 +215,15 @@ export default function PrivacyPage() {
                 or for legitimate business purposes such as resolving disputes
                 and enforcing our agreements.
               </p>
-            </section>
+            </div>
 
             {/* 6 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 6. Your Rights and Choices
               </h2>
               <p>Depending on your jurisdiction, you may have the right to:</p>
-              <ul className="list-disc pl-6 mt-2 space-y-2">
+              <ul className="list-disc pl-6 mt-3 space-y-2">
                 <li>
                   <strong>Access</strong> the personal information we hold about
                   you.
@@ -257,10 +257,10 @@ export default function PrivacyPage() {
                 </a>
                 . We will respond to your request within 30 days.
               </p>
-            </section>
+            </div>
 
             {/* 7 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 7. SMS and Communication Privacy
               </h2>
@@ -282,10 +282,10 @@ export default function PrivacyPage() {
                 </a>{" "}
                 for full details.
               </p>
-            </section>
+            </div>
 
             {/* 8 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 8. AI and Automated Processing
               </h2>
@@ -300,10 +300,10 @@ export default function PrivacyPage() {
                 AI processing is performed solely to provide and improve the
                 Service for your account and organization.
               </p>
-            </section>
+            </div>
 
             {/* 9 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 9. Cookies
               </h2>
@@ -315,10 +315,10 @@ export default function PrivacyPage() {
                 browser settings, but disabling essential cookies may impair
                 functionality.
               </p>
-            </section>
+            </div>
 
             {/* 10 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 10. Children&apos;s Privacy
               </h2>
@@ -329,10 +329,10 @@ export default function PrivacyPage() {
                 child under 18, we will take steps to delete such information
                 promptly.
               </p>
-            </section>
+            </div>
 
             {/* 11 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 11. California Privacy Rights (CCPA)
               </h2>
@@ -353,24 +353,24 @@ export default function PrivacyPage() {
                 </a>
                 .
               </p>
-            </section>
+            </div>
 
             {/* 12 */}
-            <section>
+            <div className="mb-10">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 12. Changes to This Policy
               </h2>
               <p>
                 We may update this Privacy Policy from time to time. We will
                 notify you of material changes by posting the updated policy on
-                our website and updating the "Last Updated" date. Your continued
+                our website and updating the &ldquo;Last Updated&rdquo; date. Your continued
                 use of the Service after changes are posted constitutes your
                 acceptance of the revised policy.
               </p>
-            </section>
+            </div>
 
             {/* 13 */}
-            <section>
+            <div>
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
                 13. Contact Us
               </h2>
@@ -378,7 +378,7 @@ export default function PrivacyPage() {
                 If you have questions about this Privacy Policy or our data
                 practices, please contact us:
               </p>
-              <div className="mt-3 bg-gray-50 rounded-lg p-4 text-sm">
+              <div className="mt-3 bg-gray-50 rounded-lg p-4 text-sm space-y-1">
                 <p className="font-semibold text-gray-900">Perennia AI</p>
                 <p>
                   Email:{" "}
@@ -408,7 +408,7 @@ export default function PrivacyPage() {
                   </a>
                 </p>
               </div>
-            </section>
+            </div>
           </div>
         </div>
       </div>

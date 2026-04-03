@@ -107,8 +107,8 @@ nav {
 }
 .nav-login:hover { color: var(--text-primary); }
 
-/* GENERAL SCENE STRUCTURE */
-section {
+/* GENERAL SCENE STRUCTURE — scoped to cinematic landing only */
+.cinematic-landing section {
   position: relative; overflow: hidden;
   display: flex; align-items: center; justify-content: center;
   min-height: 100vh;
