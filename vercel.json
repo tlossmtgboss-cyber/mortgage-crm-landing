@@ -1,0 +1,13 @@
+{
+  "framework": "nextjs",
+  "rewrites": [
+    {
+      "source": "/token",
+      "destination": "https://app.perenniaai.com/token"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "https://app.perenniaai.com/api/:path*"
+    }
+  ]
+}
