@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ContactForm from "@/components/ContactForm";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Contact Us — Perennia AI",
@@ -131,25 +132,7 @@ export default function ContactPage() {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 py-6 mt-12">
-        <div className="max-w-4xl mx-auto px-4 text-center text-sm text-gray-500">
-          <p>
-            &copy; {new Date().getFullYear()} Perennia AI. All rights reserved.
-          </p>
-          <div className="mt-2 flex justify-center gap-4">
-            <a href="/privacy" className="text-blue-600 hover:underline">
-              Privacy Policy
-            </a>
-            <a href="/terms" className="text-blue-600 hover:underline">
-              Terms of Service
-            </a>
-            <a href="/sms-consent" className="text-blue-600 hover:underline">
-              SMS Consent
-            </a>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </main>
   );
 }

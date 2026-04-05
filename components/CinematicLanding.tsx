@@ -390,7 +390,7 @@ const BODY_HTML = `
   </div>
   <div style="display:flex;align-items:center;gap:12px">
     <a href="https://app.perenniaai.com/login" class="nav-login">Log In</a>
-    <a href="https://app.perenniaai.com/register" class="nav-cta">Book a Demo</a>
+    <a href="https://app.perenniaai.com/book/demo" class="nav-cta">Book a Demo</a>
   </div>
 </nav>
 
@@ -401,7 +401,7 @@ const BODY_HTML = `
   <p class="hero-sub">Everything connected. Everything visible.<br>Everything moving forward.</p>
   <div class="hero-ctas">
     <button class="btn-primary">Watch the System Work</button>
-    <a href="https://app.perenniaai.com/register" class="btn-ghost">Book a Strategy Session</a>
+    <a href="https://app.perenniaai.com/book/demo" class="btn-ghost">Book a Strategy Session</a>
   </div>
   <div class="hero-pipeline-preview">
     <div class="pipeline-strip">
@@ -902,8 +902,8 @@ const BODY_HTML = `
   <p class="closing-sub">From first contact to mortgage under management. Post-closing refinance opportunities, equity alerts, and annual reviews &mdash; all automated, all connected.</p>
   <div class="closing-ctas">
     <button class="btn-primary" style="font-size:.9rem;padding:16px 40px">Watch the System Work</button>
-    <a href="https://app.perenniaai.com/register" class="btn-ghost" style="font-size:.9rem;padding:16px 40px">Book a Strategy Session</a>
-    <a href="https://app.perenniaai.com/register" class="btn-ghost" style="font-size:.9rem;padding:16px 40px">Join the Pilot Group</a>
+    <a href="https://app.perenniaai.com/book/demo" class="btn-ghost" style="font-size:.9rem;padding:16px 40px">Book a Strategy Session</a>
+    <a href="https://app.perenniaai.com/book/demo" class="btn-ghost" style="font-size:.9rem;padding:16px 40px">Join the Pilot Group</a>
   </div>
   <div class="closing-tagline">Perennia AI &middot; The Relationship Operating System for Mortgage Teams</div>
 </section>
