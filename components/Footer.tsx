@@ -40,6 +40,15 @@ export default function Footer() {
 
   const footerSections = [
     {
+      title: 'Platform',
+      links: [
+        { label: 'Pipeline', url: '/#pipeline' },
+        { label: 'Documents', url: '/#documents' },
+        { label: 'Intelligence', url: '/#call' },
+        { label: 'Workflow', url: '/#workflow' },
+      ]
+    },
+    {
       title: 'Product',
       links: [
         { label: 'Features', url: '/#features' },
@@ -68,7 +77,7 @@ export default function Footer() {
     <footer className="bg-gray-900 text-white pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main footer content */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 mb-12">
           {/* Brand column */}
           <div className="col-span-2 md:col-span-4 lg:col-span-2">
             <Link href="/" className="flex items-center gap-2 font-bold text-xl mb-4">
