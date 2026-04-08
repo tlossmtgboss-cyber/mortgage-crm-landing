@@ -139,25 +139,41 @@ const TOPIC_RESPONSES: Array<{
   match: (msg: string) => boolean;
   response: string;
 }> = [
+  // ── SPECIFIC topics first (before generic keyword matches) ──
   {
-    id: 'how_it_works',
-    match: (m) => /how.*(work|does|do you)/i.test(m),
-    response: "When a new lead enters the system, I place an AI voice call within 60 seconds. If they don't answer, I drop a voicemail and follow up via SMS 15 minutes later. I qualify borrowers by asking about loan type, timeline, credit range, and employment — then either transfer them live to the LO with a whisper briefing, book an appointment, or enroll them in a 12-month drip campaign.",
+    id: 'call_intelligence',
+    match: (m) => /call.?intellig|transcript|qa|quality.?assur|call.?analys|call.?review|sentiment/i.test(m),
+    response: "Call Intelligence is one of my most powerful features. After every call, I automatically transcribe it, then run AI analysis to extract: borrower financial details (income, credit, assets), property information, timeline and intent signals, compliance violations, and sentiment scoring. My QA agent scores calls across 6 categories — compliance, qualification depth, objection handling, rapport, closing technique, and information accuracy. Every insight feeds back into the lead's profile so the next interaction is smarter.",
   },
   {
-    id: 'channels',
-    match: (m) => /channel|sms|email|text|call|voice/i.test(m),
-    response: "I work across 5 channels: AI voice calls, two-way SMS, personalized email (sent from the LO's own Outlook via Microsoft Graph), ringless voicemail drops, and live warm transfers. Every interaction shares context — if a borrower tells me their credit score on a call, I won't ask again over text.",
+    id: 'engagement_engine',
+    match: (m) => /engagement.?engine|omnichannel|orchestrat|trigger|brain|decision/i.test(m),
+    response: "The Engagement Orchestrator is my decision engine. It handles 15 trigger events — new_lead, no_answer, email_opened, rate_drop, appointment_missed, document_needed, and more. For each trigger, it selects the optimal channel based on time of day, borrower preference, pipeline stage, and recent activity. It enforces fatigue limits (max 5 contacts/day, 30-min same-channel dedup) and routes every message through compliance gates before sending.",
   },
   {
-    id: 'agents',
-    match: (m) => /agent|fleet|how many|22|twenty/i.test(m),
-    response: "I'm actually a fleet of 22 specialized agents orchestrated by LangGraph. There's a Receptionist for inbound calls, a Lead Qualifier, Pipeline Analyst, Document Tracker, Rate Monitor, Compliance Checker, Email Processor, SLA Tracker, and 14 more — each an expert in its domain, sharing context in real time. Want to hear about a specific one?",
+    id: 'deal_breaker',
+    match: (m) => /deal.?break|disqualif|turn.?down|reject|denied|can.?t qualify/i.test(m),
+    response: "The Deal Breaker Radar catches disqualifying factors early — credit below 580, recent bankruptcy, self-employment under 2 years. But I never dead-end a conversation. Instead, the Turn Down Agent provides ECOA-compliant alternatives: credit repair referrals, bank statement loan options, waiting period timelines. Every borrower gets a path forward.",
   },
   {
     id: 'transfer',
-    match: (m) => /transfer|live|bridge|whisper/i.test(m),
+    match: (m) => /transfer|bridge|whisper/i.test(m),
     response: "When I qualify a borrower who's ready, I place them on a brief hold, dial the loan officer, play a whisper briefing with their details (name, credit, loan type, timeline, property state), then bridge both into a live conference. Average transfer time: 8 seconds. If the LO is unavailable, I create a priority callback task and text them immediately.",
+  },
+  {
+    id: 'qualification',
+    match: (m) => /qualif|question|ask borrower|what.*(ask|question)/i.test(m),
+    response: "I qualify borrowers by asking five key questions: loan purpose (purchase, refi, HELOC), target price range, estimated credit score range, employment type (W-2, self-employed, retired), and timeline. I ask one at a time, adapt based on answers, and merge data across channels so I never repeat a question the borrower already answered on another channel.",
+  },
+  {
+    id: 'voicemail',
+    match: (m) => /voicemail|vm|ringless|amd|machine.?detect/i.test(m),
+    response: "When my outbound call goes unanswered, AMD (Answering Machine Detection) identifies it, and I deliver a ringless voicemail via Slybroadcast — it appears in the borrower's inbox without their phone ringing. Then 15 minutes later, an automatic SMS follow-up goes out. There's also a circuit breaker: if Slybroadcast has 5 consecutive failures, I fall back to SMS-only for 60 seconds.",
+  },
+  {
+    id: 'appointment',
+    match: (m) => /appoint|book|calendar|schedul|meeting/i.test(m),
+    response: "I check the loan officer's real-time calendar availability via Microsoft Graph and book consultations directly. The borrower gets a confirmation SMS and a prep sequence before the call — including a document checklist so they come prepared. No back-and-forth scheduling emails needed.",
   },
   {
     id: 'drip',
@@ -170,9 +186,35 @@ const TOPIC_RESPONSES: Array<{
     response: "Compliance is built into every interaction. I enforce TCPA quiet hours (8am-9pm borrower local time), check the DNC registry before every dial, never ask ECOA-prohibited questions, handle STOP/HELP keywords instantly, and include NMLS disclosures in every email footer. It's not an add-on — it's the foundation.",
   },
   {
+    id: 'agents',
+    match: (m) => /agent|fleet|how many|22|twenty/i.test(m),
+    response: "I'm actually a fleet of 22 specialized agents orchestrated by LangGraph. There's a Receptionist for inbound calls, a Lead Qualifier, Pipeline Analyst, Document Tracker, Rate Monitor, Compliance Checker, Email Processor, SLA Tracker, Content Creator, Team Coach, Scheduler, Voice Agent, Turn Down Agent, Estimate Advisor, Deal Breaker Radar, Lead Nurturer, Referral Partner, Recruiting Agent, Call Intelligence, SMS Intelligence, Workflow Engine, and Post-Close Agent — each an expert in its domain. Want to hear about a specific one?",
+  },
+  {
+    id: 'how_it_works',
+    match: (m) => /how.*(work|does|do you|function)/i.test(m),
+    response: "When a new lead enters the system, I place an AI voice call within 60 seconds. If they don't answer, I drop a voicemail and follow up via SMS 15 minutes later. I qualify borrowers by asking about loan type, timeline, credit range, and employment — then either transfer them live to the LO with a whisper briefing, book an appointment, or enroll them in a 12-month drip campaign.",
+  },
+  {
     id: 'rates',
-    match: (m) => /rate|interest|apr/i.test(m),
+    match: (m) => /\brate|interest|apr/i.test(m),
     response: "I don't quote specific rates — that's between the borrower and their loan officer. But I monitor rates in real time and automatically alert borrowers when rates drop into their target range. That's one of the 15 trigger events in the engagement orchestrator. Want to know about the other triggers?",
+  },
+  // ── GENERIC channel keywords last (so specific topics match first) ──
+  {
+    id: 'sms',
+    match: (m) => /\bsms\b|text.?messag|two.?way.?text/i.test(m),
+    response: "My SMS engine uses Claude AI to compose every message — no canned templates. I adapt to the borrower's tone, reference prior calls and emails, and conduct natural text-based qualification. If a deal breaker is detected, I route to the Turn Down Agent for ECOA-compliant alternatives. STOP/HELP keywords are handled instantly with full A2P 10DLC compliance.",
+  },
+  {
+    id: 'email',
+    match: (m) => /\bemail|outlook|microsoft graph|inbox/i.test(m),
+    response: "I send hyper-personalized emails from the loan officer's actual Outlook address via Microsoft Graph — not from a system address. Every email includes open and click tracking. When a borrower opens your email, I can escalate to an SMS follow-up within 5 minutes while they're actively thinking about their mortgage. Templates cover pre-approval, rate alerts, market updates, document reminders, and post-close referrals.",
+  },
+  {
+    id: 'voice_calls',
+    match: (m) => /\bcall\b|voice|phone|dial|outbound/i.test(m),
+    response: "I place AI voice calls using Vapi with Deepgram's asteria voice — natural and conversational, not robotic. Each call opens with a personalized greeting built from the lead's data and cross-channel context. I qualify borrowers by asking about loan type, timeline, credit range, and employment, then decide: live transfer, appointment booking, drip enrollment, or alternative routing via the Deal Breaker Radar.",
   },
   {
     id: 'pricing',
