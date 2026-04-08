@@ -7,7 +7,7 @@
     },
     {
       "source": "/api/:path*",
-      "destination": "https://app.perenniaai.com/api/:path*"
+      "destination": "https://api.perenniaai.com/api/:path*"
     }
   ]
 }
