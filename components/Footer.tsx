@@ -38,13 +38,27 @@ export default function Footer() {
     }
   };
 
-  const footerSections = [
+  const openBookingModal = () => {
+    const modal = document.getElementById('bookingModal');
+    const iframe = document.getElementById('bookingIframe') as HTMLIFrameElement | null;
+    if (modal && iframe) {
+      iframe.src = 'https://app.perenniaai.com/embed/book/demo';
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+  };
+
+  const openCookieSettings = () => {
+    window.dispatchEvent(new CustomEvent('open-cookie-settings'));
+  };
+
+  const footerSections: Array<{ title: string; links: Array<{ label: string; url: string; action?: string }> }> = [
     {
       title: 'Platform',
       links: [
         { label: 'Pipeline', url: '/#pipeline' },
         { label: 'Documents', url: '/#documents' },
-        { label: 'Intelligence', url: '/#call' },
+        { label: 'Call Intelligence', url: '/call-intelligence' },
         { label: 'Workflow', url: '/#workflow' },
       ]
     },
@@ -54,7 +68,7 @@ export default function Footer() {
         { label: 'Features', url: '/#features' },
         { label: 'How It Works', url: '/#workflow' },
         { label: 'Integrations', url: '/#integrations' },
-        { label: 'Book a Demo', url: 'https://app.perenniaai.com/book/demo' },
+        { label: 'Book a Demo', url: '#book', action: 'openBooking' },
       ]
     },
     {
@@ -69,6 +83,7 @@ export default function Footer() {
         { label: 'Privacy Policy', url: '/privacy' },
         { label: 'Terms of Service', url: '/terms' },
         { label: 'SMS Opt-In', url: '/sms-consent' },
+        { label: 'Cookie Settings', url: '#cookies', action: 'openCookieSettings' },
       ]
     },
   ];
@@ -86,7 +101,7 @@ export default function Footer() {
               </div>
               <span>Perennia AI</span>
             </Link>
-            <p className="text-gray-400 text-sm mb-6 max-w-xs">
+            <p className="text-gray-300 text-sm mb-6 max-w-xs">
               The Mortgage Operating System. 20+ AI agents that run your pipeline, track every file, and surface risk before it costs you.
             </p>
           </div>
@@ -100,10 +115,24 @@ export default function Footer() {
                   const isExternal = link.url.startsWith('http');
                   return (
                     <li key={link.label}>
-                      {isExternal ? (
+                      {link.action === 'openBooking' ? (
+                        <button
+                          onClick={openBookingModal}
+                          className="text-gray-300 hover:text-blue-400 transition-colors text-sm bg-transparent border-none cursor-pointer p-0"
+                        >
+                          {link.label}
+                        </button>
+                      ) : link.action === 'openCookieSettings' ? (
+                        <button
+                          onClick={openCookieSettings}
+                          className="text-gray-300 hover:text-blue-400 transition-colors text-sm bg-transparent border-none cursor-pointer p-0"
+                        >
+                          {link.label}
+                        </button>
+                      ) : isExternal ? (
                         <a
                           href={link.url}
-                          className="text-gray-400 hover:text-blue-400 transition-colors text-sm"
+                          className="text-gray-300 hover:text-blue-400 transition-colors text-sm"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
@@ -112,7 +141,7 @@ export default function Footer() {
                       ) : (
                         <Link
                           href={link.url}
-                          className="text-gray-400 hover:text-blue-400 transition-colors text-sm"
+                          className="text-gray-300 hover:text-blue-400 transition-colors text-sm"
                         >
                           {link.label}
                         </Link>
@@ -129,7 +158,7 @@ export default function Footer() {
         <div className="border-t border-gray-800 pt-8 pb-8">
           <div className="max-w-md">
             <h3 className="font-semibold mb-2 text-white">Stay updated</h3>
-            <p className="text-gray-400 text-sm mb-4">
+            <p className="text-gray-300 text-sm mb-4">
               Get the latest mortgage industry insights and product updates.
             </p>
 
@@ -171,11 +200,25 @@ export default function Footer() {
           <p className="text-gray-400 text-sm">
             &copy; {new Date().getFullYear()} Perennia AI. All rights reserved.
           </p>
-          <div className="flex gap-6 text-sm text-gray-400">
+          <div className="flex flex-wrap gap-4 sm:gap-6 text-sm text-gray-300">
             <Link href="/privacy" className="hover:text-blue-400 transition-colors">Privacy</Link>
             <Link href="/terms" className="hover:text-blue-400 transition-colors">Terms</Link>
             <Link href="/sms-consent" className="hover:text-blue-400 transition-colors">SMS Opt-In</Link>
             <Link href="/contact" className="hover:text-blue-400 transition-colors">Contact</Link>
+            <button
+              onClick={openCookieSettings}
+              className="hover:text-blue-400 transition-colors bg-transparent border-none cursor-pointer p-0 text-gray-300 text-sm"
+            >
+              Cookie Settings
+            </button>
+          </div>
+        </div>
+
+        {/* Financial disclosures */}
+        <div className="border-t border-gray-800 pt-6 mt-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-400">
+            <p>Equal Housing Opportunity. NMLS Consumer Access: <a href="https://www.nmlsconsumeraccess.org" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-400">www.nmlsconsumeraccess.org</a></p>
+            <Link href="/privacy#ccpa" className="text-gray-400 hover:text-blue-400">Do Not Sell My Personal Information</Link>
           </div>
         </div>
       </div>
