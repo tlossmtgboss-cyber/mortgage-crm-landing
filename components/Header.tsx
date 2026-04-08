@@ -19,6 +19,8 @@ export default function Header() {
   const navItems = [
     { label: 'Features', href: '#features' },
     { label: 'How it works', href: '#how-it-works' },
+    { label: 'Engagement Engine', href: '/engagement-engine' },
+    { label: 'Call Intelligence', href: '/call-intelligence' },
     { label: 'Integrations', href: '#integrations' },
     { label: 'FAQ', href: '#faq' },
   ];
@@ -49,16 +51,27 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-8">
-            {navItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="text-gray-100 hover:text-white transition-all duration-300 font-medium relative group py-2"
-              >
-                {item.label}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 group-hover:w-full transition-all duration-300"></span>
-              </a>
-            ))}
+            {navItems.map((item) =>
+              item.href.startsWith('/') ? (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="text-gray-100 hover:text-white transition-all duration-300 font-medium relative group py-2"
+                >
+                  {item.label}
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 group-hover:w-full transition-all duration-300"></span>
+                </Link>
+              ) : (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  className="text-gray-100 hover:text-white transition-all duration-300 font-medium relative group py-2"
+                >
+                  {item.label}
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 group-hover:w-full transition-all duration-300"></span>
+                </a>
+              )
+            )}
           </div>
 
           {/* CTA Buttons */}
@@ -110,16 +123,27 @@ export default function Header() {
             className="lg:hidden mt-4 pb-4 border-t border-white/10 pt-4 bg-black/50 backdrop-blur-xl rounded-xl px-4"
           >
             <div className="flex flex-col gap-4">
-              {navItems.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  className="text-gray-100 hover:text-white transition-all duration-300 font-medium py-2 hover:pl-2"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {item.label}
-                </a>
-              ))}
+              {navItems.map((item) =>
+                item.href.startsWith('/') ? (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="text-gray-100 hover:text-white transition-all duration-300 font-medium py-2 hover:pl-2"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                ) : (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    className="text-gray-100 hover:text-white transition-all duration-300 font-medium py-2 hover:pl-2"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {item.label}
+                  </a>
+                )
+              )}
               <div className="flex flex-col gap-3 mt-4 pt-4 border-t border-white/10">
                 <Link
                   href="https://app.perenniaai.com/login"
