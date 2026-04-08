@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import CookieConsent from "../components/CookieConsent";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://www.perenniaai.com'),
@@ -73,9 +74,9 @@ export const metadata: Metadata = {
   },
 
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon-16x16.png",
-    apple: "/apple-touch-icon.png",
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
   },
 
   alternates: {
@@ -108,6 +109,7 @@ export default function RootLayout({
           Skip to content
         </a>
         {children}
+        <CookieConsent />
       </body>
     </html>
   );

@@ -18,7 +18,7 @@ export default function Header() {
 
   const navItems = [
     { label: 'Features', href: '#features' },
-    { label: 'How it works', href: '#how-it-works' },
+    { label: 'Aria', href: '/aria' },
     { label: 'Engagement Engine', href: '/engagement-engine' },
     { label: 'Call Intelligence', href: '/call-intelligence' },
     { label: 'Integrations', href: '#integrations' },
@@ -38,14 +38,20 @@ export default function Header() {
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center gap-3 font-bold text-xl md:text-2xl transition-all duration-300 hover:scale-105 group"
+            className="flex items-center gap-2.5 font-bold text-xl md:text-2xl transition-all duration-300 hover:scale-105 group"
           >
-            <div className="relative">
-              <span className="text-3xl md:text-4xl group-hover:rotate-12 transition-transform duration-300" aria-hidden="true">🏠</span>
-              <div className="absolute -inset-2 bg-blue-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity rounded-full"></div>
-            </div>
-            <span className="bg-gradient-to-r from-blue-400 via-blue-300 to-purple-400 bg-clip-text text-transparent">
-              Mortgage CRM
+            <svg width="36" height="36" viewBox="0 0 32 32" className="flex-shrink-0" aria-hidden="true">
+              <defs>
+                <linearGradient id="logo-g" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#4DA3FF"/>
+                  <stop offset="100%" stopColor="#18a0a6"/>
+                </linearGradient>
+              </defs>
+              <rect width="32" height="32" rx="8" fill="#0c121c"/>
+              <text x="16" y="23" textAnchor="middle" fontFamily="system-ui,sans-serif" fontWeight="700" fontSize="20" fill="url(#logo-g)">P</text>
+            </svg>
+            <span className="bg-gradient-to-r from-[#4DA3FF] to-[#18a0a6] bg-clip-text text-transparent" style={{ fontFamily: 'var(--font-display)' }}>
+              Perennia AI
             </span>
           </Link>
 
