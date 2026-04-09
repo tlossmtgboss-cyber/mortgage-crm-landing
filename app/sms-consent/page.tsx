@@ -23,8 +23,8 @@ export default function SMSConsentPage() {
         </div>
       </header>
 
-      {/* Main Content */}
-      <div className="max-w-2xl mx-auto px-4 py-12">
+      {/* Main Content — pb-32 ensures submit button clears the fixed cookie banner */}
+      <div className="max-w-2xl mx-auto px-4 py-12 pb-32">
         <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             SMS Communication Opt-In
