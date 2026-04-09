@@ -7,8 +7,9 @@ export default function SMSOptInForm() {
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [consent, setConsent] = useState(false);
+  const [choice, setChoice] = useState<"opt-in" | "opt-out" | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [submittedChoice, setSubmittedChoice] = useState<"opt-in" | "opt-out" | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -23,6 +24,11 @@ export default function SMSOptInForm() {
     e.preventDefault();
     if (loading) return;
     setError("");
+
+    if (!choice) {
+      setError("Please select either Opt In or Opt Out.");
+      return;
+    }
 
     const digits = phone.replace(/\D/g, "");
     if (digits.length !== 10) {
@@ -41,8 +47,10 @@ export default function SMSOptInForm() {
             last_name: lastName,
             phone: `+1${digits}`,
             email: email || undefined,
-            sms_consent: consent,
-            consent_text: "By checking this box, I agree to receive recurring automated SMS/MMS messages from Perennia AI and my assigned loan officer, including mortgage application updates, rate alerts, document requests, and appointment reminders. Message frequency varies (up to 10 msgs/month). Msg & data rates may apply. Reply STOP to cancel, HELP for help. Consent is not a condition of purchase.",
+            sms_consent: choice === "opt-in",
+            consent_text: choice === "opt-in"
+              ? "I agree to receive recurring automated SMS/MMS messages from Perennia AI and my assigned loan officer, including mortgage application updates, rate alerts, document requests, and appointment reminders. Message frequency varies (up to 10 msgs/month). Msg & data rates may apply. Reply STOP to cancel, HELP for help. Consent is not a condition of purchase."
+              : "I do not wish to receive SMS/MMS messages from Perennia AI.",
             consent_source: "web_form",
             consent_page_url: window.location.href,
           }),
@@ -50,6 +58,7 @@ export default function SMSOptInForm() {
       );
 
       if (res.ok) {
+        setSubmittedChoice(choice);
         setSubmitted(true);
       } else {
         const data = await res.json().catch(() => null);
@@ -65,17 +74,19 @@ export default function SMSOptInForm() {
   if (submitted) {
     return (
       <div className="text-center py-8">
-        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className={`w-16 h-16 ${submittedChoice === "opt-in" ? "bg-green-100" : "bg-gray-100"} rounded-full flex items-center justify-center mx-auto mb-4`}>
+          <svg className={`w-8 h-8 ${submittedChoice === "opt-in" ? "text-green-600" : "text-gray-600"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
         <h3 className="text-xl font-semibold text-gray-900 mb-2">
-          You&apos;re all set!
+          {submittedChoice === "opt-in" ? "You're all set!" : "Preference saved"}
         </h3>
         <p className="text-gray-600">
-          You&apos;ve been opted in to receive SMS updates. You can reply{" "}
-          <strong>STOP</strong> at any time to unsubscribe.
+          {submittedChoice === "opt-in"
+            ? <>You&apos;ve been opted in to receive SMS updates. You can reply{" "}<strong>STOP</strong> at any time to unsubscribe.</>
+            : <>You&apos;ve opted out of SMS messages. If you change your mind, you can return to this page at any time.</>
+          }
         </p>
       </div>
     );
@@ -154,45 +165,81 @@ export default function SMSOptInForm() {
         />
       </div>
 
-      {/* SMS Consent Checkbox */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+      {/* Opt In Container */}
+      <div
+        className={`border rounded-lg p-4 cursor-pointer transition-all ${
+          choice === "opt-in"
+            ? "bg-blue-50 border-blue-400 ring-2 ring-blue-300"
+            : "bg-white border-gray-200 hover:border-blue-300"
+        }`}
+        onClick={() => setChoice("opt-in")}
+      >
         <label className="flex items-start gap-3 cursor-pointer">
           <input
             type="checkbox"
-            checked={consent}
-            onChange={(e) => setConsent(e.target.checked)}
+            checked={choice === "opt-in"}
+            onChange={() => setChoice(choice === "opt-in" ? null : "opt-in")}
             className="mt-1 w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 flex-shrink-0"
           />
-          <span className="text-sm text-gray-700 leading-relaxed">
-            By checking this box, I agree to receive recurring automated
-            SMS/MMS messages from <strong>Perennia AI</strong> and my assigned
-            loan officer, including mortgage application updates, rate alerts,
-            document requests, and appointment reminders. Message frequency
-            varies (up to 10 msgs/month). Msg &amp; data rates may apply. Reply{" "}
-            <strong>STOP</strong> to cancel, <strong>HELP</strong> for help.{" "}
-            <strong>
-              Consent is not a condition of purchase or receiving services.
-            </strong>{" "}
-            See our{" "}
-            <a
-              href="/privacy"
-              className="text-blue-600 underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Privacy Policy
-            </a>{" "}
-            and{" "}
-            <a
-              href="/terms"
-              className="text-blue-600 underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Terms of Service
-            </a>
-            .
-          </span>
+          <div>
+            <span className="font-semibold text-gray-900 text-sm">Opt In to SMS Updates</span>
+            <p className="text-sm text-gray-600 leading-relaxed mt-1">
+              I agree to receive recurring automated SMS/MMS messages from{" "}
+              <strong>Perennia AI</strong> and my assigned loan officer, including
+              mortgage application updates, rate alerts, document requests, and
+              appointment reminders. Message frequency varies (up to 10 msgs/month).
+              Msg &amp; data rates may apply. Reply <strong>STOP</strong> to cancel,{" "}
+              <strong>HELP</strong> for help.{" "}
+              <strong>Consent is not a condition of purchase or receiving services.</strong>{" "}
+              See our{" "}
+              <a
+                href="/privacy"
+                className="text-blue-600 underline"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+              >
+                Privacy Policy
+              </a>{" "}
+              and{" "}
+              <a
+                href="/terms"
+                className="text-blue-600 underline"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+              >
+                Terms of Service
+              </a>
+              .
+            </p>
+          </div>
+        </label>
+      </div>
+
+      {/* Opt Out Container */}
+      <div
+        className={`border rounded-lg p-4 cursor-pointer transition-all ${
+          choice === "opt-out"
+            ? "bg-gray-50 border-gray-400 ring-2 ring-gray-300"
+            : "bg-white border-gray-200 hover:border-gray-300"
+        }`}
+        onClick={() => setChoice("opt-out")}
+      >
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={choice === "opt-out"}
+            onChange={() => setChoice(choice === "opt-out" ? null : "opt-out")}
+            className="mt-1 w-5 h-5 rounded border-gray-300 text-gray-600 focus:ring-gray-500 flex-shrink-0"
+          />
+          <div>
+            <span className="font-semibold text-gray-900 text-sm">Opt Out of SMS Updates</span>
+            <p className="text-sm text-gray-600 leading-relaxed mt-1">
+              I do not wish to receive SMS/MMS messages from Perennia AI. I understand
+              I can change my preference at any time by returning to this page.
+            </p>
+          </div>
         </label>
       </div>
 
@@ -208,11 +255,11 @@ export default function SMSOptInForm() {
         type="submit"
         className={`w-full py-3 px-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 text-base ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
       >
-        {loading ? "Submitting..." : "Opt In to SMS Updates"}
+        {loading ? "Submitting..." : "Submit"}
       </button>
 
       <p className="text-center text-xs text-gray-400">
-        You can unsubscribe at any time by replying STOP.
+        You can change your preference at any time.
       </p>
     </form>
   );
