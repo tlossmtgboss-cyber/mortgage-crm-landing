@@ -28,7 +28,7 @@ export default function PricingTeaser() {
         'All integrations',
         'Custom workflows'
       ],
-      ctaLabel: 'Start Free Trial',
+      ctaLabel: 'Book a Demo',
       ctaUrl: '/register?plan=professional'
     },
     {

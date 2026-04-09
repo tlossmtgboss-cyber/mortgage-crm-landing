@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import BookingModal from '@/components/BookingModal';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -53,6 +54,7 @@ const features = [
 ];
 
 export default function CompetitiveLandscape() {
+  const [bookingOpen, setBookingOpen] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -86,6 +88,7 @@ export default function CompetitiveLandscape() {
   };
 
   return (
+    <>
     <section
       ref={sectionRef}
       className="relative bg-black py-32 overflow-hidden"
@@ -180,17 +183,17 @@ export default function CompetitiveLandscape() {
           <p className="text-gray-300 text-lg mb-6">
             See the difference for yourself
           </p>
-          <a
-            href="https://app.perenniaai.com/register"
+          <button
+            onClick={() => setBookingOpen(true)}
             className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-xl hover:scale-105 transition-all duration-300 shadow-2xl shadow-blue-500/30"
           >
-            <span>Start your free trial</span>
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </a>
+            Book a Demo
+          </button>
         </div>
       </div>
     </section>
+
+      <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
+    </>
   );
 }

@@ -18,7 +18,6 @@ export default function HeaderClean() {
 
   const navItems = [
     { label: 'Features', href: '#features' },
-    { label: 'FAQ', href: '#faq' },
   ];
 
   return (

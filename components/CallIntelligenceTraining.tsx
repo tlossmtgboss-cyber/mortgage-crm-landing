@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Header from './Header';
+import BookingModal from '@/components/BookingModal';
 
 /* ------------------------------------------------------------------ */
 /*  Section data                                                       */
@@ -78,6 +79,7 @@ const faqs = [
 
 export default function CallIntelligenceTraining() {
   const [heroVisible, setHeroVisible] = useState(false);
+  const [bookingOpen, setBookingOpen] = useState(false);
 
   useEffect(() => {
     const t = setTimeout(() => setHeroVisible(true), 100);
@@ -461,12 +463,12 @@ export default function CallIntelligenceTraining() {
         <div className="text-center py-12">
           <p className="text-[var(--text-dim)] mb-6">Ready to see it in action?</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="https://app.perenniaai.com/register"
+            <button
+              onClick={() => setBookingOpen(true)}
               className="px-8 py-3.5 bg-gradient-to-r from-[var(--accent-blue,#4DA3FF)] to-purple-500 text-white font-semibold rounded-xl hover:shadow-xl hover:shadow-blue-500/25 transition-all duration-300"
             >
-              Start Free Trial
-            </Link>
+              Book a Demo
+            </button>
             <Link
               href="/call-intelligence"
               className="px-8 py-3.5 border border-[var(--glass-border)] bg-[var(--glass-bg)] text-white font-semibold rounded-xl hover:bg-white/10 transition-all duration-300"
@@ -476,6 +478,8 @@ export default function CallIntelligenceTraining() {
           </div>
         </div>
       </div>
+
+      <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
     </main>
   );
 }

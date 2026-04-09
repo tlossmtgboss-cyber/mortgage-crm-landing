@@ -1,6 +1,11 @@
 'use client';
 
+import { useState } from 'react';
+import BookingModal from '@/components/BookingModal';
+
 export default function FinalCTA() {
+  const [bookingOpen, setBookingOpen] = useState(false);
+
   return (
     <section className="py-20 bg-gradient-to-br from-blue-50 to-purple-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -19,12 +24,12 @@ export default function FinalCTA() {
 
           {/* CTA buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <a
-              href="#demo"
+            <button
+              onClick={() => setBookingOpen(true)}
               className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 text-lg"
             >
-              Schedule Demo
-            </a>
+              Book a Demo
+            </button>
           </div>
 
 
@@ -47,6 +52,8 @@ export default function FinalCTA() {
           </div>
         </div>
       </div>
+
+      <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
     </section>
   );
 }

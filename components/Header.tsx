@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import BookingModal from '@/components/BookingModal';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [bookingOpen, setBookingOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,12 +19,11 @@ export default function Header() {
   }, []);
 
   const navItems = [
-    { label: 'Features', href: '#features' },
     { label: 'Aria', href: '/aria' },
     { label: 'Engagement Engine', href: '/engagement-engine' },
     { label: 'Call Intelligence', href: '/call-intelligence' },
-    { label: 'Integrations', href: '#integrations' },
-    { label: 'FAQ', href: '#faq' },
+    { label: 'Smart Calendar', href: '/smart-calendar' },
+    { label: 'Smart Docs', href: '/smart-docs' },
   ];
 
   return (
@@ -88,12 +89,12 @@ export default function Header() {
             >
               Log In
             </Link>
-            <Link
-              href="https://app.perenniaai.com/register"
+            <button
+              onClick={() => setBookingOpen(true)}
               className="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-300 hover:scale-105 font-semibold"
             >
-              Start Free Trial
-            </Link>
+              Book a Demo
+            </button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -157,17 +158,19 @@ export default function Header() {
                 >
                   Log In
                 </Link>
-                <Link
-                  href="https://app.perenniaai.com/register"
+                <button
+                  onClick={() => { setBookingOpen(true); setIsMobileMenuOpen(false); }}
                   className="text-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-300 font-semibold"
                 >
-                  Start Free Trial
-                </Link>
+                  Book a Demo
+                </button>
               </div>
             </div>
           </div>
         )}
       </div>
+
+      <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
     </header>
   );
 }

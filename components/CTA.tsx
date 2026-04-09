@@ -1,4 +1,11 @@
+'use client';
+
+import { useState } from 'react';
+import BookingModal from '@/components/BookingModal';
+
 export default function CTA() {
+  const [bookingOpen, setBookingOpen] = useState(false);
+
   return (
     <section className="py-20 md:py-28 bg-gradient-to-br from-brand to-brand-dark text-white relative overflow-hidden">
 
@@ -11,24 +18,20 @@ export default function CTA() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
-          <a
-            href="/demo"
+          <button
+            onClick={() => setBookingOpen(true)}
             className="w-full sm:w-auto px-8 py-4 bg-white text-brand font-semibold text-lg rounded-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
           >
-            Start Your Free Trial
-          </a>
-          <a
-            href="/contact-sales"
-            className="w-full sm:w-auto px-8 py-4 bg-transparent border-2 border-white text-white font-semibold text-lg rounded-lg hover:bg-white/10 transition-all duration-300"
-          >
-            Talk to Sales
-          </a>
+            Book a Demo
+          </button>
         </div>
 
         <p className="text-sm text-gray-200">
           No credit card required • Setup in minutes • Cancel anytime
         </p>
       </div>
+
+      <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
     </section>
   );
 }

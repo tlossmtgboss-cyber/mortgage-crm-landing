@@ -1,7 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
+import BookingModal from '@/components/BookingModal';
 
 /* ─── Section data ─── */
 
@@ -211,6 +213,8 @@ const complianceChecks = [
 /* ─── Component ─── */
 
 export default function TrainingGuidePage() {
+  const [bookingOpen, setBookingOpen] = useState(false);
+
   return (
     <main
       className="min-h-screen overflow-x-hidden"
@@ -546,14 +550,13 @@ export default function TrainingGuidePage() {
             </span>
           </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="https://app.perenniaai.com/register"
+            <button
+              onClick={() => setBookingOpen(true)}
               className="group inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-medium tracking-wider uppercase transition-all duration-300 hover:-translate-y-0.5"
               style={{ background: 'linear-gradient(135deg, rgba(77,163,255,0.9), rgba(120,200,255,0.8))', color: '#040508', boxShadow: '0 8px 40px rgba(77,163,255,0.3)' }}
             >
-              Start Free Trial
-              <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
-            </Link>
+              Book a Demo
+            </button>
             <Link
               href="/engagement-engine"
               className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-normal tracking-wider uppercase transition-all duration-300 hover:border-[rgba(77,163,255,0.4)] hover:text-white"
@@ -564,6 +567,8 @@ export default function TrainingGuidePage() {
           </div>
         </div>
       </section>
+
+      <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
     </main>
   );
 }

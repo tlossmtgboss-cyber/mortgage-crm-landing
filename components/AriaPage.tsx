@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import AriaChatModal from '@/components/AriaChatModal';
+import BookingModal from '@/components/BookingModal';
 
 /* ─── Data ─── */
 
@@ -100,6 +101,7 @@ export default function AriaPage() {
   const [heroVisible, setHeroVisible] = useState(false);
   const [activeAgent, setActiveAgent] = useState(0);
   const [chatOpen, setChatOpen] = useState(false);
+  const [bookingOpen, setBookingOpen] = useState(false);
   const orbitRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -495,6 +497,218 @@ export default function AriaPage() {
         </div>
       </section>
 
+      {/* ═══════════ MOBILE APP ═══════════ */}
+      <section className="py-20 md:py-32 relative" style={{ background: 'radial-gradient(ellipse 100% 60% at 50% 50%, rgba(168,85,247,0.03) 0%, transparent 70%)' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
+            {/* Left: description */}
+            <div data-animate>
+              <div className="text-xs font-medium uppercase tracking-[0.22em] mb-4" style={{ fontFamily: 'var(--font-mono)', color: '#a855f7' }}>Mobile App</div>
+              <h2 className="text-3xl md:text-4xl font-light mb-6" style={{ fontFamily: 'var(--font-display)' }}>
+                Your pipeline.{' '}
+                <em className="not-italic" style={{ color: 'rgba(190,220,255,0.9)' }}>In your pocket.</em>
+              </h2>
+              <p className="text-lg mb-6 leading-relaxed font-light" style={{ color: 'var(--text-secondary)' }}>
+                Aria is not just the AI on the other end of the phone — she is the app on yours. The Perennia AI mobile app puts your entire pipeline, every notification, and every transfer at your fingertips. And with CarPlay integration, Aria rides with you. Available on iOS.
+              </p>
+              <div className="space-y-4">
+                {[
+                  'Real-time push notifications for live transfers, new leads, and hot callbacks',
+                  'Accept or decline warm transfers from your lock screen',
+                  'Full pipeline view — leads, loans, stages, and tasks on the go',
+                  'View AI call transcripts and qualification summaries between meetings',
+                  'One-tap callback with full borrower context pre-loaded',
+                  'Set your availability status so Aria knows when to transfer vs. schedule',
+                  'CarPlay dashboard — pipeline stats, incoming transfers, and one-tap callbacks from your car',
+                ].map((item) => (
+                  <div key={item} className="flex items-start gap-3">
+                    <svg className="w-5 h-5 text-[#a855f7] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                    <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right: phone mockup */}
+            <div data-animate className="flex justify-center">
+              <div className="relative">
+                {/* Phone frame */}
+                <div
+                  className="w-[280px] md:w-[320px] rounded-[40px] p-3 shadow-2xl"
+                  style={{ background: 'linear-gradient(145deg, #1a1a2e, #16213e)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 32px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)' }}
+                >
+                  {/* Screen */}
+                  <div className="rounded-[28px] overflow-hidden" style={{ background: 'var(--bg-0)' }}>
+                    {/* Status bar */}
+                    <div className="flex items-center justify-between px-6 pt-4 pb-2">
+                      <span className="text-[10px] font-medium text-white">9:41</span>
+                      <div className="flex items-center gap-1">
+                        <div className="flex gap-[2px]">
+                          {[1, 2, 3, 4].map((b) => (
+                            <div key={b} className="w-[3px] rounded-sm bg-white" style={{ height: `${6 + b * 2}px` }} />
+                          ))}
+                        </div>
+                        <svg className="w-4 h-4 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M2 17h2v4h16v-4h2v6H2v-6zm0-2h20v-1.5c0-1-2-3.5-10-3.5S2 12.5 2 13.5V15z" opacity="0.3"/><rect x="2" y="18" width="20" height="2" rx="0.5" fill="white"/><rect x="21" y="17" width="2" height="4" rx="0.5" fill="white" opacity="0.4"/></svg>
+                      </div>
+                    </div>
+
+                    {/* App header */}
+                    <div className="px-5 pt-2 pb-4">
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgba(77,163,255,0.2), rgba(24,160,166,0.2))', border: '1px solid rgba(77,163,255,0.2)' }}>
+                          <span className="text-[10px] font-bold" style={{ color: '#4DA3FF' }}>P</span>
+                        </div>
+                        <span className="text-sm font-semibold text-white">Perennia AI</span>
+                      </div>
+                      <div className="text-lg font-light text-white" style={{ fontFamily: 'var(--font-display)' }}>Good morning, James</div>
+                      <div className="text-xs mt-0.5" style={{ color: 'var(--text-dim)' }}>3 transfers today &middot; 12 leads contacted</div>
+                    </div>
+
+                    {/* Notification cards */}
+                    <div className="px-4 pb-5 space-y-2.5">
+                      {/* Transfer notification */}
+                      <div className="rounded-xl p-3" style={{ background: 'rgba(255,184,77,0.06)', border: '1px solid rgba(255,184,77,0.15)' }}>
+                        <div className="flex items-center gap-2 mb-1.5">
+                          <div className="w-2 h-2 rounded-full bg-[#FFB84D] animate-pulse" />
+                          <span className="text-[10px] uppercase tracking-widest font-medium" style={{ fontFamily: 'var(--font-mono)', color: '#FFB84D' }}>Live Transfer</span>
+                          <span className="text-[10px] ml-auto" style={{ color: 'var(--text-dim)' }}>now</span>
+                        </div>
+                        <div className="text-xs text-white font-medium">Sarah Johnson — 740 FICO, Purchase</div>
+                        <div className="text-[10px] mt-0.5" style={{ color: 'var(--text-secondary)' }}>$420K, W-2, closing by summer</div>
+                        <div className="flex gap-2 mt-2.5">
+                          <button className="flex-1 py-1.5 rounded-lg text-[10px] font-semibold text-center" style={{ background: 'rgba(61,255,160,0.15)', color: '#3DFFA0', border: '1px solid rgba(61,255,160,0.2)' }}>Accept</button>
+                          <button className="flex-1 py-1.5 rounded-lg text-[10px] font-semibold text-center" style={{ background: 'rgba(255,255,255,0.04)', color: 'var(--text-dim)', border: '1px solid var(--glass-border)' }}>Schedule</button>
+                        </div>
+                      </div>
+
+                      {/* Pipeline card */}
+                      <div className="rounded-xl p-3" style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)' }}>
+                        <div className="text-[10px] uppercase tracking-widest mb-2" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-dim)' }}>Pipeline</div>
+                        <div className="grid grid-cols-3 gap-2 text-center">
+                          <div>
+                            <div className="text-lg font-light text-white" style={{ fontFamily: 'var(--font-display)' }}>47</div>
+                            <div className="text-[9px]" style={{ color: 'var(--text-dim)' }}>Active</div>
+                          </div>
+                          <div>
+                            <div className="text-lg font-light" style={{ fontFamily: 'var(--font-display)', color: '#3DFFA0' }}>8</div>
+                            <div className="text-[9px]" style={{ color: 'var(--text-dim)' }}>Qualified</div>
+                          </div>
+                          <div>
+                            <div className="text-lg font-light" style={{ fontFamily: 'var(--font-display)', color: '#FFB84D' }}>3</div>
+                            <div className="text-[9px]" style={{ color: 'var(--text-dim)' }}>CTC</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Recent activity */}
+                      <div className="rounded-xl p-3" style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)' }}>
+                        <div className="text-[10px] uppercase tracking-widest mb-2" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-dim)' }}>Aria Activity</div>
+                        <div className="space-y-2">
+                          {[
+                            { icon: '📞', text: 'Called Mike Chen — qualified, appt set', time: '2m' },
+                            { icon: '💬', text: 'SMS from Lisa Park — responded', time: '8m' },
+                            { icon: '📧', text: 'Email opened: David Wu', time: '14m' },
+                          ].map((a, i) => (
+                            <div key={i} className="flex items-center gap-2">
+                              <span className="text-xs">{a.icon}</span>
+                              <span className="text-[10px] flex-1 truncate" style={{ color: 'var(--text-secondary)' }}>{a.text}</span>
+                              <span className="text-[9px]" style={{ color: 'var(--text-dim)' }}>{a.time}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Bottom nav bar */}
+                    <div className="flex items-center justify-around px-4 py-3" style={{ borderTop: '1px solid var(--glass-border)' }}>
+                      {[
+                        { label: 'Pipeline', active: true },
+                        { label: 'Leads', active: false },
+                        { label: 'Aria', active: false },
+                        { label: 'More', active: false },
+                      ].map((tab) => (
+                        <div key={tab.label} className="text-center">
+                          <div className={`w-5 h-5 mx-auto mb-0.5 rounded-md ${tab.active ? 'bg-[#4DA3FF]/20' : 'bg-white/5'}`} />
+                          <span className="text-[9px]" style={{ color: tab.active ? '#4DA3FF' : 'var(--text-dim)' }}>{tab.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Glow behind phone */}
+                <div className="absolute -inset-10 -z-10 rounded-full blur-[80px]" style={{ background: 'radial-gradient(ellipse, rgba(168,85,247,0.08) 0%, transparent 70%)' }} />
+              </div>
+
+              {/* CarPlay mockup below phone */}
+              <div
+                className="mt-8 w-full max-w-[380px] rounded-2xl p-4 md:p-5"
+                style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', backdropFilter: 'blur(16px)' }}
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <svg className="w-4 h-4" style={{ color: '#a855f7' }} fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z" />
+                  </svg>
+                  <span className="text-[10px] uppercase tracking-widest font-medium" style={{ fontFamily: 'var(--font-mono)', color: '#a855f7' }}>CarPlay</span>
+                </div>
+
+                {/* CarPlay screen */}
+                <div className="rounded-xl overflow-hidden" style={{ background: '#0a0a12', border: '1px solid rgba(255,255,255,0.06)' }}>
+                  {/* CarPlay header */}
+                  <div className="flex items-center justify-between px-4 py-2.5" style={{ background: 'rgba(255,255,255,0.03)' }}>
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 rounded-md flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgba(77,163,255,0.3), rgba(24,160,166,0.3))' }}>
+                        <span className="text-[7px] font-bold" style={{ color: '#4DA3FF' }}>P</span>
+                      </div>
+                      <span className="text-[11px] font-medium text-white">Perennia AI</span>
+                    </div>
+                    <span className="text-[10px]" style={{ color: 'var(--text-dim)' }}>9:41</span>
+                  </div>
+
+                  {/* CarPlay content */}
+                  <div className="px-4 py-3 space-y-2.5">
+                    {/* Transfer alert */}
+                    <div className="rounded-lg p-2.5" style={{ background: 'rgba(255,184,77,0.08)', border: '1px solid rgba(255,184,77,0.12)' }}>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-[#FFB84D] animate-pulse" />
+                        <span className="text-[10px] font-semibold text-white">Transfer: Sarah Johnson</span>
+                      </div>
+                      <div className="text-[9px] mt-1" style={{ color: 'var(--text-secondary)' }}>740 FICO &middot; Purchase $420K &middot; Ready now</div>
+                    </div>
+
+                    {/* Quick stats */}
+                    <div className="flex gap-2">
+                      <div className="flex-1 rounded-lg p-2 text-center" style={{ background: 'rgba(255,255,255,0.03)' }}>
+                        <div className="text-sm font-light text-white">47</div>
+                        <div className="text-[8px]" style={{ color: 'var(--text-dim)' }}>Pipeline</div>
+                      </div>
+                      <div className="flex-1 rounded-lg p-2 text-center" style={{ background: 'rgba(255,255,255,0.03)' }}>
+                        <div className="text-sm font-light" style={{ color: '#3DFFA0' }}>3</div>
+                        <div className="text-[8px]" style={{ color: 'var(--text-dim)' }}>Transfers</div>
+                      </div>
+                      <div className="flex-1 rounded-lg p-2 text-center" style={{ background: 'rgba(255,255,255,0.03)' }}>
+                        <div className="text-sm font-light" style={{ color: '#4DA3FF' }}>2</div>
+                        <div className="text-[8px]" style={{ color: 'var(--text-dim)' }}>Callbacks</div>
+                      </div>
+                    </div>
+
+                    {/* Action buttons */}
+                    <div className="flex gap-2">
+                      <button className="flex-1 py-2 rounded-lg text-[10px] font-semibold text-center" style={{ background: 'rgba(61,255,160,0.12)', color: '#3DFFA0', border: '1px solid rgba(61,255,160,0.15)' }}>
+                        Accept Transfer
+                      </button>
+                      <button className="flex-1 py-2 rounded-lg text-[10px] font-semibold text-center" style={{ background: 'rgba(77,163,255,0.1)', color: '#4DA3FF', border: '1px solid rgba(77,163,255,0.15)' }}>
+                        Call Back
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ═══════════ COMPLIANCE ═══════════ */}
       <section className="py-20 md:py-32 relative" style={{ background: 'radial-gradient(ellipse 100% 60% at 50% 50%, rgba(24,160,166,0.03) 0%, transparent 70%)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -546,14 +760,13 @@ export default function AriaPage() {
             Every minute without Aria is a lead that went to voicemail and never called back.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="https://app.perenniaai.com/register"
+            <button
+              onClick={() => setBookingOpen(true)}
               className="group inline-flex items-center gap-2 px-10 py-4 rounded-full text-sm font-medium tracking-wider uppercase transition-all duration-300 hover:-translate-y-0.5"
               style={{ background: 'linear-gradient(135deg, rgba(77,163,255,0.9), rgba(120,200,255,0.8))', color: '#040508', boxShadow: '0 8px 40px rgba(77,163,255,0.3)' }}
             >
-              Start Free Trial
-              <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
-            </Link>
+              Book a Demo
+            </button>
             <Link
               href="/engagement-engine"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-sm font-normal tracking-wider uppercase transition-all duration-300 hover:border-[rgba(77,163,255,0.4)] hover:text-white"
@@ -567,6 +780,7 @@ export default function AriaPage() {
 
       {/* Chat Modal */}
       <AriaChatModal open={chatOpen} onClose={() => setChatOpen(false)} />
+      <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
     </main>
   );
 }

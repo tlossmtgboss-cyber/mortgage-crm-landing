@@ -2,11 +2,13 @@
 
 import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
+import BookingModal from '@/components/BookingModal';
 
 export default function Footer() {
   const [email, setEmail] = useState('');
   const [subStatus, setSubStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [subError, setSubError] = useState('');
+  const [bookingOpen, setBookingOpen] = useState(false);
 
   const handleSubscribe = async (e: FormEvent) => {
     e.preventDefault();
@@ -39,13 +41,7 @@ export default function Footer() {
   };
 
   const openBookingModal = () => {
-    const modal = document.getElementById('bookingModal');
-    const iframe = document.getElementById('bookingIframe') as HTMLIFrameElement | null;
-    if (modal && iframe) {
-      iframe.src = 'https://app.perenniaai.com/embed/book/demo';
-      modal.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-    }
+    setBookingOpen(true);
   };
 
   const openCookieSettings = () => {
@@ -59,6 +55,8 @@ export default function Footer() {
         { label: 'Pipeline', url: '/#pipeline' },
         { label: 'Documents', url: '/#documents' },
         { label: 'Call Intelligence', url: '/call-intelligence' },
+        { label: 'Smart Calendar', url: '/smart-calendar' },
+        { label: 'Smart Docs', url: '/smart-docs' },
         { label: 'Workflow', url: '/#workflow' },
       ]
     },
@@ -67,7 +65,6 @@ export default function Footer() {
       links: [
         { label: 'Features', url: '/#features' },
         { label: 'How It Works', url: '/#workflow' },
-        { label: 'Integrations', url: '/#integrations' },
         { label: 'Book a Demo', url: '#book', action: 'openBooking' },
       ]
     },
@@ -222,6 +219,8 @@ export default function Footer() {
           </div>
         </div>
       </div>
+
+      <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
     </footer>
   );
 }

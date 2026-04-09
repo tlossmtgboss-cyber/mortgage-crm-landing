@@ -349,14 +349,54 @@ function initPage(): () => void {
     });
   });
 
+  // ── Booking modal ──
+  const bookingModal = document.getElementById('bookingModal');
+  const bookingIframe = document.getElementById('bookingIframe') as HTMLIFrameElement | null;
+  const bookingClose = document.getElementById('bookingModalClose');
+  const bookingClickHandlers: Array<[Element, EventListener]> = [];
+
+  const openBooking = (e: Event) => {
+    e.preventDefault();
+    if (bookingModal && bookingIframe) {
+      bookingIframe.src = 'https://app.perenniaai.com/embed/book/demo';
+      bookingModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+  };
+  const closeBooking = () => {
+    if (bookingModal && bookingIframe) {
+      bookingModal.style.display = 'none';
+      bookingIframe.src = '';
+      document.body.style.overflow = '';
+    }
+  };
+
+  document.querySelectorAll('.open-booking-modal').forEach(btn => {
+    btn.addEventListener('click', openBooking);
+    bookingClickHandlers.push([btn, openBooking as EventListener]);
+  });
+  if (bookingClose) {
+    bookingClose.addEventListener('click', closeBooking);
+    bookingClickHandlers.push([bookingClose, closeBooking as EventListener]);
+  }
+  if (bookingModal) {
+    const overlayClick = (e: Event) => { if (e.target === bookingModal) closeBooking(); };
+    bookingModal.addEventListener('click', overlayClick);
+    bookingClickHandlers.push([bookingModal, overlayClick as EventListener]);
+  }
+  const escHandler = (e: KeyboardEvent) => { if (e.key === 'Escape') closeBooking(); };
+  document.addEventListener('keydown', escHandler);
+
   // ── Cleanup function ──
   return () => {
     clearInterval(timerInterval);
     document.removeEventListener('mousemove', onMouseMove);
     window.removeEventListener('scroll', onScroll);
+    document.removeEventListener('keydown', escHandler);
     hoverEnterHandlers.forEach(([el, fn]) => el.removeEventListener('mouseenter', fn));
     hoverLeaveHandlers.forEach(([el, fn]) => el.removeEventListener('mouseleave', fn));
     scrollClickHandlers.forEach(([el, fn]) => el.removeEventListener('click', fn));
+    bookingClickHandlers.forEach(([el, fn]) => el.removeEventListener('click', fn));
     try { ScrollTrigger.getAll().forEach((t: any) => t.kill()); } catch {}
   };
 }
@@ -376,6 +416,14 @@ const BODY_HTML = `
   <div class="scroll-line"></div>
 </div>
 
+<!-- BOOKING MODAL -->
+<div id="bookingModal" class="booking-modal-overlay" style="display:none">
+  <div class="booking-modal">
+    <button id="bookingModalClose" class="booking-modal-close" aria-label="Close">&times;</button>
+    <iframe id="bookingIframe" src="" class="booking-modal-iframe" allow="clipboard-write"></iframe>
+  </div>
+</div>
+
 <!-- NAV -->
 <nav>
   <div class="nav-logo">
@@ -387,10 +435,12 @@ const BODY_HTML = `
     <a href="#documents">Documents</a>
     <a href="#call">Intelligence</a>
     <a href="#workflow">Workflow</a>
+    <a href="/smart-calendar">Calendar</a>
+    <a href="/smart-docs">Docs</a>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
     <a href="https://app.perenniaai.com/login" class="nav-login">Log In</a>
-    <a href="https://app.perenniaai.com/book/demo" class="nav-cta">Book a Demo</a>
+    <button class="nav-cta open-booking-modal">Book a Demo</button>
   </div>
 </nav>
 
@@ -401,7 +451,7 @@ const BODY_HTML = `
   <p class="hero-sub">Everything connected. Everything visible.<br>Everything moving forward.</p>
   <div class="hero-ctas">
     <button class="btn-primary">Watch the System Work</button>
-    <a href="https://app.perenniaai.com/book/demo" class="btn-ghost">Book a Strategy Session</a>
+    <button class="btn-ghost open-booking-modal">Book a Strategy Session</button>
   </div>
   <div class="hero-pipeline-preview">
     <div class="pipeline-strip">
@@ -902,8 +952,8 @@ const BODY_HTML = `
   <p class="closing-sub">From first contact to mortgage under management. Post-closing refinance opportunities, equity alerts, and annual reviews &mdash; all automated, all connected.</p>
   <div class="closing-ctas">
     <button class="btn-primary" style="font-size:.9rem;padding:16px 40px">Watch the System Work</button>
-    <a href="https://app.perenniaai.com/book/demo" class="btn-ghost" style="font-size:.9rem;padding:16px 40px">Book a Strategy Session</a>
-    <a href="https://app.perenniaai.com/book/demo" class="btn-ghost" style="font-size:.9rem;padding:16px 40px">Join the Pilot Group</a>
+    <button class="btn-ghost open-booking-modal" style="font-size:.9rem;padding:16px 40px">Book a Strategy Session</button>
+    <button class="btn-ghost open-booking-modal" style="font-size:.9rem;padding:16px 40px">Join the Pilot Group</button>
   </div>
   <div class="closing-tagline">Perennia AI &middot; The Relationship Operating System for Mortgage Teams</div>
 </section>

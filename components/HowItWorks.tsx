@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import BookingModal from '@/components/BookingModal';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -40,6 +41,7 @@ const steps = [
 ];
 
 export default function HowItWorks() {
+  const [bookingOpen, setBookingOpen] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const stepsRef = useRef<(HTMLDivElement | null)[]>([]);
   const lineRef = useRef<HTMLDivElement>(null);
@@ -96,6 +98,7 @@ export default function HowItWorks() {
   }, []);
 
   return (
+    <>
     <section
       ref={sectionRef}
       className="relative bg-black py-32 overflow-hidden"
@@ -193,19 +196,19 @@ export default function HowItWorks() {
             Ready to get started?
           </h3>
           <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
-            No contracts, no setup fees, no credit card required. Start your free trial and see why 500+ loan officers switched to our CRM.
+            No contracts, no setup fees, no credit card required. Book a demo and see why 500+ loan officers switched.
           </p>
-          <a
-            href="https://app.perenniaai.com/register"
+          <button
+            onClick={() => setBookingOpen(true)}
             className="inline-flex items-center gap-2 px-10 py-5 bg-white text-black font-bold text-lg rounded-xl hover:scale-105 transition-all duration-300 shadow-2xl shadow-blue-500/30"
           >
-            <span>Start free trial</span>
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </a>
+            Book a Demo
+          </button>
         </div>
       </div>
     </section>
+
+      <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
+    </>
   );
 }

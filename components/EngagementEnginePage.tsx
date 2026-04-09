@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
+import BookingModal from '@/components/BookingModal';
 
 /* ─── Inline SVG Icons ─── */
 
@@ -225,6 +226,7 @@ const complianceBadges = [
 
 export default function EngagementEnginePage() {
   const demoRef = useRef<HTMLDivElement>(null);
+  const [bookingOpen, setBookingOpen] = useState(false);
 
   useEffect(() => {
     // Intersection Observer for fade-in animations
@@ -293,23 +295,12 @@ export default function EngagementEnginePage() {
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-            <Link
-              href="https://app.perenniaai.com/register"
+            <button
+              onClick={() => setBookingOpen(true)}
               className="group inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-medium tracking-wider uppercase transition-all duration-300 hover:-translate-y-0.5"
               style={{ background: 'linear-gradient(135deg, rgba(77,163,255,0.9), rgba(120,200,255,0.8))', color: '#040508', boxShadow: '0 8px 40px rgba(77,163,255,0.3)' }}
             >
-              Start Free Trial
-              <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <button
-              onClick={scrollToDemo}
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-normal tracking-wider uppercase transition-all duration-300 hover:border-[rgba(77,163,255,0.4)] hover:text-white"
-              style={{ background: 'none', border: '1px solid var(--glass-border)', color: 'var(--text-secondary)' }}
-            >
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-              Watch Demo
+              Book a Demo
             </button>
           </div>
 
@@ -641,14 +632,13 @@ export default function EngagementEnginePage() {
               Every minute without Perennia AI is a lead that went to voicemail and never called back.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href="https://app.perenniaai.com/register"
+              <button
+                onClick={() => setBookingOpen(true)}
                 className="group inline-flex items-center gap-2 px-10 py-4 rounded-full text-sm font-medium tracking-wider uppercase transition-all duration-300 hover:-translate-y-0.5"
                 style={{ background: 'linear-gradient(135deg, rgba(77,163,255,0.9), rgba(120,200,255,0.8))', color: '#040508', boxShadow: '0 8px 40px rgba(77,163,255,0.3)' }}
               >
-                Start Free Trial
-                <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
+                Book a Demo
+              </button>
               <Link
                 href="/engagement-engine/training"
                 className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-sm font-normal tracking-wider uppercase transition-all duration-300 hover:border-[rgba(77,163,255,0.4)] hover:text-white"
@@ -660,6 +650,8 @@ export default function EngagementEnginePage() {
           </div>
         </div>
       </section>
+
+      <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
     </main>
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import BookingModal from '@/components/BookingModal';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -14,6 +14,7 @@ export default function HeroNew() {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
+  const [bookingOpen, setBookingOpen] = useState(false);
   const bgRef = useRef<HTMLDivElement>(null);
   const orb1Ref = useRef<HTMLDivElement>(null);
   const orb2Ref = useRef<HTMLDivElement>(null);
@@ -181,29 +182,15 @@ export default function HeroNew() {
 
           {/* CTA Buttons */}
           <div ref={ctaRef} className="flex flex-col sm:flex-row gap-5 justify-center items-center mb-28">
-            <Link
-              href="https://app.perenniaai.com/register"
+            <button
+              onClick={() => setBookingOpen(true)}
               className="group relative w-full sm:w-auto px-12 py-6 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 text-white font-bold text-lg rounded-2xl hover:scale-110 transition-all duration-500 shadow-2xl shadow-blue-500/40 hover:shadow-blue-500/60 overflow-hidden"
             >
               <span className="relative z-10 flex items-center gap-2">
-                Start Free Trial
-                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
+                Book a Demo
               </span>
               <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            </Link>
-            <Link
-              href="https://app.perenniaai.com/login"
-              className="group w-full sm:w-auto px-12 py-6 bg-white/10 backdrop-blur-xl text-white font-bold text-lg rounded-2xl hover:bg-white/20 hover:scale-105 transition-all duration-500 border-2 border-white/20 hover:border-white/40 shadow-xl"
-            >
-              <span className="flex items-center gap-2 group-hover:text-white transition-colors">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
-                </svg>
-                Watch Demo
-              </span>
-            </Link>
+            </button>
           </div>
 
           {/* Stats */}
@@ -234,6 +221,8 @@ export default function HeroNew() {
         <span className="text-xs text-white uppercase tracking-widest">Scroll</span>
         <div className="w-[1px] h-12 bg-gradient-to-b from-white to-transparent"></div>
       </div>
+
+      <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
     </section>
   );
 }

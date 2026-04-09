@@ -1,8 +1,12 @@
 'use client';
 
+import { useState } from 'react';
 import DeviceMockup from './DeviceMockup';
+import BookingModal from '@/components/BookingModal';
 
 export default function HeroWithMockup() {
+  const [bookingOpen, setBookingOpen] = useState(false);
+
   return (
     <section className="relative pt-32 pb-20 overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Background decorative elements */}
@@ -35,12 +39,12 @@ export default function HeroWithMockup() {
 
           {/* CTA buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <a
-              href="#demo"
+            <button
+              onClick={() => setBookingOpen(true)}
               className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
             >
-              Watch Demo
-            </a>
+              Book a Demo
+            </button>
           </div>
         </div>
 
@@ -69,6 +73,8 @@ export default function HeroWithMockup() {
           </div>
         </div>
       </div>
+
+      <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
     </section>
   );
 }

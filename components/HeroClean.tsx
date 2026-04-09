@@ -1,8 +1,10 @@
 'use client';
 
-import Link from 'next/link';
+import { useState } from 'react';
+import BookingModal from '@/components/BookingModal';
 
 export default function HeroClean() {
+  const [bookingOpen, setBookingOpen] = useState(false);
   return (
     <section className="relative bg-gradient-to-br from-blue-50 via-white to-purple-50 pt-32 pb-20 overflow-hidden">
       {/* Simple decorative elements */}
@@ -41,18 +43,12 @@ export default function HeroClean() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-            <Link
-              href="https://app.perenniaai.com/register"
+            <button
+              onClick={() => setBookingOpen(true)}
               className="w-full sm:w-auto px-8 py-4 bg-blue-600 text-white text-lg font-bold rounded-lg hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
             >
-              Start Free Trial →
-            </Link>
-            <Link
-              href="https://app.perenniaai.com/login"
-              className="w-full sm:w-auto px-8 py-4 bg-white text-blue-600 text-lg font-bold rounded-lg border-2 border-blue-600 hover:bg-blue-50 transform hover:scale-105 transition-all duration-200"
-            >
-              Watch Demo
-            </Link>
+              Book a Demo
+            </button>
           </div>
 
           {/* Stats */}
@@ -72,6 +68,8 @@ export default function HeroClean() {
           </div>
         </div>
       </div>
+
+      <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
     </section>
   );
 }

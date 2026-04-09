@@ -1,6 +1,10 @@
 'use client';
 
+import { useState } from 'react';
+import BookingModal from '@/components/BookingModal';
+
 export default function BenefitsClean() {
+  const [bookingOpen, setBookingOpen] = useState(false);
   const benefits = [
     {
       stat: "10+",
@@ -20,6 +24,7 @@ export default function BenefitsClean() {
   ];
 
   return (
+    <>
     <section className="py-20 bg-gradient-to-br from-blue-600 to-purple-600">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
@@ -48,14 +53,17 @@ export default function BenefitsClean() {
         </div>
 
         <div className="text-center mt-12">
-          <a
-            href="https://app.perenniaai.com/register"
+          <button
+            onClick={() => setBookingOpen(true)}
             className="inline-block px-8 py-4 bg-white text-blue-600 text-lg font-bold rounded-lg hover:bg-blue-50 transform hover:scale-105 transition-all duration-200 shadow-xl"
           >
-            Start Your Free Trial →
-          </a>
+            Book a Demo
+          </button>
         </div>
       </div>
     </section>
+
+      <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
+    </>
   );
 }

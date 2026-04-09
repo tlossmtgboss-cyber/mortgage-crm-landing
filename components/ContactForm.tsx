@@ -13,6 +13,7 @@ export default function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [honeypot, setHoneypot] = useState("");
 
   const formatPhone = (value: string) => {
     const digits = value.replace(/\D/g, "").slice(0, 10);
@@ -24,6 +25,13 @@ export default function ContactForm() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
+
+    // Honeypot: if filled, a bot submitted this form — silently reject
+    if (honeypot) {
+      setSubmitted(true);
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -88,6 +96,20 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
+      {/* Honeypot field — hidden from humans, attracts bots */}
+      <div className="absolute opacity-0 top-0 left-0 h-0 w-0 -z-10" aria-hidden="true">
+        <label htmlFor="website">Website</label>
+        <input
+          id="website"
+          name="website"
+          type="text"
+          value={honeypot}
+          onChange={(e) => setHoneypot(e.target.value)}
+          tabIndex={-1}
+          autoComplete="off"
+        />
+      </div>
+
       {/* Name Fields */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
@@ -151,10 +173,10 @@ export default function ContactForm() {
           htmlFor="phone"
           className="block text-sm font-medium text-gray-700 mb-1"
         >
-          Phone Number <span className="text-gray-400">(optional)</span>
+          Phone Number <span className="text-gray-500">(optional)</span>
         </label>
         <div className="relative">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-medium">
             +1
           </span>
           <input
@@ -174,7 +196,7 @@ export default function ContactForm() {
           htmlFor="company"
           className="block text-sm font-medium text-gray-700 mb-1"
         >
-          Company <span className="text-gray-400">(optional)</span>
+          Company <span className="text-gray-500">(optional)</span>
         </label>
         <input
           id="company"

@@ -28,11 +28,6 @@ export default function SMSOptInForm() {
       setError("Please enter a valid 10-digit US phone number.");
       return;
     }
-    if (!consent) {
-      setError("You must agree to receive SMS messages to continue.");
-      return;
-    }
-
     setLoading(true);
     try {
       const res = await fetch(
@@ -45,8 +40,10 @@ export default function SMSOptInForm() {
             last_name: lastName,
             phone: `+1${digits}`,
             email: email || undefined,
-            consent_text:
-              "By checking this box, I agree to receive recurring automated SMS/MMS messages from Perennia AI and my assigned loan officer, including mortgage application updates, rate alerts, document requests, and appointment reminders. Message frequency varies (up to 10 msgs/month). Msg & data rates may apply. Reply STOP to cancel, HELP for help. Consent is not a condition of purchase.",
+            sms_consent: consent,
+            consent_text: consent
+              ? "By checking this box, I agree to receive recurring automated SMS/MMS messages from Perennia AI and my assigned loan officer, including mortgage application updates, rate alerts, document requests, and appointment reminders. Message frequency varies (up to 10 msgs/month). Msg & data rates may apply. Reply STOP to cancel, HELP for help. Consent is not a condition of purchase."
+              : undefined,
             consent_source: "web_form",
             consent_page_url: window.location.href,
           }),
@@ -210,7 +207,7 @@ export default function SMSOptInForm() {
       {/* Submit */}
       <button
         type="submit"
-        disabled={loading || !consent}
+        disabled={loading}
         className="w-full py-3 px-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-base"
       >
         {loading ? "Submitting..." : "Opt In to SMS Updates"}

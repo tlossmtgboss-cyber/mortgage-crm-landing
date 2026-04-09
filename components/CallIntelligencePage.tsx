@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Header from './Header';
+import BookingModal from '@/components/BookingModal';
 
 /* ------------------------------------------------------------------ */
 /*  Data                                                               */
@@ -131,6 +132,7 @@ function useFadeIn(threshold = 0.15) {
 
 export default function CallIntelligencePage() {
   const [heroVisible, setHeroVisible] = useState(false);
+  const [bookingOpen, setBookingOpen] = useState(false);
   const pipeline = useFadeIn();
   const extraction = useFadeIn();
   const agents = useFadeIn();
@@ -206,12 +208,12 @@ export default function CallIntelligencePage() {
               heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
             }`}
           >
-            <Link
-              href="https://app.perenniaai.com/register"
+            <button
+              onClick={() => setBookingOpen(true)}
               className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold text-lg rounded-xl hover:shadow-xl hover:shadow-blue-500/25 transition-all duration-300 hover:-translate-y-0.5"
             >
-              Start Free Trial
-            </Link>
+              Book a Demo
+            </button>
             <a
               href="#how-it-works"
               className="px-8 py-4 bg-white/5 backdrop-blur-sm text-white font-semibold text-lg rounded-xl border border-white/10 hover:bg-white/10 transition-all duration-300"
@@ -654,15 +656,15 @@ export default function CallIntelligencePage() {
           </h2>
           <p className="text-[var(--text-secondary,rgba(180,200,230,0.85))] text-lg mb-10">
             Every call analyzed. Every field extracted. Every risk flagged.
-            Start your free trial — no credit card required.
+            Every call analyzed. Every field extracted. Every risk flagged.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <Link
-              href="https://app.perenniaai.com/register"
+            <button
+              onClick={() => setBookingOpen(true)}
               className="px-8 py-4 bg-gradient-to-r from-[var(--accent-blue,#4DA3FF)] to-purple-600 text-white font-semibold text-lg rounded-xl hover:shadow-xl hover:shadow-blue-500/25 transition-all duration-300 hover:-translate-y-0.5"
             >
-              Start Free Trial
-            </Link>
+              Book a Demo
+            </button>
             <Link
               href="/contact"
               className="px-8 py-4 bg-white/5 text-white font-semibold text-lg rounded-xl border border-[var(--glass-border,rgba(180,220,255,0.09))] hover:bg-white/10 transition-all duration-300"
@@ -681,6 +683,8 @@ export default function CallIntelligencePage() {
           </Link>
         </div>
       </section>
+
+      <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
     </main>
   );
 }
