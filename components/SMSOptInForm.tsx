@@ -21,6 +21,7 @@ export default function SMSOptInForm() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (loading) return;
     setError("");
 
     const digits = phone.replace(/\D/g, "");
@@ -205,8 +206,7 @@ export default function SMSOptInForm() {
       {/* Submit */}
       <button
         type="submit"
-        disabled={loading}
-        className="w-full py-3 px-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-base"
+        className={`w-full py-3 px-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 text-base ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
       >
         {loading ? "Submitting..." : "Opt In to SMS Updates"}
       </button>
