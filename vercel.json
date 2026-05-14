@@ -1,5 +1,12 @@
 {
   "framework": "nextjs",
+  "redirects": [
+    {
+      "source": "/builder-application",
+      "destination": "https://tlossmtgboss-cyber.github.io/cmg-builder-portal/register.html",
+      "permanent": false
+    }
+  ],
   "rewrites": [
     {
       "source": "/token",
