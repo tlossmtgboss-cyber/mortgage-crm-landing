@@ -12,7 +12,7 @@ export default function FAQClean() {
     },
     {
       question: "What integrations do you support?",
-      answer: "We integrate with Microsoft 365, Google Workspace, Calendly, Twilio, Encompass LOS, and more. Our API allows for custom integrations as well."
+      answer: "We integrate with Microsoft 365, Google Workspace, Calendly, Encompass LOS, and more. Our API allows for custom integrations as well."
     },
     {
       question: "Is my data secure?",

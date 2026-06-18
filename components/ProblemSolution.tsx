@@ -12,7 +12,7 @@ if (typeof window !== 'undefined') {
 const problems = [
   {
     problem: "Disconnected tools (LOS, CRM, Email, Text, Calendar)",
-    solution: "Unified platform with seamless integrations—Microsoft 365, Twilio, Calendly, Encompass, and more",
+    solution: "Unified platform with seamless integrations—Microsoft 365, Telnyx, Calendly, Encompass, and more",
     icon: "🔌",
     solutionIcon: "🔗",
   },

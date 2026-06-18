@@ -95,8 +95,9 @@ export async function POST(request: NextRequest) {
           }),
         });
 
+        const data = await res.json();
+
         if (res.ok) {
-          const data = await res.json();
           const text = data.content?.[0]?.text || '';
           if (text) {
             return NextResponse.json({
@@ -105,9 +106,11 @@ export async function POST(request: NextRequest) {
               session_id: session_id || crypto.randomUUID(),
             });
           }
+        } else {
+          console.error('[Aria Chat] Anthropic API error:', res.status, JSON.stringify(data));
         }
-      } catch {
-        // Fall through to local response
+      } catch (err) {
+        console.error('[Aria Chat] Anthropic API fetch failed:', err);
       }
     }
 

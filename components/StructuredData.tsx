@@ -143,7 +143,7 @@ export default function StructuredData() {
         "name": "What integrations does Mortgage CRM support?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Mortgage CRM integrates seamlessly with Microsoft Teams, Outlook, SMS messaging (Twilio), calendar systems, and email platforms. All communications sync automatically to keep your CRM data current."
+          "text": "Mortgage CRM integrates seamlessly with Microsoft Teams, Outlook, SMS messaging (Telnyx), calendar systems, and email platforms. All communications sync automatically to keep your CRM data current."
         }
       },
       {

@@ -30,7 +30,7 @@ export default function FeaturesClean() {
     {
       icon: "🔗",
       title: "Seamless Integrations",
-      description: "Connect with Microsoft 365, Calendly, Twilio, Encompass, and more through our integration platform."
+      description: "Connect with Microsoft 365, Calendly, Encompass, and more through our integration platform."
     }
   ];
 

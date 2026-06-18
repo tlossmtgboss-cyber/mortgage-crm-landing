@@ -1,7 +1,7 @@
 export default function Integrations() {
   const integrations = [
     { name: 'Microsoft Graph API', function: 'Email, calendar, and Teams sync', logo: '📧' },
-    { name: 'Twilio', function: 'SMS, voice calls, and AI outbound agent', logo: '📞' },
+    { name: 'Telnyx', function: 'SMS, voice calls, and AI outbound agent', logo: '📞' },
     { name: 'Calendly AI', function: 'Appointment scheduling', logo: '🗓️' },
     { name: 'Encompass / Blend', function: 'Loan origination sync', logo: '🏦' },
     { name: 'Zapier & Make', function: 'Custom automations', logo: '⚡' },

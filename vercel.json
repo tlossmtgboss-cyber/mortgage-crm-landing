@@ -1,13 +1,14 @@
 {
   "framework": "nextjs",
-  "redirects": [
+  "rewrites": [
     {
       "source": "/builder-application",
-      "destination": "https://tlossmtgboss-cyber.github.io/cmg-builder-portal/register.html",
-      "permanent": false
-    }
-  ],
-  "rewrites": [
+      "destination": "https://tlossmtgboss-cyber.github.io/cmg-builder-portal/register.html"
+    },
+    {
+      "source": "/builder-application/:path*",
+      "destination": "https://tlossmtgboss-cyber.github.io/cmg-builder-portal/:path*"
+    },
     {
       "source": "/token",
       "destination": "https://app.perenniaai.com/token"
